@@ -112,6 +112,9 @@
  "create.boiler.status_short": "Caldera: %1$s",
  "create.boiler.water": "Aigua",
  "create.boiler.water_dots": "... ",
+ "create.display_source.boiler_status": "Estat de la caldera",
+ "create.display_source.fill_level.percent": "Percentatge",
+ "create.display_source.fill_level.progress_bar": "Barra de progrés",
  "create.gui.sequenced_gearshift.instruction.turn_distance": "Pistó",
  "create.gui.sequenced_gearshift.speed": "Velocitat, direcció"
 }

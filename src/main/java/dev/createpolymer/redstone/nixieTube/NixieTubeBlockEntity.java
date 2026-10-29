@@ -1,5 +1,7 @@
 package dev.createpolymer.redstone.nixieTube;
 
+import dev.createpolymer.redstone.displayLink.DisplayLinkBlock;
+
 import java.util.Optional;
 
 import dev.createpolymer.foundation.blockEntity.SmartBlockEntity;
@@ -52,6 +54,7 @@ public class NixieTubeBlockEntity extends SmartBlockEntity {
 		clearCustomText();
 		redstoneStrength = signalStrength;
 		updateDisplayedStrings();
+		DisplayLinkBlock.notifyGatherers(level, worldPosition);
 		notifyUpdate();
 	}
 
@@ -65,6 +68,7 @@ public class NixieTubeBlockEntity extends SmartBlockEntity {
 		customText = Optional.of(text);
 		nixieIndex = nixiePositionInRow;
 		updateDisplayedStrings();
+		DisplayLinkBlock.notifyGatherers(level, worldPosition);
 		notifyUpdate();
 	}
 

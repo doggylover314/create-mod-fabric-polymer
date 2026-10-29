@@ -1,0 +1,89 @@
+package dev.createpolymer.redstone.displayLink.source;
+
+import dev.createpolymer.kinetics.clock.CuckooClockBlockEntity;
+import dev.createpolymer.redstone.displayLink.DisplayLinkContext;
+import dev.createpolymer.redstone.displayLink.DisplayText;
+import dev.createpolymer.redstone.displayLink.ModularGuiLineBuilder;
+import dev.createpolymer.redstone.displayLink.target.DisplayTargetStats;
+import dev.createpolymer.trains.display.FlapDisplaySection;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.level.ServerLevel;
+
+public class TimeOfDayDisplaySource extends SingleLineDisplaySource {
+
+	public static final MutableComponent EMPTY_TIME;
+
+	static {
+		EMPTY_TIME = Component.literal("--:--");
+	}
+
+	@Override
+	protected MutableComponent provideLine(DisplayLinkContext context, DisplayTargetStats stats) {
+		if (!(context.level() instanceof ServerLevel sLevel))
+			return EMPTY_TIME;
+		if (!(context.getSourceBlockEntity() instanceof CuckooClockBlockEntity ccbe))
+			return EMPTY_TIME;
+		if (ccbe.getSpeed() == 0)
+			return EMPTY_TIME;
+
+		boolean c12 = context.sourceConfig()
+			.getIntOr("Cycle", 0) == 0;
+		// 26.3 dropped DimensionType.natural(): dimensions with a clock of their own have a natural day
+		boolean isNatural = sLevel.dimensionType().defaultClock().isPresent();
+		long time = isNatural ? sLevel.getDefaultClockTime() : sLevel.getOverworldClockTime() * 24;
+
+		int dayTime = (int) (time % 24000);
+		int hours = (dayTime / 1000 + 6) % 24;
+		int minutes = (dayTime % 1000) * 60 / 1000;
+		MutableComponent suffix = Component.translatable("create.generic.daytime." + (hours > 11 ? "pm" : "am"));
+
+		minutes = minutes / 5 * 5;
+		if (c12) {
+			hours %= 12;
+			if (hours == 0)
+				hours = 12;
+		}
+
+		if (!isNatural) {
+			hours = sLevel.getRandom().nextInt(70) + 24;
+			minutes = sLevel.getRandom().nextInt(40) + 60;
+		}
+
+		MutableComponent component = Component.literal(
+			(hours < 10 ? " " : "") + hours + ":" + (minutes < 10 ? "0" : "") + minutes + (c12 ? " " : ""));
+
+		return c12 ? component.append(suffix) : component;
+	}
+
+	@Override
+	protected String getFlapDisplayLayoutName(DisplayLinkContext context) {
+		return "Instant";
+	}
+
+	@Override
+	protected FlapDisplaySection createSectionForValue(DisplayLinkContext context, int size) {
+		return new FlapDisplaySection(size * FlapDisplaySection.MONOSPACE, "instant", false, false);
+	}
+
+	@Override
+	protected String getTranslationKey() {
+		return "time_of_day";
+	}
+
+	@Override
+	public void initConfigurationWidgets(DisplayLinkContext context, ModularGuiLineBuilder builder, boolean isFirstLine) {
+		super.initConfigurationWidgets(context, builder, isFirstLine);
+		if (isFirstLine)
+			return;
+
+		builder.addSelectionScrollInput("Cycle", Component.translatable("create.display_source.time.format"),
+			DisplayText.translatedOptions("display_source.time", "12_hour", "24_hour"));
+	}
+
+	@Override
+	protected boolean allowsLabeling(DisplayLinkContext context) {
+		return true;
+	}
+
+}

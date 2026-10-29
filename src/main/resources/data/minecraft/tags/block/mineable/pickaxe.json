@@ -104,6 +104,8 @@
     "create:andesite_table_cloth",
     "create:brass_table_cloth",
     "create:copper_table_cloth",
+    "create:display_link",
+    "create:display_board",
     "create:nixie_tube",
     "create:white_nixie_tube",
     "create:magenta_nixie_tube",

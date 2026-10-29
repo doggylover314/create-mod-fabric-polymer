@@ -82,6 +82,8 @@
  "create.boiler.status_short": "الغلاية: %1$s",
  "create.boiler.water": "الماء",
  "create.contraptions.windmill.rotation_direction": "اتجاه الدوران",
+ "create.display_source.boiler.not_enough_space": "المساحة غير كافية ",
+ "create.display_source.boiler_status": "حالة الغلاية",
  "create.generic.clockwise": "مع عقارب الساعة",
  "create.generic.counter_clockwise": "عكس عقارب الساعة",
  "create.gui.value_settings.hold_to_edit": "انقر مع الاستمرار للتعديل",

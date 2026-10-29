@@ -1,5 +1,8 @@
 package dev.createpolymer.kinetics.belt.transport;
 
+import dev.createpolymer.redstone.displayLink.DisplayLinkBlock;
+import dev.createpolymer.redstone.displayLink.source.AccumulatedItemCountDisplaySource;
+
 import org.jspecify.annotations.Nullable;
 
 import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
@@ -43,6 +46,7 @@ public class BeltTunnelInteractionHandler {
 		Level world = beltInventory.belt.getLevel();
 		boolean removed = false;
 		BeltTunnelBlockEntity nextTunnel = getTunnelOnSegment(beltInventory, upcomingSegment);
+		int transferred = current.stack.getCount();
 
 		if (nextTunnel instanceof BrassTunnelBlockEntity brassTunnel) {
 			if (brassTunnel.hasDistributionBehaviour()) {
@@ -92,6 +96,10 @@ public class BeltTunnelInteractionHandler {
 
 		flapTunnel(beltInventory, currentSegment, movementFacing, false);
 		flapTunnel(beltInventory, upcomingSegment, movementFacing.getOpposite(), true);
+
+		if (nextTunnel != null)
+			DisplayLinkBlock.sendToGatherers(world, nextTunnel.getBlockPos(),
+				(dgte, b) -> b.itemReceived(dgte, transferred), AccumulatedItemCountDisplaySource.class);
 
 		if (removed)
 			return true;

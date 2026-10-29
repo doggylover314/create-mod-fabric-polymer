@@ -1,0 +1,38 @@
+{
+  "items": [
+    "display_link",
+    "display_board"
+  ],
+  "blocks": [
+    "display_link",
+    "display_board"
+  ],
+  "display_models": [
+    "block/display_link/block",
+    "block/display_link/block_powered",
+    "block/display_link/tube",
+    "block/display_link/glow",
+    "block/display_board/block",
+    "block/cogwheel_shaftless"
+  ],
+  "blockstates": [
+    "display_link",
+    "display_board"
+  ],
+  "crafting": [
+    "logistics/display_link",
+    "kinetics/display_board"
+  ],
+  "lang_prefixes": [
+    "create.display_link.",
+    "create.display_source.",
+    "create.display_target.",
+    "create.boiler.",
+    "create.generic.daytime.",
+    "create.generic.unit."
+  ],
+  "lang_keys": [
+    "create.gui.schedule.lmb_edit",
+    "create.gui.value_settings.confirm"
+  ]
+}

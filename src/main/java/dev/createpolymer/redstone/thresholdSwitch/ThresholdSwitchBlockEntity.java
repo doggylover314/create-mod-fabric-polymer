@@ -1,5 +1,7 @@
 package dev.createpolymer.redstone.thresholdSwitch;
 
+import dev.createpolymer.redstone.displayLink.DisplayLinkBlock;
+
 import java.util.List;
 
 import org.jspecify.annotations.Nullable;
@@ -209,6 +211,7 @@ public class ThresholdSwitchBlockEntity extends SmartBlockEntity implements Clea
 			scheduleBlockTick();
 
 		if (changed || update) {
+			DisplayLinkBlock.notifyGatherers(level, worldPosition);
 			notifyUpdate();
 		}
 	}

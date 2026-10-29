@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "C",
+    "S"
+  ],
+  "key": {
+    "C": "create:transmitter",
+    "S": "create:brass_casing"
+  },
+  "result": {
+    "id": "create:display_link",
+    "count": 1
+  }
+}
