@@ -12,6 +12,7 @@
  "block.create.item_hatch": "Cargo hole",
  "block.create.item_vault": "Treasure bulkhead",
  "block.create.large_cogwheel": "Great tooth'd wheel",
+ "block.create.mechanical_arm": "false limb",
  "block.create.shaft": "Stick o' Spinnin'",
  "item.create.andesite_alloy": "Grey pebble mix-up"
 }

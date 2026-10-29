@@ -3,6 +3,14 @@
  "block.create.blaze_burner": "Sutzar Sutegia",
  "block.create.brass_encased_shaft": "Letoiz Estalitako Ardatza",
  "block.create.lit_blaze_burner": "Sutzar Sutegi Piztua",
+ "block.create.mechanical_arm": "Beso Mekanikoa",
  "create.gui.sequenced_gearshift.instruction.turn_distance.descriptive": "Biratu pistoia/polea/garabia mugitzeko",
+ "create.mechanical_arm.deposit_to": "%1$s-(a)n objektuak ipini",
+ "create.mechanical_arm.extract_from": "%1$s-tik objektuak hartu",
+ "create.mechanical_arm.points_outside_range": "%1$s aukeratutako interakzio puntu kendu dira irismen mugak direla eta.",
+ "create.mechanical_arm.selection_mode.forced_round_robin": "Itzulika nahitaez",
+ "create.mechanical_arm.selection_mode.prefer_first": "Lehenengoari lehentesia eman",
+ "create.mechanical_arm.selection_mode.round_robin": "Itzulika",
+ "create.mechanical_arm.summary": "Beso Mekanikoak %1$s sarrera eta %2$s irteera ditu.",
  "item.create.empty_blaze_burner": "Sutzar Sutegi hutsa"
 }

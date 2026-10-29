@@ -1,0 +1,31 @@
+{
+  "items": [
+    "mechanical_arm"
+  ],
+  "blocks": [
+    "mechanical_arm"
+  ],
+  "display_models": [
+    "block/mechanical_arm/block",
+    "block/mechanical_arm/cog",
+    "block/mechanical_arm/base",
+    "block/mechanical_arm/lower_body",
+    "block/mechanical_arm/upper_body",
+    "block/mechanical_arm/claw_base",
+    "block/mechanical_arm/claw_base_goggles",
+    "block/mechanical_arm/upper_claw_grip",
+    "block/mechanical_arm/lower_claw_grip"
+  ],
+  "crafting": [
+    "kinetics/mechanical_arm"
+  ],
+  "lang_ids": [
+    "mechanical_arm"
+  ],
+  "lang_prefixes": [
+    "create.mechanical_arm."
+  ],
+  "lang_keys": [
+    "create.logistics.when_multiple_outputs_available"
+  ]
+}

@@ -21,6 +21,7 @@ import dev.createpolymer.registry.feature.CrushingRegistry;
 import dev.createpolymer.registry.feature.DeployerRegistry;
 import dev.createpolymer.registry.feature.BeltRegistry;
 import dev.createpolymer.registry.feature.CrafterRegistry;
+import dev.createpolymer.registry.feature.ArmRegistry;
 import dev.createpolymer.registry.feature.FilterRegistry;
 import dev.createpolymer.registry.feature.BurnerRegistry;
 import dev.createpolymer.registry.feature.MaterialsRegistry;
@@ -76,6 +77,7 @@ public class CreatePolymer implements ModInitializer {
 		DecorationRegistry.init();
 		RedstoneRegistry.init();
 		MiscRegistry.init();
+		ArmRegistry.init();
 
 		// Resource pack: Create's models/textures/lang from this jar, served by polymer-autohost.
 		enableAutoHostByDefault();

@@ -76,6 +76,7 @@
     "create:sequenced_gearshift",
     "create:flywheel",
     "create:rotation_speed_controller",
+    "create:mechanical_arm",
     "create:andesite_tunnel",
     "create:brass_tunnel",
     "create:content_observer",
