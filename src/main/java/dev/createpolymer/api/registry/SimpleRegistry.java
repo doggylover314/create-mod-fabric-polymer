@@ -56,6 +56,7 @@ public class SimpleRegistry<K, V> {
 		if (providers.contains(provider))
 			throw new IllegalArgumentException("Tried to register provider twice: " + provider);
 		providers.add(0, provider);
+		provider.onRegister(this::invalidate);
 		invalidate();
 	}
 
@@ -96,6 +97,10 @@ public class SimpleRegistry<K, V> {
 	public interface Provider<K, V> {
 		@Nullable
 		V get(K object);
+
+		/** Called by the registry after this provider was added; useful to hook up cache invalidation. */
+		default void onRegister(Runnable invalidate) {
+		}
 
 		/** A provider that returns the same value for all entries in a tag. */
 		static <K, V> Provider<K, V> forTag(TagKey<K> tag, Function<K, Holder<K>> holderGetter, V value) {

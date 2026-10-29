@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 
 import com.google.common.base.Predicates;
 
+import dev.createpolymer.api.packager.InventoryIdentifier;
 import dev.createpolymer.foundation.blockEntity.SmartBlockEntity;
 import dev.createpolymer.foundation.blockEntity.behaviour.BehaviourType;
 import dev.createpolymer.foundation.blockEntity.behaviour.filtering.FilteringBehaviour;
@@ -14,6 +15,7 @@ import dev.createpolymer.foundation.item.ItemHelper.ExtractionCountMode;
 import dev.createpolymer.foundation.item.handler.IItemHandler;
 import dev.createpolymer.foundation.item.handler.ItemHandlerHelper;
 import dev.createpolymer.foundation.item.handler.ItemHandlerLookup;
+import dev.createpolymer.logistics.packager.IdentifiedInventory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -50,6 +52,16 @@ public class InvManipulationBehaviour extends CapManipulationBehaviourBase<IItem
 	@Nullable
 	protected IItemHandler findCapability(Level level, BlockPos pos, @Nullable Direction side) {
 		return ItemHandlerLookup.get(level, pos, side);
+	}
+
+	@Nullable
+	public IdentifiedInventory getIdentifiedInventory() {
+		IItemHandler inventory = this.getInventory();
+		if (inventory == null)
+			return null;
+
+		InventoryIdentifier identifier = InventoryIdentifier.get(this.getWorld(), this.getTarget().getOpposite());
+		return new IdentifiedInventory(identifier, inventory);
 	}
 
 	public ItemStack extract() {

@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "#c:dyes/light_blue",
+    "#create:postboxes"
+  ],
+  "result": {
+    "id": "create:light_blue_postbox",
+    "count": 1
+  }
+}
