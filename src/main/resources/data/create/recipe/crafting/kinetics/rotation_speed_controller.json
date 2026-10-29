@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "B",
+    "C"
+  ],
+  "key": {
+    "B": "create:precision_mechanism",
+    "C": "create:brass_casing"
+  },
+  "result": {
+    "id": "create:rotation_speed_controller",
+    "count": 1
+  }
+}

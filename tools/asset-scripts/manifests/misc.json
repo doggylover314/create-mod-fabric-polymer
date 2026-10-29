@@ -1,0 +1,34 @@
+{
+  "items": [
+    "rotation_speed_controller",
+    "creative_crate",
+    "item_hatch"
+  ],
+  "blocks": [
+    "rotation_speed_controller",
+    "creative_crate",
+    "item_hatch"
+  ],
+  "display_models": [
+    "block/rotation_speed_controller/bracket"
+  ],
+  "blockstates": [
+    "rotation_speed_controller",
+    "creative_crate",
+    "item_hatch"
+  ],
+  "crafting": [
+    "kinetics/rotation_speed_controller",
+    "logistics/item_hatch"
+  ],
+  "lang_ids": [
+    "rotation_speed_controller",
+    "creative_crate",
+    "item_hatch"
+  ],
+  "lang_prefixes": [
+    "create.kinetics.speed_controller.",
+    "create.logistics.creative_crate.",
+    "create.item_hatch."
+  ]
+}

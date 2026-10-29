@@ -12,6 +12,8 @@ import dev.createpolymer.kinetics.base.KineticBlockEntity;
 import dev.createpolymer.kinetics.base.DirectionalShaftHalvesBlockEntity;
 import dev.createpolymer.kinetics.chaindrive.ChainDriveBlock;
 import dev.createpolymer.kinetics.gearbox.GearboxBlockEntity;
+import dev.createpolymer.kinetics.speedController.SpeedControllerBlock;
+import dev.createpolymer.kinetics.speedController.SpeedControllerBlockEntity;
 import dev.createpolymer.kinetics.transmission.SplitShaftBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -19,11 +21,12 @@ import net.minecraft.core.Direction.Axis;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * Ported from Create's RotationPropagator (MIT, The Create Team).
- * Chain drives, split shafts and speed controllers are not part of this port yet.
+ * Chain drives and split shafts are not part of this port yet.
  */
 public final class RotationPropagator {
 
@@ -112,7 +115,29 @@ public final class RotationPropagator {
 	}
 
 	private static float getConveyedSpeed(KineticBlockEntity from, KineticBlockEntity to) {
+		final BlockState stateFrom = from.getBlockState();
+		final BlockState stateTo = to.getBlockState();
+
+		// Rotation Speed Controller <-> Large Gear
+		if (isLargeCogToSpeedController(stateFrom, stateTo, to.getBlockPos().subtract(from.getBlockPos())))
+			return SpeedControllerBlockEntity.getConveyedSpeed(from, to, true);
+		if (isLargeCogToSpeedController(stateTo, stateFrom, from.getBlockPos().subtract(to.getBlockPos())))
+			return SpeedControllerBlockEntity.getConveyedSpeed(to, from, false);
+
 		return from.getTheoreticalSpeed() * getRotationSpeedModifier(from, to);
+	}
+
+	private static boolean isLargeCogToSpeedController(BlockState from, BlockState to, BlockPos diff) {
+		if (!ICogWheel.isLargeCog(from) || !(to.getBlock() instanceof SpeedControllerBlock))
+			return false;
+		if (!diff.equals(BlockPos.ZERO.below()))
+			return false;
+		Axis axis = from.getValue(BlockStateProperties.AXIS);
+		if (axis.isVertical())
+			return false;
+		if (to.getValue(SpeedControllerBlock.HORIZONTAL_AXIS) == axis)
+			return false;
+		return true;
 	}
 
 	private static boolean isLargeToLargeGear(BlockState from, BlockState to, BlockPos diff) {
@@ -338,7 +363,8 @@ public final class RotationPropagator {
 	public static boolean isConnected(KineticBlockEntity from, KineticBlockEntity to) {
 		final BlockState stateFrom = from.getBlockState();
 		final BlockState stateTo = to.getBlockState();
-		return getRotationSpeedModifier(from, to) != 0 || from.isCustomConnection(to, stateFrom, stateTo);
+		return isLargeCogToSpeedController(stateFrom, stateTo, to.getBlockPos().subtract(from.getBlockPos()))
+			|| getRotationSpeedModifier(from, to) != 0 || from.isCustomConnection(to, stateFrom, stateTo);
 	}
 
 	private static List<KineticBlockEntity> getConnectedNeighbours(KineticBlockEntity be) {
