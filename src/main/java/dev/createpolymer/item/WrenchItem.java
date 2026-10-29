@@ -34,7 +34,7 @@ public class WrenchItem extends SimplePolymerItem {
 	}
 
 	private static boolean isWrenchable(Block block) {
-		return block instanceof KineticBlock || block instanceof BasinBlock || block instanceof CasingBlock;
+		return block instanceof KineticBlock || block instanceof BasinBlock || block instanceof CasingBlock || block instanceof IWrenchable;
 	}
 
 	@Override
@@ -47,6 +47,12 @@ public class WrenchItem extends SimplePolymerItem {
 			return super.useOn(context);
 		if (level.isClientSide())
 			return InteractionResult.SUCCESS;
+
+		if (state.getBlock() instanceof IWrenchable custom) {
+			InteractionResult result = player.isShiftKeyDown() ? custom.onSneakWrenched(state, context) : custom.onWrenched(state, context);
+			if (result != null)
+				return result;
+		}
 
 		if (player.isShiftKeyDown()) {
 			if (level instanceof ServerLevel serverLevel) {

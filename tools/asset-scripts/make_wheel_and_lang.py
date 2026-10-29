@@ -5,7 +5,8 @@ A = os.path.join(out_root, 'src/main/resources/assets/create')
 # ---- trim language files to keys this port uses ----
 ids = ['wrench','goggles','shaft','cogwheel','large_cogwheel','gearbox','hand_crank','water_wheel','creative_motor','millstone',
        'mechanical_press','mechanical_mixer','basin','andesite_casing','andesite_alloy','whisk','iron_sheet','golden_sheet',
-       'copper_sheet','wheat_flour']
+       'copper_sheet','wheat_flour','andesite_encased_shaft','andesite_encased_cogwheel','andesite_encased_large_cogwheel',
+       'gearshift','clutch','encased_chain_drive','speedometer','stressometer','depot','large_water_wheel']
 keep_exact = set()
 for i in ids:
     keep_exact |= {f'block.create.{i}', f'item.create.{i}'}
@@ -82,3 +83,29 @@ item = {
 os.makedirs(os.path.join(A, 'models/item'), exist_ok=True)
 json.dump(item, open(os.path.join(A, 'models/item/water_wheel.json'), 'w'), indent=1)
 print('wheel elements', len(els))
+
+# ---- large water wheel: authored at half size, the server scales it x2 (5 blocks across) ----
+els = []
+els.append(box([7, 4, 7], [9, 12, 9], '#axis', '#axis_top', name='axle'))
+els.append(box([5, 4.5, 5], [11, 11.5, 11], '#log', '#log', name='hub'))
+for k in range(12):
+    a = k * 30.0
+    els.append(box([11, 4.75, 7.5], [26, 5.75, 8.5], '#planks', '#planks', a, 'spoke'))
+    els.append(box([11, 10.25, 7.5], [26, 11.25, 8.5], '#planks', '#planks', a, 'spoke'))
+    els.append(box([25.5, 4.5, 3.8], [26.5, 6, 12.2], '#log', '#log', a, 'rim'))
+    els.append(box([25.5, 10, 3.8], [26.5, 11.5, 12.2], '#log', '#log', a, 'rim'))
+    els.append(box([22, 4.25, 7.6], [28, 11.75, 8.4], '#planks', '#planks', a + 15, 'paddle'))
+large = dict(wheel)
+large['elements'] = els
+large['credit'] = "Approximation of Create's large water wheel for vanilla clients, half scale (create-polymer)"
+os.makedirs(os.path.join(A, 'models/block/large_water_wheel'), exist_ok=True)
+json.dump(large, open(os.path.join(A, 'models/block/large_water_wheel/polymer_wheel.json'), 'w'), indent=1)
+litem = {'parent': 'create:block/large_water_wheel/polymer_wheel', 'display': {
+    'gui': {'rotation': [60, 0, 45], 'scale': [0.35, 0.35, 0.35]},
+    'ground': {'rotation': [90, 0, 0], 'scale': [0.25, 0.25, 0.25]},
+    'fixed': {'rotation': [90, 0, 0], 'scale': [0.35, 0.35, 0.35]},
+    'thirdperson_righthand': {'rotation': [75, 45, 0], 'translation': [0, 2.5, 0], 'scale': [0.25, 0.25, 0.25]},
+    'firstperson_righthand': {'rotation': [0, 45, 0], 'scale': [0.25, 0.25, 0.25]},
+    'firstperson_lefthand': {'rotation': [0, 225, 0], 'scale': [0.25, 0.25, 0.25]}}}
+json.dump(litem, open(os.path.join(A, 'models/item/large_water_wheel.json'), 'w'), indent=1)
+print('large wheel elements', len(els))

@@ -9,7 +9,10 @@ import dev.createpolymer.Config;
 import dev.createpolymer.kinetics.base.ICogWheel;
 import dev.createpolymer.kinetics.base.IRotate;
 import dev.createpolymer.kinetics.base.KineticBlockEntity;
+import dev.createpolymer.kinetics.base.DirectionalShaftHalvesBlockEntity;
+import dev.createpolymer.kinetics.chaindrive.ChainDriveBlock;
 import dev.createpolymer.kinetics.gearbox.GearboxBlockEntity;
+import dev.createpolymer.kinetics.transmission.SplitShaftBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -69,6 +72,12 @@ public final class RotationPropagator {
 			return getAxisModifier(from, direction) * axisModifier;
 		}
 
+		// Attached Encased Belts
+		if (fromBlock instanceof ChainDriveBlock && toBlock instanceof ChainDriveBlock) {
+			boolean connected = ChainDriveBlock.areBlocksConnected(stateFrom, stateTo, direction);
+			return connected ? 1 : 0;
+		}
+
 		// Large Gear <-> Large Gear
 		if (isLargeToLargeGear(stateFrom, stateTo, diff)) {
 			Axis sourceAxis = stateFrom.getValue(AXIS);
@@ -125,11 +134,18 @@ public final class RotationPropagator {
 	}
 
 	private static float getAxisModifier(KineticBlockEntity be, Direction direction) {
-		if (!(be.hasSource() || be.isSource()) || !(be instanceof GearboxBlockEntity gearbox))
+		if (!(be.hasSource() || be.isSource()) || !(be instanceof DirectionalShaftHalvesBlockEntity halves))
 			return 1;
-		Direction source = gearbox.getSourceFacing();
-		return direction.getAxis() == source.getAxis() ? direction == source ? 1 : -1
-			: direction.getAxisDirection() == source.getAxisDirection() ? -1 : 1;
+		Direction source = halves.getSourceFacing();
+
+		if (be instanceof GearboxBlockEntity)
+			return direction.getAxis() == source.getAxis() ? direction == source ? 1 : -1
+				: direction.getAxisDirection() == source.getAxisDirection() ? -1 : 1;
+
+		if (be instanceof SplitShaftBlockEntity split)
+			return split.getRotationSpeedModifier(direction);
+
+		return 1;
 	}
 
 	private static boolean isLargeToSmallCog(BlockState from, BlockState to, IRotate defTo, BlockPos diff) {

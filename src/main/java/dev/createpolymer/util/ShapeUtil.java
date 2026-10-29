@@ -35,6 +35,14 @@ public final class ShapeUtil {
 		return map;
 	}
 
+	/** Rotates a shape 90 degrees around the vertical axis (x, z) -> (1 - z, x). */
+	public static VoxelShape rotateY90(VoxelShape shape) {
+		VoxelShape result = Shapes.empty();
+		for (AABB b : shape.toAabbs())
+			result = Shapes.or(result, Shapes.box(1 - b.maxZ, b.minY, b.minX, 1 - b.minZ, b.maxY, b.maxX));
+		return result.optimize();
+	}
+
 	/** Re-maps a shape whose "top" is +Y so that its top points to {@code facing}. */
 	public static VoxelShape transform(VoxelShape up, Direction facing) {
 		if (facing == Direction.UP)

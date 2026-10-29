@@ -3,7 +3,9 @@ src_root, out_root = sys.argv[1], sys.argv[2]
 S = os.path.join(src_root, 'src/generated/resources/data')
 D = os.path.join(out_root, 'src/main/resources/data')
 blocks = ['shaft','cogwheel','large_cogwheel','gearbox','hand_crank','water_wheel','creative_motor','millstone',
-          'mechanical_press','mechanical_mixer','basin','andesite_casing']
+          'mechanical_press','mechanical_mixer','basin','andesite_casing',
+          'andesite_encased_shaft','andesite_encased_cogwheel','andesite_encased_large_cogwheel','gearshift','clutch',
+          'encased_chain_drive','speedometer','stressometer','depot','large_water_wheel']
 os.makedirs(os.path.join(D, 'create/loot_table/blocks'), exist_ok=True)
 for b in blocks:
     shutil.copyfile(os.path.join(S, f'create/loot_table/blocks/{b}.json'), os.path.join(D, f'create/loot_table/blocks/{b}.json'))

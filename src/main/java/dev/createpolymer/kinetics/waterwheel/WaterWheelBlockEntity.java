@@ -31,6 +31,7 @@ import net.minecraft.world.phys.Vec3;
 public class WaterWheelBlockEntity extends GeneratingKineticBlockEntity {
 
 	public static final Map<Axis, Set<BlockPos>> SMALL_OFFSETS = new EnumMap<>(Axis.class);
+	public static final Map<Axis, Set<BlockPos>> LARGE_OFFSETS = new EnumMap<>(Axis.class);
 
 	static {
 		for (Axis axis : Axis.values()) {
@@ -39,18 +40,43 @@ public class WaterWheelBlockEntity extends GeneratingKineticBlockEntity {
 				if (d.getAxis() != axis)
 					offsets.add(BlockPos.ZERO.relative(d));
 			SMALL_OFFSETS.put(axis, offsets);
+
+			offsets = new HashSet<>();
+			for (Direction d : Direction.values()) {
+				if (d.getAxis() == axis)
+					continue;
+				BlockPos centralOffset = BlockPos.ZERO.relative(d, 2);
+				offsets.add(centralOffset);
+				for (Direction d2 : Direction.values()) {
+					if (d2.getAxis() == axis || d2.getAxis() == d.getAxis())
+						continue;
+					offsets.add(centralOffset.relative(d2));
+				}
+			}
+			LARGE_OFFSETS.put(axis, offsets);
 		}
 	}
+
+	private final int size;
 
 	public int flowScore;
 
 	public WaterWheelBlockEntity(BlockPos pos, BlockState state) {
-		super(ModBlockEntities.WATER_WHEEL, pos, state);
+		this(ModBlockEntities.WATER_WHEEL, pos, state, 1);
+	}
+
+	public WaterWheelBlockEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> type, BlockPos pos, BlockState state, int size) {
+		super(type, pos, state);
+		this.size = size;
 		setLazyTickRate(60);
 	}
 
+	public int getSize() {
+		return size;
+	}
+
 	protected Set<BlockPos> getOffsetsToCheck() {
-		return SMALL_OFFSETS.get(getAxis());
+		return (size == 1 ? SMALL_OFFSETS : LARGE_OFFSETS).get(getAxis());
 	}
 
 	protected Axis getAxis() {
@@ -127,6 +153,6 @@ public class WaterWheelBlockEntity extends GeneratingKineticBlockEntity {
 
 	@Override
 	public float getGeneratedSpeed() {
-		return Mth.clamp(flowScore, -1, 1) * 8;
+		return Mth.clamp(flowScore, -1, 1) * 8f / size;
 	}
 }

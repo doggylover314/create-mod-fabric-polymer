@@ -13,7 +13,11 @@ import net.minecraft.world.level.block.state.BlockState;
 public class SimpleKineticBlockEntity extends KineticBlockEntity {
 
 	public SimpleKineticBlockEntity(BlockPos pos, BlockState state) {
-		super(ModBlockEntities.SIMPLE_KINETIC, pos, state);
+		this(ModBlockEntities.SIMPLE_KINETIC, pos, state);
+	}
+
+	public SimpleKineticBlockEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> type, BlockPos pos, BlockState state) {
+		super(type, pos, state);
 	}
 
 	@Override

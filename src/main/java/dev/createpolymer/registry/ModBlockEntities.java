@@ -3,7 +3,11 @@ package dev.createpolymer.registry;
 import java.util.Set;
 
 import dev.createpolymer.CreatePolymer;
+import dev.createpolymer.kinetics.base.KineticBlockEntity;
 import dev.createpolymer.kinetics.crank.HandCrankBlockEntity;
+import dev.createpolymer.logistics.depot.DepotBlockEntity;
+import dev.createpolymer.kinetics.gauge.GaugeBlockEntity;
+import dev.createpolymer.kinetics.transmission.SplitShaftBlockEntity;
 import dev.createpolymer.kinetics.gearbox.GearboxBlockEntity;
 import dev.createpolymer.kinetics.millstone.MillstoneBlockEntity;
 import dev.createpolymer.kinetics.mixer.MechanicalMixerBlockEntity;
@@ -32,6 +36,28 @@ public final class ModBlockEntities {
 	public static final BlockEntityType<MechanicalPressBlockEntity> MECHANICAL_PRESS = register("mechanical_press", MechanicalPressBlockEntity::new, ModBlocks.MECHANICAL_PRESS);
 	public static final BlockEntityType<MechanicalMixerBlockEntity> MECHANICAL_MIXER = register("mechanical_mixer", MechanicalMixerBlockEntity::new, ModBlocks.MECHANICAL_MIXER);
 	public static final BlockEntityType<BasinBlockEntity> BASIN = register("basin", BasinBlockEntity::new, ModBlocks.BASIN);
+
+	public static final BlockEntityType<KineticBlockEntity> ENCASED_SHAFT = register("encased_shaft",
+		(pos, state) -> new KineticBlockEntity(ModBlockEntities.ENCASED_SHAFT, pos, state), ModBlocks.ANDESITE_ENCASED_SHAFT,
+		ModBlocks.ENCASED_CHAIN_DRIVE);
+	public static final BlockEntityType<SimpleKineticBlockEntity> ENCASED_COGWHEEL = register("encased_cogwheel",
+		(pos, state) -> new SimpleKineticBlockEntity(ModBlockEntities.ENCASED_COGWHEEL, pos, state), ModBlocks.ANDESITE_ENCASED_COGWHEEL);
+	public static final BlockEntityType<SimpleKineticBlockEntity> ENCASED_LARGE_COGWHEEL = register("encased_large_cogwheel",
+		(pos, state) -> new SimpleKineticBlockEntity(ModBlockEntities.ENCASED_LARGE_COGWHEEL, pos, state), ModBlocks.ANDESITE_ENCASED_LARGE_COGWHEEL);
+	public static final BlockEntityType<SplitShaftBlockEntity> GEARSHIFT = register("gearshift",
+		(pos, state) -> new SplitShaftBlockEntity(ModBlockEntities.GEARSHIFT, pos, state, false), ModBlocks.GEARSHIFT);
+	public static final BlockEntityType<SplitShaftBlockEntity> CLUTCH = register("clutch",
+		(pos, state) -> new SplitShaftBlockEntity(ModBlockEntities.CLUTCH, pos, state, true), ModBlocks.CLUTCH);
+
+	public static final BlockEntityType<GaugeBlockEntity> SPEEDOMETER = register("speedometer",
+		(pos, state) -> new GaugeBlockEntity(ModBlockEntities.SPEEDOMETER, pos, state, false), ModBlocks.SPEEDOMETER);
+	public static final BlockEntityType<GaugeBlockEntity> STRESSOMETER = register("stressometer",
+		(pos, state) -> new GaugeBlockEntity(ModBlockEntities.STRESSOMETER, pos, state, true), ModBlocks.STRESSOMETER);
+
+	public static final BlockEntityType<WaterWheelBlockEntity> LARGE_WATER_WHEEL = register("large_water_wheel",
+		(pos, state) -> new WaterWheelBlockEntity(ModBlockEntities.LARGE_WATER_WHEEL, pos, state, 2), ModBlocks.LARGE_WATER_WHEEL);
+
+	public static final BlockEntityType<DepotBlockEntity> DEPOT = register("depot", DepotBlockEntity::new, ModBlocks.DEPOT);
 
 	private static <T extends BlockEntity> BlockEntityType<T> register(String name, BlockEntityType.BlockEntitySupplier<T> factory, Block... blocks) {
 		BlockEntityType<T> type = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, CreatePolymer.id(name),

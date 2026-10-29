@@ -8,12 +8,19 @@ DISPLAY_MODELS = ['block/shaft', 'block/cogwheel', 'block/large_cogwheel', 'bloc
     'block/gearbox/block', 'block/hand_crank/block', 'block/hand_crank/handle', 'block/creative_motor/block',
     'block/creative_motor/block_vertical', 'block/millstone/block', 'block/millstone/inner', 'block/mechanical_press/block',
     'block/mechanical_press/head', 'block/mechanical_mixer/block', 'block/mechanical_mixer/pole', 'block/mechanical_mixer/head',
-    'block/basin/block', 'block/andesite_casing']
+    'block/basin/block', 'block/andesite_casing', 'block/large_cogwheel_shaftless', 'block/gauge/dial',
+    'block/gauge/speedometer/head', 'block/gauge/stressometer/head', 'block/depot/block']
+# Create blockstate files the server reads to pick casing models (bundled in the jar, not the pack)
+BLOCKSTATES = ['andesite_encased_shaft', 'andesite_encased_cogwheel', 'andesite_encased_large_cogwheel', 'gearshift',
+    'clutch', 'encased_chain_drive', 'speedometer', 'stressometer', 'depot']
+BS_OUT = os.path.join(out_root, 'src/main/resources/create_polymer/blockstates')
 ITEMS = ['wrench', 'goggles', 'shaft', 'cogwheel', 'large_cogwheel', 'gearbox', 'hand_crank', 'water_wheel', 'creative_motor',
     'millstone', 'mechanical_press', 'mechanical_mixer', 'basin', 'andesite_casing', 'andesite_alloy', 'whisk', 'iron_sheet',
-    'golden_sheet', 'copper_sheet', 'wheat_flour']
+    'golden_sheet', 'copper_sheet', 'wheat_flour', 'gearshift', 'clutch', 'encased_chain_drive', 'speedometer',
+    'stressometer', 'depot', 'large_water_wheel']
 # Models we author ourselves (not copied from Create)
-OWN_MODELS = {'block/water_wheel/polymer_wheel', 'item/water_wheel'}
+OWN_MODELS = {'block/water_wheel/polymer_wheel', 'item/water_wheel', 'block/large_water_wheel/polymer_wheel',
+    'item/large_water_wheel'}
 
 def find(rel):
     for s in SRC:
@@ -66,6 +73,18 @@ def copy_model(model_path):
             copy_file(r + '.png')
             if find(r + '.png.mcmeta'):
                 copy_file(r + '.png.mcmeta')
+
+shutil.rmtree(BS_OUT, ignore_errors=True)
+os.makedirs(BS_OUT, exist_ok=True)
+for b in BLOCKSTATES:
+    src = os.path.join(SRC[0], 'blockstates', b + '.json')
+    d = json.load(open(src))
+    json.dump(d, open(os.path.join(BS_OUT, b + '.json'), 'w'), indent=1)
+    for v in d['variants'].values():
+        for x in (v if isinstance(v, list) else [v]):
+            r = ref_to_rel(x['model'], 'models')
+            if r:
+                DISPLAY_MODELS.append(r[len('models/'):])
 
 for m in DISPLAY_MODELS:
     copy_model(m)

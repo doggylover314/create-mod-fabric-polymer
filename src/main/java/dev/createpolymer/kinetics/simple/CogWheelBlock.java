@@ -112,6 +112,14 @@ public class CogWheelBlock extends AbstractShaftBlock implements ICogWheel {
 	}
 
 	@Override
+	protected @org.jspecify.annotations.Nullable BlockState getEncasedState(net.minecraft.world.item.ItemStack held, BlockState state, Level level, BlockPos pos) {
+		if (!held.is(dev.createpolymer.registry.ModItems.ANDESITE_CASING))
+			return null;
+		return (isLarge ? dev.createpolymer.registry.ModBlocks.ANDESITE_ENCASED_LARGE_COGWHEEL
+			: dev.createpolymer.registry.ModBlocks.ANDESITE_ENCASED_COGWHEEL).encasedStateFor(state, level, pos);
+	}
+
+	@Override
 	protected BlockState particleState() {
 		return Blocks.SPRUCE_PLANKS.defaultBlockState();
 	}

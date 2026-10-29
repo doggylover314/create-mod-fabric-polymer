@@ -2,11 +2,21 @@
   "values": [
     "create:cogwheel",
     "create:large_cogwheel",
+    "create:andesite_encased_shaft",
+    "create:andesite_encased_cogwheel",
+    "create:andesite_encased_large_cogwheel",
     "create:gearbox",
+    "create:clutch",
+    "create:gearshift",
+    "create:encased_chain_drive",
     "create:water_wheel",
+    "create:large_water_wheel",
     "create:hand_crank",
     "create:mechanical_press",
     "create:mechanical_mixer",
+    "create:depot",
+    "create:speedometer",
+    "create:stressometer",
     "create:andesite_casing"
   ]
 }

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SSS",
+    "SCS",
+    "SSS"
+  ],
+  "key": {
+    "C": "create:water_wheel",
+    "S": "#minecraft:planks"
+  },
+  "result": {
+    "id": "create:large_water_wheel",
+    "count": 1
+  }
+}

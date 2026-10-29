@@ -28,6 +28,19 @@ public abstract class BaseModel extends ElementHolder {
 		return part;
 	}
 
+	/**
+	 * Points a part at the model and rotation Create's blockstate file picks for {@code state}.
+	 * Returns the part for chaining.
+	 */
+	protected Part showVariant(Part part, String blockstateFile, BlockState state) {
+		BlockstateModels.Variant v = BlockstateModels.get(blockstateFile, state);
+		if (v != null) {
+			part.setItem(v.stack());
+			part.orientation(v.rotation()).apply(0);
+		}
+		return part;
+	}
+
 	@Override
 	protected void onTick() {
 		BlockAwareAttachment attachment = BlockAwareAttachment.get(this);

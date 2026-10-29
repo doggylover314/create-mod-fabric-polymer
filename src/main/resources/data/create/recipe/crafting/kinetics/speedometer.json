@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "C",
+    "A"
+  ],
+  "key": {
+    "A": "create:andesite_casing",
+    "C": "minecraft:compass"
+  },
+  "result": {
+    "id": "create:speedometer",
+    "count": 1
+  }
+}

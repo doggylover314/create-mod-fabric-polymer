@@ -1,6 +1,10 @@
 {
  "block.create.andesite_casing": "Περίβλημα Ανδεσίτη",
+ "block.create.andesite_encased_cogwheel": "Γρανάζι με Περίβλημα Ανδεσίτη",
+ "block.create.andesite_encased_large_cogwheel": "Μεγάλο Γρανάζι με Περίβλημα Ανδεσίτη",
+ "block.create.andesite_encased_shaft": "Άξονας με Περίβλημα Ανδεσίτη",
  "block.create.basin": "Λεκάνη",
+ "block.create.clutch": "Συμπλέκτης",
  "block.create.cogwheel": "Γρανάζι",
  "block.create.creative_motor": "Δημιουργικός Κινητήρας",
  "block.create.hand_crank": "Μανιβέλα",

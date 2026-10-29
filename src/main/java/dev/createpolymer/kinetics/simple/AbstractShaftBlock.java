@@ -14,7 +14,13 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ScheduledTickAccess;
@@ -78,6 +84,27 @@ public abstract class AbstractShaftBlock extends RotatedPillarKineticBlock imple
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context) {
 		return withWater(super.getStateForPlacement(context), context);
+	}
+
+	@Override
+	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player,
+										  InteractionHand hand, BlockHitResult hitResult) {
+		if (player.isShiftKeyDown() || !player.mayBuild())
+			return InteractionResult.TRY_WITH_EMPTY_HAND;
+		BlockState encased = getEncasedState(stack, state, level, pos);
+		if (encased == null)
+			return InteractionResult.TRY_WITH_EMPTY_HAND;
+		if (!level.isClientSide()) {
+			KineticBlockEntity.switchToBlockState(level, pos, encased);
+			var sound = encased.getSoundType();
+			level.playSound(null, pos, sound.getPlaceSound(), SoundSource.BLOCKS, (sound.getVolume() + 1) / 2, sound.getPitch() * .8f);
+		}
+		return InteractionResult.SUCCESS;
+	}
+
+	/** The encased version of this block for the held casing, or null. (Create's EncasableBlock.tryEncase) */
+	protected @Nullable BlockState getEncasedState(ItemStack held, BlockState state, Level level, BlockPos pos) {
+		return null;
 	}
 
 	public static BlockState withWater(BlockState state, BlockPlaceContext context) {

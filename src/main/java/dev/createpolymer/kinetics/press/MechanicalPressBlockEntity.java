@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import dev.createpolymer.Config;
+import dev.createpolymer.logistics.depot.DepotBlockEntity;
 import dev.createpolymer.processing.basin.BasinBlockEntity;
 import dev.createpolymer.processing.basin.BasinOperatingBlockEntity;
 import dev.createpolymer.processing.recipe.PressingRecipe;
@@ -100,6 +101,11 @@ public class MechanicalPressBlockEntity extends BasinOperatingBlockEntity {
 				entityScanCooldown = ENTITY_SCAN;
 				if (level.getBlockEntity(worldPosition.below(2)) instanceof BasinBlockEntity)
 					return;
+				if (level.getBlockEntity(worldPosition.below(2)) instanceof DepotBlockEntity depot) {
+					if (!depot.getHeldItem().isEmpty() && depot.canProcessFurther() && getRecipe(depot.getHeldItem()).isPresent())
+						start(Mode.BELT);
+					return;
+				}
 				for (ItemEntity itemEntity : level.getEntitiesOfClass(ItemEntity.class, new AABB(worldPosition.below()).deflate(.125f))) {
 					if (!itemEntity.isAlive() || !itemEntity.onGround())
 						continue;
@@ -115,6 +121,8 @@ public class MechanicalPressBlockEntity extends BasinOperatingBlockEntity {
 		if (runningTicks == CYCLE / 2 && getSpeed() != 0) {
 			if (mode == Mode.WORLD)
 				applyInWorld();
+			if (mode == Mode.BELT)
+				applyOnDepot();
 			if (mode == Mode.BASIN)
 				applyOnBasin();
 
@@ -155,6 +163,20 @@ public class MechanicalPressBlockEntity extends BasinOperatingBlockEntity {
 		});
 		applyBasinRecipe();
 		sendData();
+	}
+
+	protected void applyOnDepot() {
+		if (!(level.getBlockEntity(worldPosition.below(2)) instanceof DepotBlockEntity depot))
+			return;
+		ItemStack held = depot.getHeldItem();
+		Optional<PressingRecipe> recipe = getRecipe(held);
+		if (recipe.isEmpty())
+			return;
+		boolean bulk = canProcessInBulk() || held.getCount() == 1;
+		int processed = bulk ? held.getCount() : 1;
+		particles(VecHelper.getCenterOf(worldPosition.below(2)).add(0, 8 / 16f, 0), held, 15, .125f, .125f);
+		List<ItemStack> results = RecipeApplier.applyRecipeOn(level, held.copyWithCount(processed), recipe.get(), true);
+		depot.applyProcessing(processed, results);
 	}
 
 	protected void applyInWorld() {
@@ -202,6 +224,10 @@ public class MechanicalPressBlockEntity extends BasinOperatingBlockEntity {
 	}
 
 	public void onPressingCompleted() {
+		if (mode == Mode.BELT) {
+			entityScanCooldown = 0;
+			return;
+		}
 		if (mode == Mode.BASIN && matchBasinRecipe(currentRecipe)
 			&& getBasin().filter(BasinBlockEntity::canContinueProcessing).isPresent())
 			startProcessingBasin();

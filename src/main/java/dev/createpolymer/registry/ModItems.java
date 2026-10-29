@@ -38,13 +38,20 @@ public final class ModItems {
 	public static final Item COGWHEEL = block(ModBlocks.COGWHEEL);
 	public static final Item LARGE_COGWHEEL = block(ModBlocks.LARGE_COGWHEEL);
 	public static final Item GEARBOX = block(ModBlocks.GEARBOX);
+	public static final Item CLUTCH = block(ModBlocks.CLUTCH);
+	public static final Item GEARSHIFT = block(ModBlocks.GEARSHIFT);
+	public static final Item ENCASED_CHAIN_DRIVE = block(ModBlocks.ENCASED_CHAIN_DRIVE);
+	public static final Item SPEEDOMETER = block(ModBlocks.SPEEDOMETER);
+	public static final Item STRESSOMETER = block(ModBlocks.STRESSOMETER);
 	public static final Item HAND_CRANK = block(ModBlocks.HAND_CRANK);
 	public static final Item WATER_WHEEL = block(ModBlocks.WATER_WHEEL);
+	public static final Item LARGE_WATER_WHEEL = block(ModBlocks.LARGE_WATER_WHEEL);
 	public static final Item CREATIVE_MOTOR = block(ModBlocks.CREATIVE_MOTOR, new Item.Properties().rarity(Rarity.EPIC));
 	public static final Item MILLSTONE = block(ModBlocks.MILLSTONE);
 	public static final Item MECHANICAL_PRESS = block(ModBlocks.MECHANICAL_PRESS);
 	public static final Item MECHANICAL_MIXER = block(ModBlocks.MECHANICAL_MIXER);
 	public static final Item BASIN = block(ModBlocks.BASIN);
+	public static final Item DEPOT = block(ModBlocks.DEPOT);
 	public static final Item ANDESITE_CASING = block(ModBlocks.ANDESITE_CASING);
 
 	// Materials

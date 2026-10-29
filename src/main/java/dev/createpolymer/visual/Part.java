@@ -73,6 +73,14 @@ public class Part {
 		element.setItem(stack);
 	}
 
+	/** Sets a full transform (block-centred coordinates), bypassing translation/spin/orientation. */
+	public void setMatrix(Matrix4f matrix, int interpolation) {
+		element.setTransformation(matrix);
+		element.setInterpolationDuration(interpolation);
+		element.startInterpolation();
+		dirty = false;
+	}
+
 	/** Pushes the current transform to the element if anything changed. */
 	public void apply(int interpolation) {
 		if (!dirty)

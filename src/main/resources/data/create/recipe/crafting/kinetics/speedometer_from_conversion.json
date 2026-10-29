@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "create:stressometer"
+  ],
+  "result": {
+    "id": "create:speedometer",
+    "count": 1
+  }
+}

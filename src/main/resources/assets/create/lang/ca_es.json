@@ -1,8 +1,12 @@
 {
  "block.create.andesite_casing": "Cas d'andesita",
+ "block.create.andesite_encased_cogwheel": "Engranatge encasat d'andesita",
+ "block.create.andesite_encased_large_cogwheel": "Engranatge gran encasat d'andesita",
+ "block.create.andesite_encased_shaft": "Eix bastit d'andesita",
  "block.create.basin": "Pica",
  "block.create.cogwheel": "Engranatge",
  "block.create.creative_motor": "Motor creatiu",
  "block.create.large_cogwheel": "Engranatge gran",
+ "block.create.large_water_wheel": "Roda hidràulica gran",
  "block.create.water_wheel": "Roda hidràulica"
 }

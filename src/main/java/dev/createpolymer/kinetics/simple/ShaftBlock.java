@@ -53,6 +53,14 @@ public class ShaftBlock extends AbstractShaftBlock implements PolymerTexturedBlo
 	}
 
 	@Override
+	protected @Nullable BlockState getEncasedState(net.minecraft.world.item.ItemStack held, BlockState state,
+												   net.minecraft.world.level.Level level, BlockPos pos) {
+		if (held.is(dev.createpolymer.registry.ModItems.ANDESITE_CASING))
+			return dev.createpolymer.registry.ModBlocks.ANDESITE_ENCASED_SHAFT.defaultBlockState().setValue(AXIS, state.getValue(AXIS));
+		return null;
+	}
+
+	@Override
 	protected BlockState particleState() {
 		return Blocks.ANDESITE.defaultBlockState();
 	}

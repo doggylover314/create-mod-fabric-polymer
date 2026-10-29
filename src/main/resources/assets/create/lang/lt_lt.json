@@ -1,5 +1,7 @@
 {
+ "block.create.clutch": "Sankaba",
  "block.create.cogwheel": "Dantratis",
  "block.create.gearbox": "Pavarų Dėžė",
+ "block.create.gearshift": "Pavarų svirtis",
  "block.create.large_cogwheel": "Didelis Dantratis"
 }
