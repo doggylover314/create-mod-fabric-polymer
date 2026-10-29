@@ -109,6 +109,7 @@
     "create:stock_link",
     "create:stock_ticker",
     "create:redstone_requester",
+    "create:factory_gauge",
     "create:andesite_table_cloth",
     "create:brass_table_cloth",
     "create:copper_table_cloth",

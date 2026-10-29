@@ -23,6 +23,9 @@ import dev.createpolymer.api.packager.unpacking.UnpackingHandler;
 import dev.createpolymer.logistics.BigItemStack;
 import dev.createpolymer.logistics.box.PackageItem;
 import dev.createpolymer.logistics.box.PackageSounds;
+import dev.createpolymer.logistics.factoryBoard.FactoryPanelBehaviour;
+import dev.createpolymer.logistics.factoryBoard.FactoryPanelBlock;
+import dev.createpolymer.logistics.factoryBoard.FactoryPanelBlockEntity;
 import dev.createpolymer.logistics.packagePort.frogport.FrogportBlockEntity;
 import dev.createpolymer.logistics.packagerLink.LogisticallyLinkedBehaviour.RequestType;
 import dev.createpolymer.logistics.packagerLink.PackagerLinkBlock;
@@ -30,6 +33,7 @@ import dev.createpolymer.logistics.packagerLink.PackagerLinkBlockEntity;
 import dev.createpolymer.logistics.packagerLink.RequestPromiseQueue;
 import dev.createpolymer.logistics.packagerLink.WiFiEffectPacket;
 import dev.createpolymer.logistics.stockTicker.PackageOrderWithCrafts;
+import dev.createpolymer.registry.feature.FactoryGaugeRegistry;
 import dev.createpolymer.registry.feature.PackagesRegistry;
 import dev.createpolymer.util.BlockFace;
 import dev.createpolymer.util.Iterate;
@@ -53,8 +57,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 
 /**
  * Create's PackagerBlockEntity. Differences: no advancements, no ComputerCraft events, no creative crate or portable
- * storage interface (neither is ported), and the factory gauge restocker hook of {@link #submitNewArrivals} is left
- * out until factory gauges exist. Sounds play from the server, the hatch and tray animation is read from
+ * storage interface (neither is ported). Sounds play from the server, the hatch and tray animation is read from
  * {@link #animationTicks} by the block's display model.
  */
 public class PackagerBlockEntity extends SmartBlockEntity implements Clearable {
@@ -181,8 +184,8 @@ public class PackagerBlockEntity extends SmartBlockEntity implements Clearable {
 	}
 
 	/**
-	 * Tells the request promise queues of the stock link next to this packager that items arrived. Create also
-	 * feeds the restocker factory gauges here; that part belongs to the factory gauge port.
+	 * Tells the request promise queues of the stock link and of the restocker factory gauges next to this packager
+	 * that items arrived.
 	 */
 	private void submitNewArrivals(InventorySummary before, InventorySummary after) {
 		if (before == null || after.isEmpty())
@@ -195,6 +198,20 @@ public class PackagerBlockEntity extends SmartBlockEntity implements Clearable {
 				continue;
 
 			BlockState adjacentState = level.getBlockState(worldPosition.relative(d));
+			if (adjacentState.is(FactoryGaugeRegistry.FACTORY_GAUGE)) {
+				if (FactoryPanelBlock.connectedDirection(adjacentState) != d)
+					continue;
+				if (!(level.getBlockEntity(worldPosition.relative(d)) instanceof FactoryPanelBlockEntity fpbe))
+					continue;
+				if (!fpbe.restocker)
+					continue;
+				for (FactoryPanelBehaviour behaviour : fpbe.panels.values()) {
+					if (!behaviour.isActive())
+						continue;
+					promiseQueues.add(behaviour.restockerPromises);
+				}
+			}
+
 			if (adjacentState.is(PackagesRegistry.STOCK_LINK)) {
 				if (PackagerLinkBlock.getConnectedDirection(adjacentState) != d)
 					continue;

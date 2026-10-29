@@ -1,0 +1,7 @@
+{
+ "parent": "create:block/factory_gauge/connections/dotted_west",
+ "textures": {
+  "0": "create:block/factory_gauge_connections/3c9852_dotted",
+  "particle": "create:block/factory_gauge_connections/3c9852_dotted"
+ }
+}

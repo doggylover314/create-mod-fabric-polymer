@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "create:stock_link",
+    "create:precision_mechanism"
+  ],
+  "result": {
+    "id": "create:factory_gauge",
+    "count": 2
+  }
+}

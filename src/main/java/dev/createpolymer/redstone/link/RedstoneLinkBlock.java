@@ -107,6 +107,21 @@ public class RedstoneLinkBlock extends WrenchableDirectionalBlock
 			return;
 
 		int power = getPower(level, state, pos);
+		int powerFromPanels = getBlockEntityOptional(level, pos).map(be -> {
+			if (be.panelSupport == null)
+				return 0;
+			Boolean tri = be.panelSupport.shouldBePoweredTristate();
+			if (tri == null)
+				return -1;
+			return tri ? 15 : 0;
+		})
+			.orElse(0);
+
+		// Suppress update if an input panel exists but is not loaded
+		if (powerFromPanels == -1)
+			return;
+
+		power = Math.max(power, powerFromPanels);
 
 		boolean previouslyPowered = state.getValue(POWERED);
 		if (previouslyPowered != power > 0)

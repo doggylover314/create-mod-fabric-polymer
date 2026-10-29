@@ -11,6 +11,7 @@ import dev.createpolymer.item.IWrenchable;
 import dev.createpolymer.logistics.box.PackageItem;
 import dev.createpolymer.logistics.box.PackageSounds;
 import dev.createpolymer.registry.ModItems;
+import dev.createpolymer.registry.feature.FactoryGaugeRegistry;
 import dev.createpolymer.registry.feature.PackagesRegistry;
 import dev.createpolymer.util.AngleHelper;
 import dev.createpolymer.visual.BaseModel;
@@ -86,6 +87,8 @@ public class PackagerBlock extends DirectionalBlock implements IBE<PackagerBlock
 		if (stack.is(ModItems.WRENCH))
 			return InteractionResult.TRY_WITH_EMPTY_HAND;
 		if (stack.is(PackagesRegistry.STOCK_LINK_ITEM) && !(state.hasProperty(LINKED) && state.getValue(LINKED)))
+			return InteractionResult.TRY_WITH_EMPTY_HAND;
+		if (stack.is(FactoryGaugeRegistry.FACTORY_GAUGE_ITEM))
 			return InteractionResult.TRY_WITH_EMPTY_HAND;
 		if (stack.is(PackagesRegistry.PACKAGE_FROGPORT_ITEM))
 			return InteractionResult.TRY_WITH_EMPTY_HAND;

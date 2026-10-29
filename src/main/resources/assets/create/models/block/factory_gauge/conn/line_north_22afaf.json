@@ -1,0 +1,7 @@
+{
+ "parent": "create:block/factory_gauge/connections/line_north",
+ "textures": {
+  "0": "create:block/factory_gauge_connections/22afaf",
+  "particle": "create:block/factory_gauge_connections/22afaf"
+ }
+}

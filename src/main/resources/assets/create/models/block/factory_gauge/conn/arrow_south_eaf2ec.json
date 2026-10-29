@@ -1,0 +1,7 @@
+{
+ "parent": "create:block/factory_gauge/connections/arrow_south",
+ "textures": {
+  "0": "create:block/factory_gauge_connections/eaf2ec",
+  "particle": "create:block/factory_gauge_connections/eaf2ec"
+ }
+}

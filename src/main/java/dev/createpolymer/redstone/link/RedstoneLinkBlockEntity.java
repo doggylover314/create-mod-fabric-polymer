@@ -1,5 +1,6 @@
 package dev.createpolymer.redstone.link;
 
+import dev.createpolymer.logistics.factoryBoard.FactoryPanelSupportBehaviour;
 import java.util.List;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -22,6 +23,8 @@ public class RedstoneLinkBlockEntity extends SmartBlockEntity {
 	private LinkBehaviour link;
 	private boolean transmitter;
 
+	public FactoryPanelSupportBehaviour panelSupport;
+
 	public RedstoneLinkBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
 	}
@@ -34,6 +37,9 @@ public class RedstoneLinkBlockEntity extends SmartBlockEntity {
 	@Override
 	public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
 		transmitter = isTransmitterBlock();
+		behaviours.add(panelSupport = new FactoryPanelSupportBehaviour(this,
+			() -> link != null && link.isListening(), () -> receivedSignal > 0,
+			() -> ((RedstoneLinkBlock) getBlockState().getBlock()).updateTransmittedSignal(getBlockState(), level, worldPosition)));
 		createLink();
 		behaviours.add(link);
 	}
@@ -128,6 +134,7 @@ public class RedstoneLinkBlockEntity extends SmartBlockEntity {
 		level.updateNeighborsAt(attachedPos, level.getBlockState(attachedPos)
 			.getBlock());
 		receivedSignalChanged = false;
+		panelSupport.notifyPanels();
 	}
 
 	protected Boolean isTransmitterBlock() {

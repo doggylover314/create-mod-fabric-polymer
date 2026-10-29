@@ -1,0 +1,44 @@
+{
+  "items": [
+    "factory_gauge"
+  ],
+  "blocks": [
+    "factory_gauge"
+  ],
+  "display_models": [
+    "block/factory_gauge/panel",
+    "block/factory_gauge/panel_with_bulb",
+    "block/factory_gauge/panel_restocker",
+    "block/factory_gauge/panel_restocker_with_bulb",
+    "block/factory_gauge/bulb_light",
+    "block/factory_gauge/bulb_red",
+    "block/factory_gauge/connections/arrow_north",
+    "block/factory_gauge/connections/arrow_east",
+    "block/factory_gauge/connections/arrow_south",
+    "block/factory_gauge/connections/arrow_west",
+    "block/factory_gauge/connections/line_north",
+    "block/factory_gauge/connections/line_east",
+    "block/factory_gauge/connections/line_south",
+    "block/factory_gauge/connections/line_west",
+    "block/factory_gauge/connections/dotted_north",
+    "block/factory_gauge/connections/dotted_east",
+    "block/factory_gauge/connections/dotted_south",
+    "block/factory_gauge/connections/dotted_west"
+  ],
+  "crafting": [
+    "logistics/factory_gauge",
+    "logistics/factory_gauge_clear"
+  ],
+  "lang_ids": [
+    "factory_gauge"
+  ],
+  "lang_prefixes": [
+    "create.factory_panel.",
+    "create.gui.factory_panel.",
+    "create.schedule.condition.threshold."
+  ],
+  "lang_keys": [
+    "create.gui.schedule.lmb_edit",
+    "create.logistics.filter.invalid_item"
+  ]
+}
