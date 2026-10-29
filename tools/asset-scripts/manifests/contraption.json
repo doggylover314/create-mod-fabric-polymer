@@ -1,0 +1,61 @@
+{
+  "items": [
+    "mechanical_piston",
+    "sticky_mechanical_piston",
+    "piston_extension_pole",
+    "super_glue"
+  ],
+  "blocks": [
+    "mechanical_piston",
+    "sticky_mechanical_piston",
+    "piston_extension_pole",
+    "mechanical_piston_head"
+  ],
+  "display_models": [
+    "block/mechanical_piston/normal/block",
+    "block/mechanical_piston/normal/block_rotated",
+    "block/mechanical_piston/normal/head",
+    "block/mechanical_piston/sticky/block",
+    "block/mechanical_piston/sticky/block_rotated",
+    "block/mechanical_piston/sticky/head",
+    "block/mechanical_piston/extended/block",
+    "block/mechanical_piston/extended/block_rotated",
+    "block/mechanical_piston/moving/block",
+    "block/mechanical_piston/moving/block_rotated",
+    "block/piston_extension_pole"
+  ],
+  "blockstates": [
+    "mechanical_piston",
+    "sticky_mechanical_piston"
+  ],
+  "crafting": [
+    "kinetics/mechanical_piston",
+    "kinetics/sticky_mechanical_piston",
+    "kinetics/piston_extension_pole",
+    "kinetics/super_glue"
+  ],
+  "lang_ids": [
+    "mechanical_piston",
+    "sticky_mechanical_piston",
+    "piston_extension_pole",
+    "mechanical_piston_head",
+    "super_glue"
+  ],
+  "lang_prefixes": [
+    "create.gui.assembly.exception",
+    "create.super_glue.",
+    "create.contraptions.movement_mode",
+    "create.contraptions.moving_container"
+  ],
+  "lang_keys": [
+    "entity.create.super_glue"
+  ],
+  "tags": {
+    "c:slimeballs": [
+      "minecraft:slime_ball"
+    ]
+  },
+  "known_tags": [
+    "c:slimeballs"
+  ]
+}

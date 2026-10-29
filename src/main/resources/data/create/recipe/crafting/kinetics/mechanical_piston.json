@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "B",
+    "C",
+    "I"
+  ],
+  "key": {
+    "B": "#minecraft:wooden_slabs",
+    "C": "create:andesite_casing",
+    "I": "create:piston_extension_pole"
+  },
+  "result": {
+    "id": "create:mechanical_piston",
+    "count": 1
+  }
+}

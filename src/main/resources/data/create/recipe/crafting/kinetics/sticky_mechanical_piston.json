@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "S",
+    "P"
+  ],
+  "key": {
+    "P": "create:mechanical_piston",
+    "S": "#c:slimeballs"
+  },
+  "result": {
+    "id": "create:sticky_mechanical_piston",
+    "count": 1
+  }
+}
