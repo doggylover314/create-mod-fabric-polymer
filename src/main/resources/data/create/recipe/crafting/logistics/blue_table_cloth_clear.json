@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "create:blue_table_cloth"
+  ],
+  "result": {
+    "id": "create:blue_table_cloth",
+    "count": 1
+  }
+}

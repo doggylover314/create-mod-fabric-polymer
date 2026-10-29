@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "C",
+    "A",
+    "B"
+  ],
+  "key": {
+    "A": "create:stock_link",
+    "B": "#c:ingots/gold",
+    "C": "#c:glass_blocks"
+  },
+  "result": {
+    "id": "create:stock_ticker",
+    "count": 1
+  }
+}

@@ -39,7 +39,13 @@ public class PackagePortGui extends SimpleGui {
 
 		Container container = new HandlerContainer(port.inventory, port);
 		for (int i = 0; i < port.inventory.getSlots(); i++)
-			setSlot(i, new Slot(container, i, 0, 0));
+			setSlot(i, new Slot(container, i, 0, 0) {
+				// vanilla slots do not ask the container, so the package check has to be here
+				@Override
+				public boolean mayPlace(ItemStack stack) {
+					return container.canPlaceItem(getContainerSlot(), stack);
+				}
+			});
 
 		for (int i = 18; i < 27; i++)
 			setSlot(i, new GuiElementBuilder(Items.STAINED_GLASS_PANE.pick(DyeColor.GRAY)).setName(Component.empty())

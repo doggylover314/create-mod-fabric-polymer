@@ -1,0 +1,117 @@
+{
+ "parent": "minecraft:block/block",
+ "textures": {
+  "0": "create:block/table_cloth/red",
+  "particle": "#0"
+ },
+ "render_type": "minecraft:cutout",
+ "elements": [
+  {
+   "from": [
+    0,
+    -10,
+    -1
+   ],
+   "to": [
+    16,
+    1,
+    0.1
+   ],
+   "rotation": {
+    "angle": 0,
+    "axis": "y",
+    "origin": [
+     8,
+     8,
+     8
+    ]
+   },
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      9,
+      8,
+      14.5
+     ],
+     "texture": "#0",
+     "cullface": "north"
+    },
+    "east": {
+     "uv": [
+      11.45,
+      9,
+      12,
+      14.5
+     ],
+     "texture": "#0",
+     "cullface": "north"
+    },
+    "south": {
+     "uv": [
+      0,
+      9,
+      8,
+      14.5
+     ],
+     "texture": "#0",
+     "cullface": "north"
+    },
+    "west": {
+     "uv": [
+      12,
+      9,
+      11.45,
+      14.5
+     ],
+     "texture": "#0",
+     "cullface": "north"
+    },
+    "up": {
+     "uv": [
+      0,
+      8.45,
+      8,
+      9
+     ],
+     "rotation": 180,
+     "texture": "#0",
+     "cullface": "north"
+    }
+   }
+  },
+  {
+   "from": [
+    0,
+    -8,
+    -1
+   ],
+   "to": [
+    16,
+    -8,
+    0.1
+   ],
+   "rotation": {
+    "angle": 0,
+    "axis": "y",
+    "origin": [
+     8,
+     8,
+     8
+    ]
+   },
+   "faces": {
+    "down": {
+     "uv": [
+      0,
+      15.5,
+      8,
+      16
+     ],
+     "texture": "#0",
+     "cullface": "north"
+    }
+   }
+  }
+ ]
+}

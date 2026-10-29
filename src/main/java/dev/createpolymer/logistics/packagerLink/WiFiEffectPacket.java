@@ -1,5 +1,6 @@
 package dev.createpolymer.logistics.packagerLink;
 
+import dev.createpolymer.logistics.stockTicker.StockTickerBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -17,6 +18,7 @@ public final class WiFiEffectPacket {
 		BlockEntity blockEntity = level.getBlockEntity(pos);
 		if (blockEntity instanceof PackagerLinkBlockEntity plbe)
 			plbe.playEffect();
-		// The stock ticker has the same effect; it will call this class from its own block entity.
+		else if (blockEntity instanceof StockTickerBlockEntity stbe)
+			stbe.playEffect();
 	}
 }

@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "minecraft:blue_wool",
+    "create:andesite_alloy"
+  ],
+  "result": {
+    "id": "create:blue_table_cloth",
+    "count": 2
+  }
+}

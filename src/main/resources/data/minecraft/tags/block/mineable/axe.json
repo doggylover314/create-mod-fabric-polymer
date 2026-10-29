@@ -64,6 +64,7 @@
     "create:green_postbox",
     "create:red_postbox",
     "create:black_postbox",
+    "create:stock_ticker",
     "create:redstone_link",
     "create:analog_lever",
     "create:cardboard_block",
