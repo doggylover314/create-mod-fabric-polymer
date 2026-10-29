@@ -1,0 +1,34 @@
+{
+  "items": [
+    "mechanical_saw"
+  ],
+  "blocks": [
+    "mechanical_saw"
+  ],
+  "display_models": [
+    "block/mechanical_saw/horizontal",
+    "block/mechanical_saw/vertical",
+    "block/mechanical_saw/blade_horizontal_active",
+    "block/mechanical_saw/blade_horizontal_inactive",
+    "block/mechanical_saw/blade_horizontal_reversed",
+    "block/mechanical_saw/blade_vertical_active",
+    "block/mechanical_saw/blade_vertical_inactive",
+    "block/mechanical_saw/blade_vertical_reversed"
+  ],
+  "blockstates": [
+    "mechanical_saw"
+  ],
+  "crafting": [
+    "kinetics/mechanical_saw"
+  ],
+  "processing_types": [
+    "cutting"
+  ],
+  "lang_ids": [
+    "mechanical_saw"
+  ],
+  "lang_keys": [
+    "death.attack.create.mechanical_saw",
+    "death.attack.create.mechanical_saw.player"
+  ]
+}
