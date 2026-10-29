@@ -1,26 +1,19 @@
 """Copy the Create assets used by the ported blocks/items into the mod's resources (followed by parent/texture refs)."""
 import json, os, sys, shutil
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from manifest import load
 src_root, out_root = sys.argv[1], sys.argv[2]
 SRC = [os.path.join(src_root, 'src/generated/resources/assets/create'), os.path.join(src_root, 'src/main/resources/assets/create')]
 OUT = os.path.join(out_root, 'src/main/resources/assets/create')
 
-DISPLAY_MODELS = ['block/shaft', 'block/cogwheel', 'block/large_cogwheel', 'block/shaft_half', 'block/cogwheel_shaftless',
-    'block/gearbox/block', 'block/hand_crank/block', 'block/hand_crank/handle', 'block/creative_motor/block',
-    'block/creative_motor/block_vertical', 'block/millstone/block', 'block/millstone/inner', 'block/mechanical_press/block',
-    'block/mechanical_press/head', 'block/mechanical_mixer/block', 'block/mechanical_mixer/pole', 'block/mechanical_mixer/head',
-    'block/basin/block', 'block/andesite_casing', 'block/large_cogwheel_shaftless', 'block/gauge/dial',
-    'block/gauge/speedometer/head', 'block/gauge/stressometer/head', 'block/depot/block']
+M = load(out_root)
+DISPLAY_MODELS = list(M['display_models'])
 # Create blockstate files the server reads to pick casing models (bundled in the jar, not the pack)
-BLOCKSTATES = ['andesite_encased_shaft', 'andesite_encased_cogwheel', 'andesite_encased_large_cogwheel', 'gearshift',
-    'clutch', 'encased_chain_drive', 'speedometer', 'stressometer', 'depot']
+BLOCKSTATES = M['blockstates']
 BS_OUT = os.path.join(out_root, 'src/main/resources/create_polymer/blockstates')
-ITEMS = ['wrench', 'goggles', 'shaft', 'cogwheel', 'large_cogwheel', 'gearbox', 'hand_crank', 'water_wheel', 'creative_motor',
-    'millstone', 'mechanical_press', 'mechanical_mixer', 'basin', 'andesite_casing', 'andesite_alloy', 'whisk', 'iron_sheet',
-    'golden_sheet', 'copper_sheet', 'wheat_flour', 'gearshift', 'clutch', 'encased_chain_drive', 'speedometer',
-    'stressometer', 'depot', 'large_water_wheel']
+ITEMS = M['items']
 # Models we author ourselves (not copied from Create)
-OWN_MODELS = {'block/water_wheel/polymer_wheel', 'item/water_wheel', 'block/large_water_wheel/polymer_wheel',
-    'item/large_water_wheel'}
+OWN_MODELS = set(M['own_models'])
 
 def find(rel):
     for s in SRC:

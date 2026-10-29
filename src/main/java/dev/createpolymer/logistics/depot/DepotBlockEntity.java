@@ -2,7 +2,7 @@ package dev.createpolymer.logistics.depot;
 
 import java.util.List;
 
-import dev.createpolymer.kinetics.base.SmartBlockEntity;
+import dev.createpolymer.foundation.blockEntity.SmartBlockEntity;
 import dev.createpolymer.registry.ModBlockEntities;
 import dev.createpolymer.util.ItemSlots;
 import net.minecraft.core.BlockPos;

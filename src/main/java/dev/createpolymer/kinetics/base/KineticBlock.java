@@ -1,5 +1,6 @@
 package dev.createpolymer.kinetics.base;
 
+import dev.createpolymer.foundation.blockEntity.SmartBlockEntity;
 import org.jspecify.annotations.Nullable;
 
 import eu.pb4.polymer.core.api.block.PolymerBlock;

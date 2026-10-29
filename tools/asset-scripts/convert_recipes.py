@@ -1,24 +1,20 @@
 """Convert Create 1.21.1 (NeoForge) recipe JSON to Minecraft 26.3 format for the ported subset."""
 import json, os, sys, glob, shutil
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from manifest import load
 src_root, out_root = sys.argv[1], sys.argv[2]
 R = os.path.join(src_root, 'src/generated/resources/data/create/recipe')
 OUT = os.path.join(out_root, 'src/main/resources/data/create/recipe')
+M = load(out_root)
 shutil.rmtree(OUT, ignore_errors=True)
 
-OUR_ITEMS = {'shaft','cogwheel','large_cogwheel','gearbox','hand_crank','water_wheel','creative_motor','millstone',
-             'mechanical_press','mechanical_mixer','basin','andesite_casing','andesite_alloy','whisk','wrench','goggles',
-             'iron_sheet','copper_sheet','golden_sheet','wheat_flour',
-             'gearshift','clutch','encased_chain_drive','speedometer','stressometer','depot','large_water_wheel'}
-OUR_TAGS = {'c:plates/iron','c:plates/gold','c:plates/copper','c:flours/wheat'}
-CRAFTING = ['kinetics/shaft','kinetics/cogwheel','kinetics/large_cogwheel','kinetics/large_cogwheel_from_little',
-            'kinetics/gearbox','kinetics/hand_crank','kinetics/water_wheel','kinetics/millstone','kinetics/mechanical_press',
-            'kinetics/mechanical_mixer','kinetics/basin','materials/andesite_alloy','kinetics/whisk','kinetics/wrench','kinetics/goggles',
-            'kinetics/gearshift','kinetics/clutch','kinetics/encased_chain_drive','kinetics/speedometer',
-            'kinetics/speedometer_from_conversion','kinetics/stressometer_from_conversion','kinetics/depot','kinetics/large_water_wheel']
+OURS = set(M['items']) | set(M['known_items']) | set(M['blocks'])
+OUR_TAGS = set(M['known_tags'])
+CRAFTING = M['crafting']
 
 def known_item(i):
     ns, path = i.split(':')
-    return ns == 'minecraft' or (ns == 'create' and path in OUR_ITEMS)
+    return ns == 'minecraft' or (ns == 'create' and path in OURS)
 
 def ingredient(o):
     """Old {"item"/"tag"} or list -> new string / list of strings. None if unsupported."""
@@ -72,7 +68,7 @@ for name in CRAFTING:
     out['result'] = {'id': d['result']['id'], 'count': d['result'].get('count', 1)}
     write('crafting/' + name + '.json', out)
 
-for t in ['milling', 'pressing', 'mixing', 'compacting']:
+for t in M['processing_types']:
     for f in sorted(glob.glob(os.path.join(R, t, '*.json'))):
         d = json.load(open(f))
         if 'neoforge:conditions' in d or d.get('heat_requirement', 'none') != 'none':

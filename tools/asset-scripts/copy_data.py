@@ -1,11 +1,11 @@
 import json, os, sys, shutil
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from manifest import load
 src_root, out_root = sys.argv[1], sys.argv[2]
 S = os.path.join(src_root, 'src/generated/resources/data')
 D = os.path.join(out_root, 'src/main/resources/data')
-blocks = ['shaft','cogwheel','large_cogwheel','gearbox','hand_crank','water_wheel','creative_motor','millstone',
-          'mechanical_press','mechanical_mixer','basin','andesite_casing',
-          'andesite_encased_shaft','andesite_encased_cogwheel','andesite_encased_large_cogwheel','gearshift','clutch',
-          'encased_chain_drive','speedometer','stressometer','depot','large_water_wheel']
+M = load(out_root)
+blocks = M['blocks']
 os.makedirs(os.path.join(D, 'create/loot_table/blocks'), exist_ok=True)
 for b in blocks:
     shutil.copyfile(os.path.join(S, f'create/loot_table/blocks/{b}.json'), os.path.join(D, f'create/loot_table/blocks/{b}.json'))
@@ -15,10 +15,9 @@ for tool in ['pickaxe', 'axe']:
     p = os.path.join(D, f'minecraft/tags/block/mineable/{tool}.json')
     os.makedirs(os.path.dirname(p), exist_ok=True)
     json.dump({'values': vals}, open(p, 'w'), indent=2)
-tags = {'plates/iron': ['create:iron_sheet'], 'plates/gold': ['create:golden_sheet'], 'plates/copper': ['create:copper_sheet'],
-        'flours/wheat': ['create:wheat_flour']}
-for t, vals in tags.items():
-    p = os.path.join(D, f'c/tags/item/{t}.json')
+for t, vals in M['tags'].items():
+    ns, path = t.split(':', 1)
+    p = os.path.join(D, f'{ns}/tags/item/{path}.json')
     os.makedirs(os.path.dirname(p), exist_ok=True)
     json.dump({'values': vals}, open(p, 'w'), indent=2)
 print('ok')

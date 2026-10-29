@@ -3,7 +3,7 @@ package dev.createpolymer.logistics.depot;
 import org.joml.Matrix4f;
 import org.jspecify.annotations.Nullable;
 
-import dev.createpolymer.kinetics.base.SmartBlockEntity;
+import dev.createpolymer.foundation.blockEntity.SmartBlockEntity;
 import dev.createpolymer.registry.ModBlockEntities;
 import dev.createpolymer.util.ShapeUtil;
 import dev.createpolymer.visual.BaseModel;

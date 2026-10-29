@@ -1,16 +1,16 @@
 import json, math, os, sys, glob
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from manifest import load
 out_root = sys.argv[1]
 A = os.path.join(out_root, 'src/main/resources/assets/create')
 
 # ---- trim language files to keys this port uses ----
-ids = ['wrench','goggles','shaft','cogwheel','large_cogwheel','gearbox','hand_crank','water_wheel','creative_motor','millstone',
-       'mechanical_press','mechanical_mixer','basin','andesite_casing','andesite_alloy','whisk','iron_sheet','golden_sheet',
-       'copper_sheet','wheat_flour','andesite_encased_shaft','andesite_encased_cogwheel','andesite_encased_large_cogwheel',
-       'gearshift','clutch','encased_chain_drive','speedometer','stressometer','depot','large_water_wheel']
-keep_exact = set()
+M = load(out_root)
+ids = M['lang_ids']
+keep_exact = set(M['lang_keys'])
 for i in ids:
     keep_exact |= {f'block.create.{i}', f'item.create.{i}'}
-keep_prefix = ('itemGroup.create.base', 'create.gui.stressometer.overstressed', 'create.kinetics.creative_motor.rotation_speed')
+keep_prefix = tuple(M['lang_prefixes'])
 total = 0
 for f in glob.glob(os.path.join(A, 'lang', '*.json')):
     d = json.load(open(f))

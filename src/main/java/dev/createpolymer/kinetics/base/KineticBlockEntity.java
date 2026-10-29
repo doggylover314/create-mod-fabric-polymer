@@ -1,5 +1,6 @@
 package dev.createpolymer.kinetics.base;
 
+import dev.createpolymer.foundation.blockEntity.SmartBlockEntity;
 import java.util.List;
 import java.util.Objects;
 

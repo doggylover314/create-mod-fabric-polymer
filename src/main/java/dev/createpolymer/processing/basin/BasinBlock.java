@@ -2,7 +2,7 @@ package dev.createpolymer.processing.basin;
 
 import org.jspecify.annotations.Nullable;
 
-import dev.createpolymer.kinetics.base.SmartBlockEntity;
+import dev.createpolymer.foundation.blockEntity.SmartBlockEntity;
 import dev.createpolymer.registry.ModBlockEntities;
 import dev.createpolymer.util.ShapeUtil;
 import dev.createpolymer.visual.BaseModel;
