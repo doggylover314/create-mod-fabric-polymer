@@ -18,6 +18,8 @@
     "create:mechanical_press",
     "create:mechanical_mixer",
     "create:basin",
+    "create:blaze_burner",
+    "create:lit_blaze_burner",
     "create:depot",
     "create:speedometer",
     "create:stressometer",

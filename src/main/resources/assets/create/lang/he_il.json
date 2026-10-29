@@ -4,6 +4,7 @@
  "block.create.andesite_encased_large_cogwheel": "גלגל שיניים גדול עטוף אנדזיט",
  "block.create.andesite_encased_shaft": "מוט עטוף אנדזיט",
  "block.create.basin": "כיור",
+ "block.create.blaze_burner": "מבער להבון",
  "block.create.clutch": "מצמד",
  "block.create.cogwheel": "גלגל שיניים",
  "block.create.creative_motor": "מנוע יצירתי",
@@ -15,6 +16,7 @@
  "block.create.item_vault": "כספת",
  "block.create.large_cogwheel": "גלגל שיניים גדול",
  "block.create.large_water_wheel": "גלגל מים גדול",
+ "block.create.lit_blaze_burner": "מבער להבון דולק",
  "block.create.mechanical_mixer": "מערבל מכני",
  "block.create.mechanical_press": "מכבש מכני",
  "block.create.millstone": "אבן ריחיים",
@@ -37,6 +39,9 @@
  "create.logistics.fluid_filter": "מסנן נוזלים",
  "create.logistics.recipe_filter": "מסנן מתכונים",
  "item.create.andesite_alloy": "סגסוגת אנדזיט",
+ "item.create.blaze_cake": "עוגת להבון",
+ "item.create.blaze_cake_base": "בסיס עוגת להבון",
+ "item.create.empty_blaze_burner": "להבון ברנר ריק",
  "item.create.wrench": "מפתח ברגים",
  "itemGroup.create.base": "Create"
 }

@@ -1,0 +1,47 @@
+{
+  "items": [
+    "empty_blaze_burner",
+    "blaze_burner",
+    "blaze_cake_base",
+    "blaze_cake",
+    "creative_blaze_cake"
+  ],
+  "blocks": [
+    "blaze_burner",
+    "lit_blaze_burner"
+  ],
+  "display_models": [
+    "block/blaze_burner/blaze/inert",
+    "block/blaze_burner/blaze/idle",
+    "block/blaze_burner/blaze/active",
+    "block/blaze_burner/blaze/super",
+    "block/blaze_burner/blaze/super_active",
+    "block/blaze_burner/goggles",
+    "block/blaze_burner/goggles_small"
+  ],
+  "own_models": [
+    "block/blaze_burner/block",
+    "block/blaze_burner/block_with_blaze",
+    "block/blaze_burner/block_with_fire",
+    "block/blaze_burner/block_with_soul_fire",
+    "block/blaze_burner/flame",
+    "block/blaze_burner/flame_fading",
+    "block/blaze_burner/flame_kindled",
+    "block/blaze_burner/flame_seething",
+    "block/blaze_burner/rods_small",
+    "block/blaze_burner/rods_large",
+    "block/blaze_burner/superheated_rods_small",
+    "block/blaze_burner/superheated_rods_large"
+  ],
+  "crafting": [
+    "kinetics/empty_blaze_burner"
+  ],
+  "lang_ids": [
+    "empty_blaze_burner",
+    "blaze_burner",
+    "lit_blaze_burner",
+    "blaze_cake_base",
+    "blaze_cake",
+    "creative_blaze_cake"
+  ]
+}

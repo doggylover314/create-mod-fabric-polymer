@@ -3,7 +3,11 @@ package dev.createpolymer.processing.basin;
 import java.util.List;
 import java.util.Optional;
 
+import org.jspecify.annotations.Nullable;
+
 import dev.createpolymer.foundation.blockEntity.SmartBlockEntity;
+import dev.createpolymer.processing.burner.BlazeBurnerBlock;
+import dev.createpolymer.processing.burner.BlazeBurnerBlock.HeatLevel;
 import dev.createpolymer.registry.ModBlockEntities;
 import dev.createpolymer.util.ItemSlots;
 import net.minecraft.core.BlockPos;
@@ -24,7 +28,7 @@ import net.minecraft.world.phys.AABB;
 
 /**
  * Ported from Create's BasinBlockEntity (MIT, The Create Team), items only.
- * Fluids, the filter slot, heat and side outputs are not ported yet; results
+ * Fluids, the filter slot and side outputs are not ported yet; results
  * go into the basin's own output slots, which hoppers below can pull from.
  * Container slots 0-8 are inputs and 9-17 are outputs.
  */
@@ -33,6 +37,7 @@ public class BasinBlockEntity extends SmartBlockEntity implements WorldlyContain
 	public final ItemSlots inputInventory = new ItemSlots(9, 64, this::onInputChanged);
 	public final ItemSlots outputInventory = new ItemSlots(9, 64, this::setChanged);
 	private boolean contentsChanged = true;
+	private @Nullable HeatLevel cachedHeatLevel;
 
 	private static final int[] INPUT_SLOTS = { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
 	private static final int[] OUTPUT_SLOTS = { 9, 10, 11, 12, 13, 14, 15, 16, 17 };
@@ -52,6 +57,8 @@ public class BasinBlockEntity extends SmartBlockEntity implements WorldlyContain
 
 	@Override
 	public void tick() {
+		cachedHeatLevel = null;
+
 		super.tick();
 
 		if (level.getGameTime() % 4 == 0)
@@ -108,6 +115,24 @@ public class BasinBlockEntity extends SmartBlockEntity implements WorldlyContain
 			if (inputInventory.get(i).isEmpty())
 				return i == slot;
 		return false;
+	}
+
+	/**
+	 * Heat of the block below the basin. Create's BasinBlockEntity.getHeatLevelOf also counts passive heaters
+	 * (lit campfires and the like) as smouldering, which no heat condition can tell apart from no heat.
+	 */
+	public static HeatLevel getHeatLevelOf(BlockState state) {
+		return BlazeBurnerBlock.getHeatLevelOf(state);
+	}
+
+	HeatLevel getHeatLevel() {
+		if (cachedHeatLevel == null) {
+			if (level == null)
+				return HeatLevel.NONE;
+
+			cachedHeatLevel = getHeatLevelOf(level.getBlockState(getBlockPos().below(1)));
+		}
+		return cachedHeatLevel;
 	}
 
 	public boolean isEmpty() {

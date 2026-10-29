@@ -4,6 +4,7 @@
  "block.create.andesite_encased_large_cogwheel": "Andesite incasd Large Cogwhel",
  "block.create.andesite_encased_shaft": "Andesite incasd Shaf",
  "block.create.basin": "Drinkin bowl",
+ "block.create.blaze_burner": "Blaze Burnr",
  "block.create.clutch": "Cluch",
  "block.create.cogwheel": "Spinnzy thingie",
  "block.create.creative_motor": "HAXXOR MOTOR!!!!!!!",
@@ -15,6 +16,7 @@
  "block.create.item_vault": "scury big cat box",
  "block.create.large_cogwheel": "Beeg Spinnzy thingie",
  "block.create.large_water_wheel": "Big Water Spini thingi",
+ "block.create.lit_blaze_burner": "FIREYYYY Burni Blaze",
  "block.create.mechanical_mixer": "Mix-stuff-togethur-inator",
  "block.create.mechanical_press": "Bonker",
  "block.create.millstone": "Smol crushar",
@@ -24,6 +26,10 @@
  "block.create.water_wheel": "Spinny water thingy",
  "create.logistics.fluid_filter": "Wat watr",
  "item.create.andesite_alloy": "Stromk rock",
+ "item.create.blaze_cake": "Blaze Cake",
+ "item.create.blaze_cake_base": "Blaze Cake Bas",
  "item.create.copper_sheet": "Coppr Shet",
+ "item.create.creative_blaze_cake": "Creetif Blaze Cake",
+ "item.create.empty_blaze_burner": "Emptii Burni Blaze",
  "item.create.filter": "Lis Filtr"
 }

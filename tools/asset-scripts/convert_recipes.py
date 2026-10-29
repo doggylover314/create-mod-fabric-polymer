@@ -71,7 +71,7 @@ for name in CRAFTING:
 for t in M['processing_types']:
     for f in sorted(glob.glob(os.path.join(R, t, '*.json'))):
         d = json.load(open(f))
-        if 'neoforge:conditions' in d or d.get('heat_requirement', 'none') != 'none':
+        if 'neoforge:conditions' in d:
             continue
         ings = [ingredient(i) for i in d['ingredients']]
         res = [result(r) for r in d['results']]
@@ -80,6 +80,8 @@ for t in M['processing_types']:
         out = {'type': d['type'], 'ingredients': ings, 'results': res}
         if 'processing_time' in d:
             out['processing_time'] = d['processing_time']
+        if d.get('heat_requirement', 'none') != 'none':
+            out['heat_requirement'] = d['heat_requirement']
         write(t + '/' + os.path.basename(f), out)
 
 # andesite casing from stripped logs/wood (Create's item application, handled in code)

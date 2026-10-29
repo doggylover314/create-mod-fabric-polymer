@@ -3,6 +3,7 @@ package dev.createpolymer.processing.basin;
 import java.util.ArrayList;
 import java.util.List;
 
+import dev.createpolymer.processing.burner.BlazeBurnerBlock.HeatLevel;
 import dev.createpolymer.processing.recipe.BasinRecipe;
 import dev.createpolymer.util.ItemSlots;
 import net.minecraft.world.item.ItemStack;
@@ -35,7 +36,8 @@ public final class BasinRecipeLogic {
 	}
 
 	private static boolean apply(BasinBlockEntity basin, Recipe<?> recipe, boolean test) {
-		if (recipe instanceof BasinRecipe basinRecipe && !basinRecipe.getRequiredHeat().isMetWithoutHeat())
+		HeatLevel heat = basin.getHeatLevel();
+		if (recipe instanceof BasinRecipe basinRecipe && !basinRecipe.getRequiredHeat().testBlazeBurner(heat))
 			return false;
 
 		List<Ingredient> ingredients = ingredientsOf(recipe);
