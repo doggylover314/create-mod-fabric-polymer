@@ -1,0 +1,15 @@
+{
+  "items": [
+    "minecraft:golden_carrot"
+  ],
+  "damage": 12,
+  "reload_ticks": 15,
+  "velocity_multiplier": 1.45,
+  "knockback": 0.5,
+  "render_mode": {
+    "type": "create:toward_motion",
+    "sprite_angle_offset": 140,
+    "spin": 2.0
+  },
+  "sound_pitch": 1.5
+}

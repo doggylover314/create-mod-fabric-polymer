@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "condition": {
+        "type": "minecraft:survives_explosion"
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "modifier": [
+            {
+              "include": [
+                "create:banktank_air"
+              ],
+              "source": "block_entity",
+              "type": "minecraft:copy_components"
+            }
+          ],
+          "name": "create:netherite_backtank"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "create:blocks/netherite_backtank"
+}

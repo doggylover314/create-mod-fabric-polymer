@@ -107,6 +107,8 @@
     "create:rose_quartz_lamp",
     "create:redstone_link",
     "create:analog_lever",
+    "create:copper_backtank",
+    "create:netherite_backtank",
     "create:andesite_ladder",
     "create:brass_ladder",
     "create:copper_ladder",

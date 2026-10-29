@@ -1,0 +1,21 @@
+{
+  "items": [
+    "minecraft:glow_berries"
+  ],
+  "damage": 2,
+  "reload_ticks": 10,
+  "knockback": 0.05,
+  "velocity_multiplier": 1.05,
+  "render_mode": {
+    "type": "create:tumble"
+  },
+  "split": 2,
+  "sound_pitch": 1.2,
+  "on_entity_hit": {
+    "type": "create:potion_effect",
+    "effect": "minecraft:glowing",
+    "level": 1,
+    "ticks": 200,
+    "recoverable": false
+  }
+}

@@ -6,6 +6,7 @@
  "block.create.brass_block": "Chunk o' brass",
  "block.create.brass_funnel": "Flap-box o' brass",
  "block.create.cogwheel": "Tooth’d wheel",
+ "block.create.copper_backtank": "Divin' Tank o' Copper",
  "block.create.depot": "Cargo cradle",
  "block.create.encased_fan": "Gale-in-a-box",
  "block.create.fluid_tank": "Vat o' bilge",
@@ -15,6 +16,7 @@
  "block.create.item_vault": "Treasure bulkhead",
  "block.create.large_cogwheel": "Great tooth'd wheel",
  "block.create.mechanical_arm": "false limb",
+ "block.create.netherite_backtank": "Divin' Tank o' Netherite",
  "block.create.shaft": "Stick o' Spinnin'",
  "item.create.andesite_alloy": "Grey pebble mix-up"
 }

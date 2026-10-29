@@ -1,0 +1,181 @@
+{
+  "items": [
+    "sand_paper",
+    "red_sand_paper",
+    "tree_fertilizer",
+    "builders_tea",
+    "extendo_grip",
+    "potato_cannon",
+    "copper_backtank",
+    "netherite_backtank",
+    "copper_diving_helmet",
+    "netherite_diving_helmet",
+    "copper_diving_boots",
+    "netherite_diving_boots",
+    "white_toolbox",
+    "orange_toolbox",
+    "magenta_toolbox",
+    "light_blue_toolbox",
+    "yellow_toolbox",
+    "lime_toolbox",
+    "pink_toolbox",
+    "gray_toolbox",
+    "light_gray_toolbox",
+    "cyan_toolbox",
+    "purple_toolbox",
+    "blue_toolbox",
+    "brown_toolbox",
+    "green_toolbox",
+    "red_toolbox",
+    "black_toolbox"
+  ],
+  "blocks": [
+    "copper_backtank",
+    "netherite_backtank",
+    "white_toolbox",
+    "orange_toolbox",
+    "magenta_toolbox",
+    "light_blue_toolbox",
+    "yellow_toolbox",
+    "lime_toolbox",
+    "pink_toolbox",
+    "gray_toolbox",
+    "light_gray_toolbox",
+    "cyan_toolbox",
+    "purple_toolbox",
+    "blue_toolbox",
+    "brown_toolbox",
+    "green_toolbox",
+    "red_toolbox",
+    "black_toolbox"
+  ],
+  "display_models": [
+    "block/copper_backtank/block",
+    "block/copper_backtank/block_shaft_input",
+    "block/copper_backtank/block_cogs",
+    "block/netherite_backtank/block",
+    "block/netherite_backtank/block_shaft_input",
+    "block/netherite_backtank/block_cogs",
+    "block/toolbox/drawer",
+    "block/white_toolbox",
+    "block/orange_toolbox",
+    "block/magenta_toolbox",
+    "block/light_blue_toolbox",
+    "block/yellow_toolbox",
+    "block/lime_toolbox",
+    "block/pink_toolbox",
+    "block/gray_toolbox",
+    "block/light_gray_toolbox",
+    "block/cyan_toolbox",
+    "block/purple_toolbox",
+    "block/blue_toolbox",
+    "block/brown_toolbox",
+    "block/green_toolbox",
+    "block/red_toolbox",
+    "block/black_toolbox",
+    "block/toolbox/lid/white",
+    "block/toolbox/lid/orange",
+    "block/toolbox/lid/magenta",
+    "block/toolbox/lid/light_blue",
+    "block/toolbox/lid/yellow",
+    "block/toolbox/lid/lime",
+    "block/toolbox/lid/pink",
+    "block/toolbox/lid/gray",
+    "block/toolbox/lid/light_gray",
+    "block/toolbox/lid/cyan",
+    "block/toolbox/lid/purple",
+    "block/toolbox/lid/blue",
+    "block/toolbox/lid/brown",
+    "block/toolbox/lid/green",
+    "block/toolbox/lid/red",
+    "block/toolbox/lid/black"
+  ],
+  "crafting": [
+    "materials/sand_paper",
+    "materials/red_sand_paper",
+    "appliances/tree_fertilizer",
+    "appliances/copper_backtank",
+    "appliances/copper_diving_helmet",
+    "appliances/copper_diving_boots",
+    "curiosities/brown_toolbox"
+  ],
+  "processing_types": [
+    "sandpaper_polishing"
+  ],
+  "tags": {
+    "create:pressurized_air_sources": [
+      "create:copper_backtank",
+      "create:netherite_backtank"
+    ],
+    "minecraft:chest_armor": [
+      "create:copper_backtank",
+      "create:netherite_backtank"
+    ],
+    "minecraft:head_armor": [
+      "create:copper_diving_helmet",
+      "create:netherite_diving_helmet"
+    ],
+    "minecraft:foot_armor": [
+      "create:copper_diving_boots",
+      "create:netherite_diving_boots"
+    ],
+    "minecraft:enchantable/durability": [
+      "create:potato_cannon",
+      "create:extendo_grip"
+    ],
+    "minecraft:enchantable/bow": [
+      "create:potato_cannon"
+    ],
+    "create:sandpaper": [
+      "create:sand_paper",
+      "create:red_sand_paper"
+    ]
+  },
+  "known_tags": [
+    "create:pressurized_air_sources"
+  ],
+  "lang_ids": [
+    "sand_paper",
+    "red_sand_paper",
+    "tree_fertilizer",
+    "builders_tea",
+    "extendo_grip",
+    "potato_cannon",
+    "copper_backtank",
+    "netherite_backtank",
+    "copper_diving_helmet",
+    "netherite_diving_helmet",
+    "copper_diving_boots",
+    "netherite_diving_boots",
+    "white_toolbox",
+    "orange_toolbox",
+    "magenta_toolbox",
+    "light_blue_toolbox",
+    "yellow_toolbox",
+    "lime_toolbox",
+    "pink_toolbox",
+    "gray_toolbox",
+    "light_gray_toolbox",
+    "cyan_toolbox",
+    "purple_toolbox",
+    "blue_toolbox",
+    "brown_toolbox",
+    "green_toolbox",
+    "red_toolbox",
+    "black_toolbox",
+    "copper_backtank_placeable",
+    "netherite_backtank_placeable"
+  ],
+  "lang_prefixes": [
+    "create.backtank.",
+    "create.potato_cannon.",
+    "enchantment.create.",
+    "entity.create.potato_projectile",
+    "create.toolbox.depositBox"
+  ],
+  "lang_keys": [
+    "death.attack.create.potato_cannon",
+    "death.attack.create.potato_cannon.player",
+    "death.attack.create.potato_cannon.item"
+  ]
+}

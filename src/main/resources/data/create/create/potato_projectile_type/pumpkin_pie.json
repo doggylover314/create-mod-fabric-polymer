@@ -1,0 +1,14 @@
+{
+  "items": [
+    "minecraft:pumpkin_pie"
+  ],
+  "damage": 7,
+  "reload_ticks": 15,
+  "knockback": 0.05,
+  "velocity_multiplier": 1.1,
+  "render_mode": {
+    "type": "create:tumble"
+  },
+  "sticky": true,
+  "sound_pitch": 1.1
+}

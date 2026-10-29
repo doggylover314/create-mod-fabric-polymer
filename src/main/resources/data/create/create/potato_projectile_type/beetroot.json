@@ -1,0 +1,15 @@
+{
+  "items": [
+    "minecraft:beetroot"
+  ],
+  "damage": 2,
+  "reload_ticks": 5,
+  "velocity_multiplier": 1.6,
+  "knockback": 0.1,
+  "render_mode": {
+    "type": "create:toward_motion",
+    "sprite_angle_offset": 140,
+    "spin": 2.0
+  },
+  "sound_pitch": 1.6
+}

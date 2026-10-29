@@ -1,0 +1,41 @@
+{
+  "items": [
+    "minecraft:pufferfish"
+  ],
+  "damage": 4,
+  "knockback": 0.4,
+  "velocity_multiplier": 1.1,
+  "render_mode": {
+    "type": "create:toward_motion",
+    "sprite_angle_offset": 140,
+    "spin": 1.0
+  },
+  "sticky": true,
+  "sound_pitch": 1.1,
+  "on_entity_hit": {
+    "type": "create:food_effects",
+    "recoverable": false,
+    "effects": [
+      {
+        "type": "minecraft:apply_effects",
+        "effects": [
+          {
+            "id": "minecraft:poison",
+            "duration": 1200,
+            "amplifier": 1
+          },
+          {
+            "id": "minecraft:hunger",
+            "duration": 300,
+            "amplifier": 2
+          },
+          {
+            "id": "minecraft:nausea",
+            "duration": 300,
+            "amplifier": 0
+          }
+        ]
+      }
+    ]
+  }
+}

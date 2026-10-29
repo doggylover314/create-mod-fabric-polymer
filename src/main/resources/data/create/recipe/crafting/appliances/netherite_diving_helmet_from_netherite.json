@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:smithing_transform",
+  "template": "minecraft:netherite_upgrade_smithing_template",
+  "base": "minecraft:netherite_helmet",
+  "addition": "create:copper_diving_helmet",
+  "result": {
+    "id": "create:netherite_diving_helmet",
+    "count": 1
+  }
+}

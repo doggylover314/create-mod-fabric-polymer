@@ -1,0 +1,44 @@
+{
+  "items": [
+    "minecraft:enchanted_golden_apple"
+  ],
+  "damage": 1,
+  "reload_ticks": 100,
+  "velocity_multiplier": 1.45,
+  "knockback": 0.05,
+  "render_mode": {
+    "type": "create:tumble"
+  },
+  "sound_pitch": 1.1,
+  "on_entity_hit": {
+    "type": "create:food_effects",
+    "recoverable": false,
+    "effects": [
+      {
+        "type": "minecraft:apply_effects",
+        "effects": [
+          {
+            "id": "minecraft:regeneration",
+            "duration": 400,
+            "amplifier": 1
+          },
+          {
+            "id": "minecraft:resistance",
+            "duration": 6000,
+            "amplifier": 0
+          },
+          {
+            "id": "minecraft:fire_resistance",
+            "duration": 6000,
+            "amplifier": 0
+          },
+          {
+            "id": "minecraft:absorption",
+            "duration": 2400,
+            "amplifier": 3
+          }
+        ]
+      }
+    ]
+  }
+}
