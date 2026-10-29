@@ -1,0 +1,15 @@
+{
+ "block.create.andesite_casing": "Андезитна обвивка",
+ "block.create.basin": "Казан",
+ "block.create.cogwheel": "Зъбно колело",
+ "block.create.creative_motor": "Безкраен мотор",
+ "block.create.gearbox": "Разпределителна Кутия",
+ "block.create.hand_crank": "Манивела",
+ "block.create.large_cogwheel": "Голямо Зъбно Колело",
+ "block.create.mechanical_mixer": "Механичен Миксер",
+ "block.create.mechanical_press": "Механична Преса",
+ "block.create.millstone": "Мелнчен камък",
+ "block.create.shaft": "Вал",
+ "block.create.water_wheel": "Водно Колело",
+ "create.gui.stressometer.overstressed": "Свръхстесиран"
+}

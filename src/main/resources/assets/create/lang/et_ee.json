@@ -1,0 +1,13 @@
+{
+ "block.create.andesite_casing": "Andesiitkorpus",
+ "block.create.basin": "Valamu",
+ "block.create.cogwheel": "Hammasratas",
+ "block.create.creative_motor": "Loomingurežiimi mootor",
+ "block.create.gearbox": "Käigukast",
+ "block.create.hand_crank": "Vänt",
+ "block.create.large_cogwheel": "Suur hammasratas",
+ "block.create.mechanical_mixer": "Mehaaniline mikser",
+ "block.create.mechanical_press": "Mehhaaniline press",
+ "item.create.wheat_flour": "Nisujahu",
+ "item.create.whisk": "Vispel"
+}

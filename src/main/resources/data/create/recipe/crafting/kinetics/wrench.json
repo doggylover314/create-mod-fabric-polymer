@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "GG",
+    "GP",
+    " S"
+  ],
+  "key": {
+    "G": "#c:plates/gold",
+    "P": "create:cogwheel",
+    "S": "#c:rods/wooden"
+  },
+  "result": {
+    "id": "create:wrench",
+    "count": 1
+  }
+}

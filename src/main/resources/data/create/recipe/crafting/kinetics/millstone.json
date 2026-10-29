@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "C",
+    "S",
+    "I"
+  ],
+  "key": {
+    "C": "create:cogwheel",
+    "I": "#c:stones",
+    "S": "create:andesite_casing"
+  },
+  "result": {
+    "id": "create:millstone",
+    "count": 1
+  }
+}

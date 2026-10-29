@@ -1,0 +1,22 @@
+{
+ "block.create.andesite_casing": "Андезит корпус",
+ "block.create.basin": "Шара",
+ "block.create.cogwheel": "Тістегеріш",
+ "block.create.creative_motor": "Шығармашылық мотор",
+ "block.create.gearbox": "Берілістер қорабы",
+ "block.create.hand_crank": "Тұтқа",
+ "block.create.large_cogwheel": "Үлкен тістегеріш",
+ "block.create.mechanical_mixer": "Механикалық араластырғыш",
+ "block.create.mechanical_press": "Механикалық пресс",
+ "block.create.millstone": "Диірментас",
+ "block.create.shaft": "Білік",
+ "block.create.water_wheel": "Су доңғалақ",
+ "item.create.andesite_alloy": "Андезит қорытпа",
+ "item.create.copper_sheet": "Мыс тілім",
+ "item.create.goggles": "Инженер көзілдірігі",
+ "item.create.golden_sheet": "Алтын тілім",
+ "item.create.iron_sheet": "Темір тілім",
+ "item.create.wheat_flour": "Бидай ұны",
+ "item.create.whisk": "Венчик",
+ "item.create.wrench": "Сомын кілті"
+}

@@ -1,0 +1,14 @@
+{
+	"schemaVersion": 1,
+	"id": "create-polymer-gametest",
+	"version": "1.0.0",
+	"name": "Create (Polymer) game tests",
+	"environment": "*",
+	"entrypoints": {
+		"fabric-gametest": ["dev.createpolymer.test.KineticGameTests", "dev.createpolymer.test.ProcessingGameTests"]
+	},
+	"depends": {
+		"create": "*",
+		"fabric-gametest-api-v1": "*"
+	}
+}

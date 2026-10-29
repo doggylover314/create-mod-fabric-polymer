@@ -1,0 +1,17 @@
+{
+ "block.create.andesite_casing": "غلاف الأنديسايت",
+ "block.create.basin": "الوعاء الميكانيكي",
+ "block.create.cogwheel": "تُرْس مسنن",
+ "block.create.gearbox": "صندوق التروس",
+ "block.create.hand_crank": "المِقْبَض اليدوي",
+ "block.create.large_cogwheel": "الترس الكبير",
+ "block.create.mechanical_press": "ألمكبسه الميكانيكية",
+ "block.create.millstone": "المطحنة الميكانيكية",
+ "block.create.shaft": "عمود الدوران",
+ "block.create.water_wheel": "عجلة مائية",
+ "item.create.andesite_alloy": "سبيكة أنديسايت",
+ "item.create.goggles": "نظارات المهندس",
+ "item.create.golden_sheet": "لوح ذهبي",
+ "item.create.wrench": "مفتاح الربط",
+ "itemGroup.create.base": "كريايت"
+}

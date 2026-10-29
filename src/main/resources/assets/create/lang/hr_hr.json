@@ -1,0 +1,20 @@
+{
+ "block.create.andesite_casing": "Andesitni Obrubnik",
+ "block.create.basin": "Umivaonik",
+ "block.create.cogwheel": "Zupčanik",
+ "block.create.creative_motor": "Kreativni Motor",
+ "block.create.gearbox": "Mjenjačka Kutija",
+ "block.create.hand_crank": "Ručna Kurbla",
+ "block.create.large_cogwheel": "Veliki Zupčanik",
+ "block.create.mechanical_mixer": "Mehanička Mikser",
+ "block.create.mechanical_press": "Mehanička Preša",
+ "block.create.millstone": "Mlinski Kamen",
+ "block.create.shaft": "Vratilo",
+ "block.create.water_wheel": "Mlinsko Kolo",
+ "create.gui.stressometer.overstressed": "Preopterećeno",
+ "create.kinetics.creative_motor.rotation_speed": "Generirana Brzina u RPM",
+ "item.create.wheat_flour": "Pšenično Brašno",
+ "item.create.whisk": "Miješalica",
+ "item.create.wrench": "Francuski Ključ",
+ "itemGroup.create.base": "Create"
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " C ",
+    "SCS",
+    "SSS"
+  ],
+  "key": {
+    "C": "create:andesite_alloy",
+    "S": "#c:plates/iron"
+  },
+  "result": {
+    "id": "create:whisk",
+    "count": 1
+  }
+}

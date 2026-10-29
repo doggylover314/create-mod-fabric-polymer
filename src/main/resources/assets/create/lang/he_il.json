@@ -1,0 +1,19 @@
+{
+ "block.create.andesite_casing": "מעטפת אנדזיט",
+ "block.create.basin": "כיור",
+ "block.create.cogwheel": "גלגל שיניים",
+ "block.create.creative_motor": "מנוע יצירתי",
+ "block.create.gearbox": "תיבת הילוכים",
+ "block.create.hand_crank": "ארכובה ידנית",
+ "block.create.large_cogwheel": "גלגל שיניים גדול",
+ "block.create.mechanical_mixer": "מערבל מכני",
+ "block.create.mechanical_press": "מכבש מכני",
+ "block.create.millstone": "אבן ריחיים",
+ "block.create.shaft": "מוט",
+ "block.create.water_wheel": "גלגל מים",
+ "create.gui.stressometer.overstressed": "מאומץ יתר על המידה",
+ "create.kinetics.creative_motor.rotation_speed": "מהירות שנוצרה בסל\"ד",
+ "item.create.andesite_alloy": "סגסוגת אנדזיט",
+ "item.create.wrench": "מפתח ברגים",
+ "itemGroup.create.base": "Create"
+}
