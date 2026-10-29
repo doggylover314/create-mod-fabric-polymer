@@ -1,0 +1,1039 @@
+{
+ "credit": "Made with Blockbench",
+ "textures": {
+  "0": "block/obsidian",
+  "2": "block/dark_oak_log",
+  "6": "create:block/brass_block",
+  "7": "create:block/andesite_casing",
+  "particle": "create:block/brass_block",
+  "core_5": "block/white_concrete_powder",
+  "glow_3": "block/white_stained_glass",
+  "bits_0": "block/obsidian",
+  "bits_1": "block/light_blue_concrete_powder",
+  "bits_2": "block/dark_oak_log",
+  "bits_3": "block/white_stained_glass",
+  "bits_4": "block/light_blue_stained_glass",
+  "bits_5": "block/white_concrete_powder"
+ },
+ "elements": [
+  {
+   "name": "Grip Core",
+   "from": [
+    6.5,
+    -5,
+    6.5
+   ],
+   "to": [
+    9.5,
+    6,
+    9.5
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      5,
+      1,
+      8,
+      12
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      2,
+      3,
+      5,
+      14
+     ],
+     "texture": "#0"
+    },
+    "south": {
+     "uv": [
+      10,
+      1,
+      13,
+      12
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      7,
+      1,
+      10,
+      12
+     ],
+     "texture": "#0"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      3,
+      3
+     ],
+     "texture": "#0"
+    },
+    "down": {
+     "uv": [
+      5,
+      6,
+      8,
+      9
+     ],
+     "texture": "#0"
+    }
+   }
+  },
+  {
+   "name": "Rod Bottom Core",
+   "from": [
+    6.5,
+    7,
+    6.5
+   ],
+   "to": [
+    9.5,
+    17,
+    9.5
+   ],
+   "neoforge_data": {
+    "calculate_normals": true
+   },
+   "rotation": {
+    "angle": 45,
+    "axis": "y",
+    "origin": [
+     8,
+     8,
+     8
+    ]
+   },
+   "faces": {
+    "north": {
+     "uv": [
+      5,
+      6,
+      8,
+      16
+     ],
+     "texture": "#6"
+    },
+    "east": {
+     "uv": [
+      2,
+      6,
+      5,
+      16
+     ],
+     "texture": "#6"
+    },
+    "south": {
+     "uv": [
+      11,
+      6,
+      14,
+      16
+     ],
+     "texture": "#6"
+    },
+    "west": {
+     "uv": [
+      8,
+      6,
+      11,
+      16
+     ],
+     "texture": "#6"
+    },
+    "up": {
+     "uv": [
+      12,
+      1,
+      15,
+      4
+     ],
+     "texture": "#6"
+    },
+    "down": {
+     "uv": [
+      8,
+      10,
+      11,
+      13
+     ],
+     "texture": "#6"
+    }
+   }
+  },
+  {
+   "name": "Grip Cap",
+   "from": [
+    6,
+    6,
+    6
+   ],
+   "to": [
+    10,
+    7,
+    10
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      2,
+      0,
+      6,
+      1
+     ],
+     "texture": "#2"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      4,
+      1
+     ],
+     "texture": "#2"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      4,
+      1
+     ],
+     "texture": "#2"
+    },
+    "west": {
+     "uv": [
+      0,
+      1,
+      4,
+      2
+     ],
+     "texture": "#2"
+    },
+    "up": {
+     "uv": [
+      10,
+      15,
+      14,
+      11
+     ],
+     "texture": "#2"
+    },
+    "down": {
+     "uv": [
+      5,
+      3,
+      9,
+      7
+     ],
+     "texture": "#2"
+    }
+   }
+  },
+  {
+   "name": "Rod Top Core",
+   "from": [
+    6.5,
+    27,
+    6.5
+   ],
+   "to": [
+    9.5,
+    30,
+    9.5
+   ],
+   "neoforge_data": {
+    "calculate_normals": true
+   },
+   "rotation": {
+    "angle": 45,
+    "axis": "y",
+    "origin": [
+     8,
+     8,
+     8
+    ]
+   },
+   "faces": {
+    "north": {
+     "uv": [
+      8,
+      1,
+      11,
+      4
+     ],
+     "texture": "#6"
+    },
+    "east": {
+     "uv": [
+      7,
+      1,
+      10,
+      4
+     ],
+     "texture": "#6"
+    },
+    "south": {
+     "uv": [
+      5,
+      1,
+      8,
+      4
+     ],
+     "texture": "#6"
+    },
+    "west": {
+     "uv": [
+      3,
+      1,
+      6,
+      4
+     ],
+     "texture": "#6"
+    },
+    "up": {
+     "uv": [
+      12,
+      1,
+      15,
+      4
+     ],
+     "texture": "#6"
+    },
+    "down": {
+     "uv": [
+      12,
+      1,
+      15,
+      4
+     ],
+     "texture": "#6"
+    }
+   }
+  },
+  {
+   "name": "Cap",
+   "from": [
+    6,
+    30,
+    6
+   ],
+   "to": [
+    10,
+    31,
+    10
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      4,
+      1
+     ],
+     "texture": "#2"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      4,
+      1
+     ],
+     "texture": "#2"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      4,
+      1
+     ],
+     "texture": "#2"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      4,
+      1
+     ],
+     "texture": "#2"
+    },
+    "up": {
+     "uv": [
+      7,
+      10,
+      11,
+      14
+     ],
+     "texture": "#2"
+    },
+    "down": {
+     "uv": [
+      7,
+      10,
+      11,
+      14
+     ],
+     "texture": "#2"
+    }
+   }
+  },
+  {
+   "name": "Grip Deco",
+   "from": [
+    6.3,
+    4,
+    6.3
+   ],
+   "to": [
+    9.7,
+    5,
+    9.7
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      4,
+      1,
+      7,
+      2
+     ],
+     "texture": "#7"
+    },
+    "east": {
+     "uv": [
+      4,
+      1,
+      7,
+      2
+     ],
+     "texture": "#7"
+    },
+    "south": {
+     "uv": [
+      4,
+      1,
+      7,
+      2
+     ],
+     "texture": "#7"
+    },
+    "west": {
+     "uv": [
+      4,
+      1,
+      7,
+      2
+     ],
+     "texture": "#7"
+    }
+   }
+  },
+  {
+   "name": "Grip Deco",
+   "from": [
+    6.3,
+    -4,
+    6.3
+   ],
+   "to": [
+    9.7,
+    -3,
+    9.7
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      4,
+      1,
+      7,
+      2
+     ],
+     "texture": "#7"
+    },
+    "east": {
+     "uv": [
+      4,
+      1,
+      7,
+      2
+     ],
+     "texture": "#7"
+    },
+    "south": {
+     "uv": [
+      4,
+      1,
+      7,
+      2
+     ],
+     "texture": "#7"
+    },
+    "west": {
+     "uv": [
+      4,
+      1,
+      7,
+      2
+     ],
+     "texture": "#7"
+    }
+   }
+  },
+  {
+   "name": "Rod Core",
+   "from": [
+    7.0,
+    18.0,
+    7.0
+   ],
+   "to": [
+    9.0,
+    26.0,
+    9.0
+   ],
+   "faces": {
+    "north": {
+     "texture": "#core_5",
+     "uv": [
+      10.0,
+      3.0,
+      12.0,
+      11.0
+     ]
+    },
+    "east": {
+     "texture": "#core_5",
+     "uv": [
+      13.0,
+      6.0,
+      15.0,
+      14.0
+     ]
+    },
+    "south": {
+     "texture": "#core_5",
+     "uv": [
+      11.0,
+      6.0,
+      13.0,
+      14.0
+     ]
+    },
+    "west": {
+     "texture": "#core_5",
+     "uv": [
+      11.0,
+      4.0,
+      13.0,
+      12.0
+     ]
+    },
+    "up": {
+     "texture": "#core_5",
+     "uv": [
+      14.0,
+      0.0,
+      16.0,
+      2.0
+     ]
+    },
+    "down": {
+     "texture": "#core_5",
+     "uv": [
+      14.0,
+      6.0,
+      16.0,
+      8.0
+     ]
+    }
+   }
+  },
+  {
+   "name": "Cube",
+   "from": [
+    6.5,
+    17.5,
+    6.5
+   ],
+   "to": [
+    9.5,
+    26.5,
+    9.5
+   ],
+   "faces": {
+    "north": {
+     "texture": "#glow_3",
+     "uv": [
+      10.0,
+      5.0,
+      13.0,
+      13.0
+     ]
+    },
+    "east": {
+     "texture": "#glow_3",
+     "uv": [
+      5.0,
+      3.0,
+      8.0,
+      12.0
+     ]
+    },
+    "south": {
+     "texture": "#glow_3",
+     "uv": [
+      7.0,
+      6.0,
+      10.0,
+      14.0
+     ]
+    },
+    "west": {
+     "texture": "#glow_3",
+     "uv": [
+      7.0,
+      4.0,
+      4.0,
+      12.0
+     ]
+    },
+    "up": {
+     "texture": "#glow_3",
+     "uv": [
+      7.0,
+      5.0,
+      10.0,
+      8.0
+     ]
+    },
+    "down": {
+     "texture": "#glow_3",
+     "uv": [
+      9.0,
+      3.0,
+      12.0,
+      6.0
+     ]
+    }
+   }
+  },
+  {
+   "name": "Square North",
+   "from": [
+    7.5,
+    24.0,
+    4.0
+   ],
+   "to": [
+    8.5,
+    25.0,
+    5.0
+   ],
+   "shade": false,
+   "neoforge_data": {
+    "calculate_normals": true
+   },
+   "rotation": {
+    "origin": [
+     9.0,
+     24.0,
+     5.0
+    ],
+    "axis": "x",
+    "angle": 45.0
+   },
+   "faces": {
+    "north": {
+     "texture": "#bits_3",
+     "uv": [
+      2.0,
+      2.0,
+      3.0,
+      3.0
+     ]
+    },
+    "east": {
+     "texture": "#bits_3",
+     "uv": [
+      6.0,
+      6.0,
+      7.0,
+      7.0
+     ]
+    },
+    "south": {
+     "texture": "#bits_3",
+     "uv": [
+      8.0,
+      6.0,
+      9.0,
+      7.0
+     ]
+    },
+    "west": {
+     "texture": "#bits_3",
+     "uv": [
+      11.0,
+      9.0,
+      12.0,
+      10.0
+     ]
+    },
+    "up": {
+     "texture": "#bits_3",
+     "uv": [
+      9.0,
+      5.0,
+      10.0,
+      6.0
+     ]
+    },
+    "down": {
+     "texture": "#bits_3",
+     "uv": [
+      5.0,
+      7.0,
+      6.0,
+      8.0
+     ]
+    }
+   }
+  },
+  {
+   "name": "Square South",
+   "from": [
+    7.5,
+    24.0,
+    10.0
+   ],
+   "to": [
+    8.5,
+    25.0,
+    11.0
+   ],
+   "shade": false,
+   "neoforge_data": {
+    "calculate_normals": true
+   },
+   "rotation": {
+    "origin": [
+     13.0,
+     24.0,
+     11.0
+    ],
+    "axis": "x",
+    "angle": 45.0
+   },
+   "faces": {
+    "north": {
+     "texture": "#bits_3",
+     "uv": [
+      2.0,
+      2.0,
+      3.0,
+      3.0
+     ]
+    },
+    "east": {
+     "texture": "#bits_3",
+     "uv": [
+      2.0,
+      2.0,
+      3.0,
+      3.0
+     ]
+    },
+    "south": {
+     "texture": "#bits_3",
+     "uv": [
+      2.0,
+      2.0,
+      3.0,
+      3.0
+     ]
+    },
+    "west": {
+     "texture": "#bits_3",
+     "uv": [
+      2.0,
+      2.0,
+      3.0,
+      3.0
+     ]
+    },
+    "up": {
+     "texture": "#bits_3",
+     "uv": [
+      2.0,
+      2.0,
+      3.0,
+      3.0
+     ]
+    },
+    "down": {
+     "texture": "#bits_3",
+     "uv": [
+      2.0,
+      2.0,
+      3.0,
+      3.0
+     ]
+    }
+   }
+  },
+  {
+   "name": "Square West",
+   "from": [
+    11.5,
+    25.5,
+    7.5
+   ],
+   "to": [
+    12.5,
+    26.5,
+    8.5
+   ],
+   "shade": false,
+   "neoforge_data": {
+    "calculate_normals": true
+   },
+   "rotation": {
+    "origin": [
+     13.0,
+     24.0,
+     11.0
+    ],
+    "axis": "z",
+    "angle": 45.0
+   },
+   "faces": {
+    "north": {
+     "texture": "#bits_3",
+     "uv": [
+      2.0,
+      2.0,
+      3.0,
+      3.0
+     ]
+    },
+    "east": {
+     "texture": "#bits_3",
+     "uv": [
+      2.0,
+      2.0,
+      3.0,
+      3.0
+     ]
+    },
+    "south": {
+     "texture": "#bits_3",
+     "uv": [
+      2.0,
+      2.0,
+      3.0,
+      3.0
+     ]
+    },
+    "west": {
+     "texture": "#bits_3",
+     "uv": [
+      2.0,
+      2.0,
+      3.0,
+      3.0
+     ]
+    },
+    "up": {
+     "texture": "#bits_3",
+     "uv": [
+      2.0,
+      2.0,
+      3.0,
+      3.0
+     ]
+    },
+    "down": {
+     "texture": "#bits_3",
+     "uv": [
+      2.0,
+      2.0,
+      3.0,
+      3.0
+     ]
+    }
+   }
+  },
+  {
+   "name": "Square East",
+   "from": [
+    7.5,
+    29.5,
+    7.5
+   ],
+   "to": [
+    8.5,
+    30.5,
+    8.5
+   ],
+   "shade": false,
+   "neoforge_data": {
+    "calculate_normals": true
+   },
+   "rotation": {
+    "origin": [
+     13.0,
+     24.0,
+     11.0
+    ],
+    "axis": "z",
+    "angle": 45.0
+   },
+   "faces": {
+    "north": {
+     "texture": "#bits_3",
+     "uv": [
+      2.0,
+      2.0,
+      3.0,
+      3.0
+     ]
+    },
+    "east": {
+     "texture": "#bits_3",
+     "uv": [
+      2.0,
+      2.0,
+      3.0,
+      3.0
+     ]
+    },
+    "south": {
+     "texture": "#bits_3",
+     "uv": [
+      2.0,
+      2.0,
+      3.0,
+      3.0
+     ]
+    },
+    "west": {
+     "texture": "#bits_3",
+     "uv": [
+      2.0,
+      2.0,
+      3.0,
+      3.0
+     ]
+    },
+    "up": {
+     "texture": "#bits_3",
+     "uv": [
+      2.0,
+      2.0,
+      3.0,
+      3.0
+     ]
+    },
+    "down": {
+     "texture": "#bits_3",
+     "uv": [
+      2.0,
+      2.0,
+      3.0,
+      3.0
+     ]
+    }
+   }
+  }
+ ],
+ "display": {
+  "thirdperson_righthand": {
+   "rotation": [
+    15,
+    0,
+    0
+   ],
+   "translation": [
+    -1,
+    1,
+    1
+   ],
+   "scale": [
+    0.5,
+    0.5,
+    0.5
+   ]
+  },
+  "firstperson_righthand": {
+   "rotation": [
+    15,
+    0,
+    0
+   ],
+   "translation": [
+    0,
+    0,
+    -2
+   ],
+   "scale": [
+    0.6,
+    0.6,
+    0.6
+   ]
+  },
+  "ground": {
+   "translation": [
+    0,
+    4.2,
+    0
+   ],
+   "scale": [
+    0.4,
+    0.4,
+    0.4
+   ]
+  },
+  "gui": {
+   "rotation": [
+    42,
+    135,
+    32
+   ],
+   "translation": [
+    -1.7,
+    -1.7,
+    3
+   ],
+   "scale": [
+    0.8,
+    0.8,
+    0.8
+   ]
+  },
+  "fixed": {
+   "rotation": [
+    0,
+    90,
+    0
+   ],
+   "translation": [
+    0,
+    -2.5,
+    -0.75
+   ],
+   "scale": [
+    0.5,
+    0.5,
+    0.5
+   ]
+  }
+ }
+}

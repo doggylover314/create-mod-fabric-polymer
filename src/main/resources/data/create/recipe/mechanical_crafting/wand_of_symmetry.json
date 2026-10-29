@@ -1,0 +1,23 @@
+{
+  "type": "create:mechanical_crafting",
+  "category": "misc",
+  "accept_mirrored": true,
+  "pattern": [
+    " G ",
+    "GEG",
+    " P ",
+    " B ",
+    " O "
+  ],
+  "key": {
+    "B": "#c:ingots/brass",
+    "E": "#c:ender_pearls",
+    "G": "#c:glass_blocks",
+    "O": "#c:obsidians",
+    "P": "create:precision_mechanism"
+  },
+  "result": {
+    "id": "create:wand_of_symmetry",
+    "count": 1
+  }
+}

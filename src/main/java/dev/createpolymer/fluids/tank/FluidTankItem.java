@@ -1,5 +1,6 @@
 package dev.createpolymer.fluids.tank;
 
+import dev.createpolymer.equipment.symmetryWand.SymmetryWandItem;
 import dev.createpolymer.api.connectivity.ConnectivityHandler;
 import dev.createpolymer.registry.feature.TanksRegistry;
 import eu.pb4.polymer.core.api.item.PolymerBlockItem;
@@ -66,6 +67,8 @@ public class FluidTankItem extends PolymerBlockItem {
 		if (player == null)
 			return;
 		if (player.isShiftKeyDown())
+			return;
+		if (SymmetryWandItem.presentInHotbar(player))
 			return;
 		Direction face = ctx.getClickedFace();
 		if (!face.getAxis()

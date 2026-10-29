@@ -1,0 +1,29 @@
+{
+  "items": [
+    "handheld_worldshaper",
+    "wand_of_symmetry"
+  ],
+  "display_models": [
+    "block/symmetry_effect/plane",
+    "block/symmetry_effect/crossplane",
+    "block/symmetry_effect/tripleplane"
+  ],
+  "lang_ids": [
+    "handheld_worldshaper",
+    "wand_of_symmetry"
+  ],
+  "lang_prefixes": [
+    "create.gui.terrainzapper.",
+    "create.gui.symmetryWand.",
+    "create.terrainzapper.",
+    "create.symmetry.mirror.",
+    "create.orientation."
+  ],
+  "lang_keys": [
+    "create.generic.width",
+    "create.generic.height",
+    "create.generic.length",
+    "create.generic.radius",
+    "create.generic.range"
+  ]
+}

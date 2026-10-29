@@ -399,6 +399,7 @@
  "create.generic.unit.millibuckets": "mB",
  "create.generic.unit.rpm": "RPM",
  "create.generic.unit.stress": "su",
+ "create.generic.width": "WidtH",
  "create.gui.assembly.exception.structureTooLarge": "2 many bluks in tis thingy!! ur onli allowed %1$s",
  "create.gui.factory_panel.unconfigured_input_tip": "U can add ingradents by",
  "create.gui.factory_panel.unconfigured_input_tip_1": "conecting oter factree gauges",

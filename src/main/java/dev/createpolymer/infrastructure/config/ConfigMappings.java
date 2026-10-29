@@ -10,6 +10,7 @@ import dev.createpolymer.Config;
 import dev.createpolymer.api.contraption.ContraptionMovementSetting;
 import dev.createpolymer.decoration.DecorationPlacement;
 import dev.createpolymer.equipment.EquipmentConfig;
+import dev.createpolymer.equipment.symmetryWand.SymmetryWandConfig;
 import dev.createpolymer.fluids.FluidConfig;
 import dev.createpolymer.fluids.tank.FluidTankBlockEntity;
 import dev.createpolymer.fluids.transfer.FluidManipulationBehaviour.BottomlessFluidMode;
@@ -183,6 +184,8 @@ public final class ConfigMappings {
 			v -> EquipmentConfig.maxExtendoGripActions = v);
 		i(EQUIPMENT, "maxPotatoCannonShots", 200, 0, () -> EquipmentConfig.maxPotatoCannonShots,
 			v -> EquipmentConfig.maxPotatoCannonShots = v);
+		i(EQUIPMENT, "maxSymmetryWandRange", 50, 10, () -> SymmetryWandConfig.maxSymmetryWandRange,
+			v -> SymmetryWandConfig.maxSymmetryWandRange = v);
 
 		// trains
 		b(TRAINS, "trainsCauseDamage", true, () -> TrainConfig.trainsCauseDamage, v -> TrainConfig.trainsCauseDamage = v);

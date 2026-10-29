@@ -1,5 +1,6 @@
 package dev.createpolymer.logistics.vault;
 
+import dev.createpolymer.equipment.symmetryWand.SymmetryWandItem;
 import dev.createpolymer.api.connectivity.ConnectivityHandler;
 import dev.createpolymer.registry.feature.VaultRegistry;
 import dev.createpolymer.util.VecHelper;
@@ -58,6 +59,8 @@ public class ItemVaultItem extends PolymerBlockItem {
 		if (player == null)
 			return;
 		if (player.isShiftKeyDown())
+			return;
+		if (SymmetryWandItem.presentInHotbar(player))
 			return;
 		Direction face = ctx.getClickedFace();
 		ItemStack stack = ctx.getItemInHand();
