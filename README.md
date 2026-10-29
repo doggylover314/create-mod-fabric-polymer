@@ -6,7 +6,7 @@ A server-side port of [Create](https://github.com/Creators-of-Create/Create) for
 
 This is an unofficial port and is not affiliated with or endorsed by the Create team.
 
-## Status: first slice ("the basics")
+## Status
 
 Ported and tested:
 
@@ -22,15 +22,21 @@ Ported and tested:
 | Mechanical Mixer | Needs ≥ 30 RPM; mixing + shapeless crafting in a basin |
 | Basin | Throw items in; hoppers below pull results out |
 | Andesite Casing | Use andesite alloy on a stripped log/wood |
+| Encased Shaft / Cogwheel / Large Cogwheel | Use andesite casing on a shaft or cogwheel; wrench the end faces of encased cogs to add shafts |
+| Clutch, Gearshift | Redstone disconnects / reverses the output side |
+| Encased Chain Drive | Drives placed side by side link up and share rotation |
+| Speedometer, Stressometer | Dials on the side faces, comparator output |
+| Large Water Wheel | 5 blocks across, half speed and 4x capacity of the small wheel |
+| Depot | Holds a stack; a press above it processes the stack, hoppers below take the results |
 | Andesite Alloy, Iron/Golden/Copper Sheet, Wheat Flour, Whisk | Materials |
 | Wrench | Right-click rotates, sneak + right-click picks up |
 | Engineer's Goggles | Wear or hold, look at a kinetic block: RPM and stress show in the action bar |
 
 The stress system (capacity, impact, overstressing) is Create's code, ported. Stress values match Create's defaults.
 
-Not ported yet: belts, depots, chutes, funnels, fluids (pipes, tanks, recipes that use fluids), blaze burners
-(so heated recipes), encased shafts, chain drives, gearshifts/clutches, contraptions, trains, the large water
-wheel, Ponder, JEI-style recipe viewing, and many more.
+Not ported yet: belts, chutes, funnels, ejectors, fluids (pipes, tanks, recipes that use fluids), blaze burners
+(so heated recipes), brass and everything that needs it, sequenced/adjustable gearshifts, contraptions, trains,
+Ponder, JEI-style recipe viewing, and many more.
 
 ## How it works
 
@@ -60,7 +66,7 @@ Requires JDK 25.
 
 ```bash
 ./gradlew build          # jar in build/libs
-./gradlew runGametest    # 16 in-world tests (kinetics, gears, overstress, millstone, press, mixer, hoppers, water wheel)
+./gradlew runGametest    # 24 in-world tests (kinetics, transmission, gauges, machines, depot, water wheels)
 ./gradlew runServer      # dev server in ./run
 ```
 
