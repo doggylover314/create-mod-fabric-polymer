@@ -1,0 +1,22 @@
+{
+ "block.create.andesite_casing": "Casin Andesit",
+ "block.create.basin": "Basn",
+ "block.create.cogwheel": "Cocsen",
+ "block.create.creative_motor": "Modur Creadigol",
+ "block.create.gearbox": "Gerbocs",
+ "block.create.hand_crank": "Llaw Cranc",
+ "block.create.large_cogwheel": "Cocsen Fawr",
+ "block.create.mechanical_mixer": "Cymysgydd Peiriannol",
+ "block.create.mechanical_press": "Gwasg Peiriannol",
+ "block.create.millstone": "Maen Melin",
+ "block.create.shaft": "Gwerthyd",
+ "block.create.water_wheel": "Rhod Ddŵr",
+ "item.create.andesite_alloy": "Aloi Andesit",
+ "item.create.copper_sheet": "Dalen Copr",
+ "item.create.golden_sheet": "Dalen Aur",
+ "item.create.iron_sheet": "Dalen Haearn",
+ "item.create.wheat_flour": "Blawd gwenith",
+ "item.create.whisk": "Chwisg",
+ "item.create.wrench": "Tyndro",
+ "itemGroup.create.base": "Create"
+}

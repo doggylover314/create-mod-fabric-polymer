@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " C ",
+    "CBC",
+    " C "
+  ],
+  "key": {
+    "B": "create:andesite_casing",
+    "C": "create:cogwheel"
+  },
+  "result": {
+    "id": "create:gearbox",
+    "count": 1
+  }
+}

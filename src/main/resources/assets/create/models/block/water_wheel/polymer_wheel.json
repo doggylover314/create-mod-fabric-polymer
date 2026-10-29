@@ -1,0 +1,3234 @@
+{
+ "credit": "Approximation of Create's water wheel for vanilla clients (create-polymer)",
+ "textures": {
+  "axis": "create:block/axis",
+  "axis_top": "create:block/axis_top",
+  "log": "minecraft:block/stripped_spruce_log",
+  "planks": "minecraft:block/spruce_planks",
+  "particle": "minecraft:block/spruce_planks"
+ },
+ "elements": [
+  {
+   "from": [
+    6,
+    0,
+    6
+   ],
+   "to": [
+    10,
+    16,
+    10
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      4,
+      16
+     ],
+     "texture": "#axis"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      4,
+      16
+     ],
+     "texture": "#axis"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      4,
+      16
+     ],
+     "texture": "#axis"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      4,
+      16
+     ],
+     "texture": "#axis"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      4,
+      4
+     ],
+     "texture": "#axis_top"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      4,
+      4
+     ],
+     "texture": "#axis_top"
+    }
+   },
+   "name": "axle"
+  },
+  {
+   "from": [
+    4,
+    2,
+    4
+   ],
+   "to": [
+    12,
+    14,
+    12
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      8,
+      12
+     ],
+     "texture": "#log"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      8,
+      12
+     ],
+     "texture": "#log"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      8,
+      12
+     ],
+     "texture": "#log"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      8,
+      12
+     ],
+     "texture": "#log"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      8,
+      8
+     ],
+     "texture": "#log"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      8,
+      8
+     ],
+     "texture": "#log"
+    }
+   },
+   "name": "hub"
+  },
+  {
+   "from": [
+    12,
+    2.5,
+    7
+   ],
+   "to": [
+    22,
+    4.5,
+    9
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      10,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      10,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      2,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      2,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      10,
+      2
+     ],
+     "texture": "#planks"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      10,
+      2
+     ],
+     "texture": "#planks"
+    }
+   },
+   "name": "spoke"
+  },
+  {
+   "from": [
+    12,
+    11.5,
+    7
+   ],
+   "to": [
+    22,
+    13.5,
+    9
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      10,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      10,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      2,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      2,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      10,
+      2
+     ],
+     "texture": "#planks"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      10,
+      2
+     ],
+     "texture": "#planks"
+    }
+   },
+   "name": "spoke"
+  },
+  {
+   "from": [
+    21,
+    1.5,
+    2.2
+   ],
+   "to": [
+    22.5,
+    4.5,
+    13.8
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      11.600000000000001,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      11.600000000000001,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      11.600000000000001
+     ],
+     "texture": "#log"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      11.600000000000001
+     ],
+     "texture": "#log"
+    }
+   },
+   "name": "rim"
+  },
+  {
+   "from": [
+    21,
+    11.5,
+    2.2
+   ],
+   "to": [
+    22.5,
+    14.5,
+    13.8
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      11.600000000000001,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      11.600000000000001,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      11.600000000000001
+     ],
+     "texture": "#log"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      11.600000000000001
+     ],
+     "texture": "#log"
+    }
+   },
+   "name": "rim"
+  },
+  {
+   "from": [
+    17,
+    1,
+    7.25
+   ],
+   "to": [
+    24,
+    15,
+    8.75
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      7,
+      14
+     ],
+     "texture": "#planks"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      7,
+      14
+     ],
+     "texture": "#planks"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      14
+     ],
+     "texture": "#planks"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      14
+     ],
+     "texture": "#planks"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      7,
+      1.5
+     ],
+     "texture": "#planks"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      7,
+      1.5
+     ],
+     "texture": "#planks"
+    }
+   },
+   "rotation": {
+    "origin": [
+     8,
+     8,
+     8
+    ],
+    "axis": "y",
+    "angle": 22.5
+   },
+   "name": "paddle"
+  },
+  {
+   "from": [
+    12,
+    2.5,
+    7
+   ],
+   "to": [
+    22,
+    4.5,
+    9
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      10,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      10,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      2,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      2,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      10,
+      2
+     ],
+     "texture": "#planks"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      10,
+      2
+     ],
+     "texture": "#planks"
+    }
+   },
+   "rotation": {
+    "origin": [
+     8,
+     8,
+     8
+    ],
+    "axis": "y",
+    "angle": 45.0
+   },
+   "name": "spoke"
+  },
+  {
+   "from": [
+    12,
+    11.5,
+    7
+   ],
+   "to": [
+    22,
+    13.5,
+    9
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      10,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      10,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      2,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      2,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      10,
+      2
+     ],
+     "texture": "#planks"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      10,
+      2
+     ],
+     "texture": "#planks"
+    }
+   },
+   "rotation": {
+    "origin": [
+     8,
+     8,
+     8
+    ],
+    "axis": "y",
+    "angle": 45.0
+   },
+   "name": "spoke"
+  },
+  {
+   "from": [
+    21,
+    1.5,
+    2.2
+   ],
+   "to": [
+    22.5,
+    4.5,
+    13.8
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      11.600000000000001,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      11.600000000000001,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      11.600000000000001
+     ],
+     "texture": "#log"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      11.600000000000001
+     ],
+     "texture": "#log"
+    }
+   },
+   "rotation": {
+    "origin": [
+     8,
+     8,
+     8
+    ],
+    "axis": "y",
+    "angle": 45.0
+   },
+   "name": "rim"
+  },
+  {
+   "from": [
+    21,
+    11.5,
+    2.2
+   ],
+   "to": [
+    22.5,
+    14.5,
+    13.8
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      11.600000000000001,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      11.600000000000001,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      11.600000000000001
+     ],
+     "texture": "#log"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      11.600000000000001
+     ],
+     "texture": "#log"
+    }
+   },
+   "rotation": {
+    "origin": [
+     8,
+     8,
+     8
+    ],
+    "axis": "y",
+    "angle": 45.0
+   },
+   "name": "rim"
+  },
+  {
+   "from": [
+    17,
+    1,
+    7.25
+   ],
+   "to": [
+    24,
+    15,
+    8.75
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      7,
+      14
+     ],
+     "texture": "#planks"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      7,
+      14
+     ],
+     "texture": "#planks"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      14
+     ],
+     "texture": "#planks"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      14
+     ],
+     "texture": "#planks"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      7,
+      1.5
+     ],
+     "texture": "#planks"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      7,
+      1.5
+     ],
+     "texture": "#planks"
+    }
+   },
+   "rotation": {
+    "origin": [
+     8,
+     8,
+     8
+    ],
+    "axis": "y",
+    "angle": 67.5
+   },
+   "name": "paddle"
+  },
+  {
+   "from": [
+    12,
+    2.5,
+    7
+   ],
+   "to": [
+    22,
+    4.5,
+    9
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      10,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      10,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      2,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      2,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      10,
+      2
+     ],
+     "texture": "#planks"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      10,
+      2
+     ],
+     "texture": "#planks"
+    }
+   },
+   "rotation": {
+    "origin": [
+     8,
+     8,
+     8
+    ],
+    "axis": "y",
+    "angle": 90.0
+   },
+   "name": "spoke"
+  },
+  {
+   "from": [
+    12,
+    11.5,
+    7
+   ],
+   "to": [
+    22,
+    13.5,
+    9
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      10,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      10,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      2,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      2,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      10,
+      2
+     ],
+     "texture": "#planks"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      10,
+      2
+     ],
+     "texture": "#planks"
+    }
+   },
+   "rotation": {
+    "origin": [
+     8,
+     8,
+     8
+    ],
+    "axis": "y",
+    "angle": 90.0
+   },
+   "name": "spoke"
+  },
+  {
+   "from": [
+    21,
+    1.5,
+    2.2
+   ],
+   "to": [
+    22.5,
+    4.5,
+    13.8
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      11.600000000000001,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      11.600000000000001,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      11.600000000000001
+     ],
+     "texture": "#log"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      11.600000000000001
+     ],
+     "texture": "#log"
+    }
+   },
+   "rotation": {
+    "origin": [
+     8,
+     8,
+     8
+    ],
+    "axis": "y",
+    "angle": 90.0
+   },
+   "name": "rim"
+  },
+  {
+   "from": [
+    21,
+    11.5,
+    2.2
+   ],
+   "to": [
+    22.5,
+    14.5,
+    13.8
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      11.600000000000001,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      11.600000000000001,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      11.600000000000001
+     ],
+     "texture": "#log"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      11.600000000000001
+     ],
+     "texture": "#log"
+    }
+   },
+   "rotation": {
+    "origin": [
+     8,
+     8,
+     8
+    ],
+    "axis": "y",
+    "angle": 90.0
+   },
+   "name": "rim"
+  },
+  {
+   "from": [
+    17,
+    1,
+    7.25
+   ],
+   "to": [
+    24,
+    15,
+    8.75
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      7,
+      14
+     ],
+     "texture": "#planks"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      7,
+      14
+     ],
+     "texture": "#planks"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      14
+     ],
+     "texture": "#planks"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      14
+     ],
+     "texture": "#planks"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      7,
+      1.5
+     ],
+     "texture": "#planks"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      7,
+      1.5
+     ],
+     "texture": "#planks"
+    }
+   },
+   "rotation": {
+    "origin": [
+     8,
+     8,
+     8
+    ],
+    "axis": "y",
+    "angle": 112.5
+   },
+   "name": "paddle"
+  },
+  {
+   "from": [
+    12,
+    2.5,
+    7
+   ],
+   "to": [
+    22,
+    4.5,
+    9
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      10,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      10,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      2,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      2,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      10,
+      2
+     ],
+     "texture": "#planks"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      10,
+      2
+     ],
+     "texture": "#planks"
+    }
+   },
+   "rotation": {
+    "origin": [
+     8,
+     8,
+     8
+    ],
+    "axis": "y",
+    "angle": 135.0
+   },
+   "name": "spoke"
+  },
+  {
+   "from": [
+    12,
+    11.5,
+    7
+   ],
+   "to": [
+    22,
+    13.5,
+    9
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      10,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      10,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      2,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      2,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      10,
+      2
+     ],
+     "texture": "#planks"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      10,
+      2
+     ],
+     "texture": "#planks"
+    }
+   },
+   "rotation": {
+    "origin": [
+     8,
+     8,
+     8
+    ],
+    "axis": "y",
+    "angle": 135.0
+   },
+   "name": "spoke"
+  },
+  {
+   "from": [
+    21,
+    1.5,
+    2.2
+   ],
+   "to": [
+    22.5,
+    4.5,
+    13.8
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      11.600000000000001,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      11.600000000000001,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      11.600000000000001
+     ],
+     "texture": "#log"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      11.600000000000001
+     ],
+     "texture": "#log"
+    }
+   },
+   "rotation": {
+    "origin": [
+     8,
+     8,
+     8
+    ],
+    "axis": "y",
+    "angle": 135.0
+   },
+   "name": "rim"
+  },
+  {
+   "from": [
+    21,
+    11.5,
+    2.2
+   ],
+   "to": [
+    22.5,
+    14.5,
+    13.8
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      11.600000000000001,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      11.600000000000001,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      11.600000000000001
+     ],
+     "texture": "#log"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      11.600000000000001
+     ],
+     "texture": "#log"
+    }
+   },
+   "rotation": {
+    "origin": [
+     8,
+     8,
+     8
+    ],
+    "axis": "y",
+    "angle": 135.0
+   },
+   "name": "rim"
+  },
+  {
+   "from": [
+    17,
+    1,
+    7.25
+   ],
+   "to": [
+    24,
+    15,
+    8.75
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      7,
+      14
+     ],
+     "texture": "#planks"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      7,
+      14
+     ],
+     "texture": "#planks"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      14
+     ],
+     "texture": "#planks"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      14
+     ],
+     "texture": "#planks"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      7,
+      1.5
+     ],
+     "texture": "#planks"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      7,
+      1.5
+     ],
+     "texture": "#planks"
+    }
+   },
+   "rotation": {
+    "origin": [
+     8,
+     8,
+     8
+    ],
+    "axis": "y",
+    "angle": 157.5
+   },
+   "name": "paddle"
+  },
+  {
+   "from": [
+    12,
+    2.5,
+    7
+   ],
+   "to": [
+    22,
+    4.5,
+    9
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      10,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      10,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      2,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      2,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      10,
+      2
+     ],
+     "texture": "#planks"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      10,
+      2
+     ],
+     "texture": "#planks"
+    }
+   },
+   "rotation": {
+    "origin": [
+     8,
+     8,
+     8
+    ],
+    "axis": "y",
+    "angle": 180.0
+   },
+   "name": "spoke"
+  },
+  {
+   "from": [
+    12,
+    11.5,
+    7
+   ],
+   "to": [
+    22,
+    13.5,
+    9
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      10,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      10,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      2,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      2,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      10,
+      2
+     ],
+     "texture": "#planks"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      10,
+      2
+     ],
+     "texture": "#planks"
+    }
+   },
+   "rotation": {
+    "origin": [
+     8,
+     8,
+     8
+    ],
+    "axis": "y",
+    "angle": 180.0
+   },
+   "name": "spoke"
+  },
+  {
+   "from": [
+    21,
+    1.5,
+    2.2
+   ],
+   "to": [
+    22.5,
+    4.5,
+    13.8
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      11.600000000000001,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      11.600000000000001,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      11.600000000000001
+     ],
+     "texture": "#log"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      11.600000000000001
+     ],
+     "texture": "#log"
+    }
+   },
+   "rotation": {
+    "origin": [
+     8,
+     8,
+     8
+    ],
+    "axis": "y",
+    "angle": 180.0
+   },
+   "name": "rim"
+  },
+  {
+   "from": [
+    21,
+    11.5,
+    2.2
+   ],
+   "to": [
+    22.5,
+    14.5,
+    13.8
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      11.600000000000001,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      11.600000000000001,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      11.600000000000001
+     ],
+     "texture": "#log"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      11.600000000000001
+     ],
+     "texture": "#log"
+    }
+   },
+   "rotation": {
+    "origin": [
+     8,
+     8,
+     8
+    ],
+    "axis": "y",
+    "angle": 180.0
+   },
+   "name": "rim"
+  },
+  {
+   "from": [
+    17,
+    1,
+    7.25
+   ],
+   "to": [
+    24,
+    15,
+    8.75
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      7,
+      14
+     ],
+     "texture": "#planks"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      7,
+      14
+     ],
+     "texture": "#planks"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      14
+     ],
+     "texture": "#planks"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      14
+     ],
+     "texture": "#planks"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      7,
+      1.5
+     ],
+     "texture": "#planks"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      7,
+      1.5
+     ],
+     "texture": "#planks"
+    }
+   },
+   "rotation": {
+    "origin": [
+     8,
+     8,
+     8
+    ],
+    "axis": "y",
+    "angle": 202.5
+   },
+   "name": "paddle"
+  },
+  {
+   "from": [
+    12,
+    2.5,
+    7
+   ],
+   "to": [
+    22,
+    4.5,
+    9
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      10,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      10,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      2,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      2,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      10,
+      2
+     ],
+     "texture": "#planks"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      10,
+      2
+     ],
+     "texture": "#planks"
+    }
+   },
+   "rotation": {
+    "origin": [
+     8,
+     8,
+     8
+    ],
+    "axis": "y",
+    "angle": 225.0
+   },
+   "name": "spoke"
+  },
+  {
+   "from": [
+    12,
+    11.5,
+    7
+   ],
+   "to": [
+    22,
+    13.5,
+    9
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      10,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      10,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      2,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      2,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      10,
+      2
+     ],
+     "texture": "#planks"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      10,
+      2
+     ],
+     "texture": "#planks"
+    }
+   },
+   "rotation": {
+    "origin": [
+     8,
+     8,
+     8
+    ],
+    "axis": "y",
+    "angle": 225.0
+   },
+   "name": "spoke"
+  },
+  {
+   "from": [
+    21,
+    1.5,
+    2.2
+   ],
+   "to": [
+    22.5,
+    4.5,
+    13.8
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      11.600000000000001,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      11.600000000000001,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      11.600000000000001
+     ],
+     "texture": "#log"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      11.600000000000001
+     ],
+     "texture": "#log"
+    }
+   },
+   "rotation": {
+    "origin": [
+     8,
+     8,
+     8
+    ],
+    "axis": "y",
+    "angle": 225.0
+   },
+   "name": "rim"
+  },
+  {
+   "from": [
+    21,
+    11.5,
+    2.2
+   ],
+   "to": [
+    22.5,
+    14.5,
+    13.8
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      11.600000000000001,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      11.600000000000001,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      11.600000000000001
+     ],
+     "texture": "#log"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      11.600000000000001
+     ],
+     "texture": "#log"
+    }
+   },
+   "rotation": {
+    "origin": [
+     8,
+     8,
+     8
+    ],
+    "axis": "y",
+    "angle": 225.0
+   },
+   "name": "rim"
+  },
+  {
+   "from": [
+    17,
+    1,
+    7.25
+   ],
+   "to": [
+    24,
+    15,
+    8.75
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      7,
+      14
+     ],
+     "texture": "#planks"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      7,
+      14
+     ],
+     "texture": "#planks"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      14
+     ],
+     "texture": "#planks"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      14
+     ],
+     "texture": "#planks"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      7,
+      1.5
+     ],
+     "texture": "#planks"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      7,
+      1.5
+     ],
+     "texture": "#planks"
+    }
+   },
+   "rotation": {
+    "origin": [
+     8,
+     8,
+     8
+    ],
+    "axis": "y",
+    "angle": 247.5
+   },
+   "name": "paddle"
+  },
+  {
+   "from": [
+    12,
+    2.5,
+    7
+   ],
+   "to": [
+    22,
+    4.5,
+    9
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      10,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      10,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      2,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      2,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      10,
+      2
+     ],
+     "texture": "#planks"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      10,
+      2
+     ],
+     "texture": "#planks"
+    }
+   },
+   "rotation": {
+    "origin": [
+     8,
+     8,
+     8
+    ],
+    "axis": "y",
+    "angle": 270.0
+   },
+   "name": "spoke"
+  },
+  {
+   "from": [
+    12,
+    11.5,
+    7
+   ],
+   "to": [
+    22,
+    13.5,
+    9
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      10,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      10,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      2,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      2,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      10,
+      2
+     ],
+     "texture": "#planks"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      10,
+      2
+     ],
+     "texture": "#planks"
+    }
+   },
+   "rotation": {
+    "origin": [
+     8,
+     8,
+     8
+    ],
+    "axis": "y",
+    "angle": 270.0
+   },
+   "name": "spoke"
+  },
+  {
+   "from": [
+    21,
+    1.5,
+    2.2
+   ],
+   "to": [
+    22.5,
+    4.5,
+    13.8
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      11.600000000000001,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      11.600000000000001,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      11.600000000000001
+     ],
+     "texture": "#log"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      11.600000000000001
+     ],
+     "texture": "#log"
+    }
+   },
+   "rotation": {
+    "origin": [
+     8,
+     8,
+     8
+    ],
+    "axis": "y",
+    "angle": 270.0
+   },
+   "name": "rim"
+  },
+  {
+   "from": [
+    21,
+    11.5,
+    2.2
+   ],
+   "to": [
+    22.5,
+    14.5,
+    13.8
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      11.600000000000001,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      11.600000000000001,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      11.600000000000001
+     ],
+     "texture": "#log"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      11.600000000000001
+     ],
+     "texture": "#log"
+    }
+   },
+   "rotation": {
+    "origin": [
+     8,
+     8,
+     8
+    ],
+    "axis": "y",
+    "angle": 270.0
+   },
+   "name": "rim"
+  },
+  {
+   "from": [
+    17,
+    1,
+    7.25
+   ],
+   "to": [
+    24,
+    15,
+    8.75
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      7,
+      14
+     ],
+     "texture": "#planks"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      7,
+      14
+     ],
+     "texture": "#planks"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      14
+     ],
+     "texture": "#planks"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      14
+     ],
+     "texture": "#planks"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      7,
+      1.5
+     ],
+     "texture": "#planks"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      7,
+      1.5
+     ],
+     "texture": "#planks"
+    }
+   },
+   "rotation": {
+    "origin": [
+     8,
+     8,
+     8
+    ],
+    "axis": "y",
+    "angle": 292.5
+   },
+   "name": "paddle"
+  },
+  {
+   "from": [
+    12,
+    2.5,
+    7
+   ],
+   "to": [
+    22,
+    4.5,
+    9
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      10,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      10,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      2,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      2,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      10,
+      2
+     ],
+     "texture": "#planks"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      10,
+      2
+     ],
+     "texture": "#planks"
+    }
+   },
+   "rotation": {
+    "origin": [
+     8,
+     8,
+     8
+    ],
+    "axis": "y",
+    "angle": 315.0
+   },
+   "name": "spoke"
+  },
+  {
+   "from": [
+    12,
+    11.5,
+    7
+   ],
+   "to": [
+    22,
+    13.5,
+    9
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      10,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      10,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      2,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      2,
+      2.0
+     ],
+     "texture": "#planks"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      10,
+      2
+     ],
+     "texture": "#planks"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      10,
+      2
+     ],
+     "texture": "#planks"
+    }
+   },
+   "rotation": {
+    "origin": [
+     8,
+     8,
+     8
+    ],
+    "axis": "y",
+    "angle": 315.0
+   },
+   "name": "spoke"
+  },
+  {
+   "from": [
+    21,
+    1.5,
+    2.2
+   ],
+   "to": [
+    22.5,
+    4.5,
+    13.8
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      11.600000000000001,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      11.600000000000001,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      11.600000000000001
+     ],
+     "texture": "#log"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      11.600000000000001
+     ],
+     "texture": "#log"
+    }
+   },
+   "rotation": {
+    "origin": [
+     8,
+     8,
+     8
+    ],
+    "axis": "y",
+    "angle": 315.0
+   },
+   "name": "rim"
+  },
+  {
+   "from": [
+    21,
+    11.5,
+    2.2
+   ],
+   "to": [
+    22.5,
+    14.5,
+    13.8
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      11.600000000000001,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      11.600000000000001,
+      3.0
+     ],
+     "texture": "#log"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      11.600000000000001
+     ],
+     "texture": "#log"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      11.600000000000001
+     ],
+     "texture": "#log"
+    }
+   },
+   "rotation": {
+    "origin": [
+     8,
+     8,
+     8
+    ],
+    "axis": "y",
+    "angle": 315.0
+   },
+   "name": "rim"
+  },
+  {
+   "from": [
+    17,
+    1,
+    7.25
+   ],
+   "to": [
+    24,
+    15,
+    8.75
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      7,
+      14
+     ],
+     "texture": "#planks"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      7,
+      14
+     ],
+     "texture": "#planks"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      14
+     ],
+     "texture": "#planks"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      1.5,
+      14
+     ],
+     "texture": "#planks"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      7,
+      1.5
+     ],
+     "texture": "#planks"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      7,
+      1.5
+     ],
+     "texture": "#planks"
+    }
+   },
+   "rotation": {
+    "origin": [
+     8,
+     8,
+     8
+    ],
+    "axis": "y",
+    "angle": 337.5
+   },
+   "name": "paddle"
+  }
+ ]
+}

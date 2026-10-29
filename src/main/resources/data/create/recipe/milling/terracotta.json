@@ -1,0 +1,12 @@
+{
+  "type": "create:milling",
+  "ingredients": [
+    "minecraft:terracotta"
+  ],
+  "results": [
+    {
+      "id": "minecraft:red_sand"
+    }
+  ],
+  "processing_time": 200
+}

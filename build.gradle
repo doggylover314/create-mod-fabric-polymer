@@ -1,0 +1,73 @@
+plugins {
+	id 'net.fabricmc.fabric-loom' version "${loom_version}"
+}
+
+version = "${project.mod_version}+${project.minecraft_version}"
+group = project.maven_group
+base { archivesName = 'create-polymer' }
+
+repositories {
+	maven { url = 'https://maven.nucleoid.xyz' }
+}
+
+sourceSets {
+	gametest {
+		compileClasspath += main.compileClasspath + main.output
+		runtimeClasspath += main.runtimeClasspath + main.output
+	}
+}
+
+loom {
+	mods {
+		"create" {
+			sourceSet sourceSets.main
+		}
+		"create-polymer-gametest" {
+			sourceSet sourceSets.gametest
+		}
+	}
+	runs {
+		gametest {
+			server()
+			name = "Game Test"
+			vmArg "-Dfabric-api.gametest"
+			vmArg "-Dfabric-api.gametest.report-file=${project.layout.buildDirectory.get().asFile}/gametest/junit.xml"
+			runDir "build/gametest"
+			source sourceSets.gametest
+		}
+	}
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+
+	// Polymer modules are bundled into the jar so server owners only need this mod + Fabric API.
+	implementation include("eu.pb4:polymer-core:${project.polymer_version}")
+	implementation include("eu.pb4:polymer-blocks:${project.polymer_version}")
+	implementation include("eu.pb4:polymer-resource-pack:${project.polymer_version}")
+	implementation include("eu.pb4:polymer-resource-pack-extras:${project.polymer_version}")
+	implementation include("eu.pb4:polymer-virtual-entity:${project.polymer_version}")
+	implementation include("eu.pb4:polymer-autohost:${project.polymer_version}")
+}
+
+processResources {
+	def version = project.version
+	inputs.property "version", version
+	filesMatching("fabric.mod.json") { expand "version": version }
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 25
+	it.options.encoding = 'UTF-8'
+}
+
+java {
+	sourceCompatibility = JavaVersion.VERSION_25
+	targetCompatibility = JavaVersion.VERSION_25
+}
+
+jar {
+	from("LICENSE.md") { rename { "${it}_create-polymer" } }
+}

@@ -1,0 +1,13 @@
+{
+ "block.create.andesite_casing": "Περίβλημα Ανδεσίτη",
+ "block.create.basin": "Λεκάνη",
+ "block.create.cogwheel": "Γρανάζι",
+ "block.create.creative_motor": "Δημιουργικός Κινητήρας",
+ "block.create.hand_crank": "Μανιβέλα",
+ "block.create.shaft": "Άξονας",
+ "item.create.goggles": "Γυαλιά Του Μηχανικού",
+ "item.create.iron_sheet": "Φύλλο Σιδήρου",
+ "item.create.wheat_flour": "Αλεύρι Σίτου",
+ "item.create.wrench": "Γαλλικό Κλειδί",
+ "itemGroup.create.base": "Create"
+}

@@ -1,0 +1,23 @@
+{
+ "block.create.andesite_casing": "Cubierta de Andesita",
+ "block.create.basin": "Tónel",
+ "block.create.cogwheel": "Engranaje",
+ "block.create.creative_motor": "Motor del Creativo",
+ "block.create.gearbox": "Caja de Engranajes",
+ "block.create.hand_crank": "Manivela",
+ "block.create.large_cogwheel": "Engranaje Grande",
+ "block.create.mechanical_mixer": "Mezcladora Mecánica",
+ "block.create.mechanical_press": "Prensa Mecánica",
+ "block.create.millstone": "Piedra de Molino",
+ "block.create.shaft": "Eje",
+ "block.create.water_wheel": "Rueda hidráulica mecánica",
+ "create.gui.stressometer.overstressed": "Sobreestresado",
+ "item.create.andesite_alloy": "Aleación de Andesita",
+ "item.create.copper_sheet": "Plancha de Cobre",
+ "item.create.goggles": "Lentes del Ingeniero",
+ "item.create.golden_sheet": "Plancha Dorada",
+ "item.create.iron_sheet": "Plancha de Hierro",
+ "item.create.wheat_flour": "Harina de Trigo",
+ "item.create.whisk": "Batidor",
+ "item.create.wrench": "Llave Inglesa"
+}

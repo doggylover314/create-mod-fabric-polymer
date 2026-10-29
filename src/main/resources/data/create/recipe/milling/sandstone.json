@@ -1,0 +1,12 @@
+{
+  "type": "create:milling",
+  "ingredients": [
+    "minecraft:sandstone"
+  ],
+  "results": [
+    {
+      "id": "minecraft:sand"
+    }
+  ],
+  "processing_time": 150
+}

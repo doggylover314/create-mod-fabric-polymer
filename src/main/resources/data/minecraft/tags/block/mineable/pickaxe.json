@@ -1,0 +1,16 @@
+{
+  "values": [
+    "create:shaft",
+    "create:cogwheel",
+    "create:large_cogwheel",
+    "create:gearbox",
+    "create:creative_motor",
+    "create:water_wheel",
+    "create:hand_crank",
+    "create:millstone",
+    "create:mechanical_press",
+    "create:mechanical_mixer",
+    "create:basin",
+    "create:andesite_casing"
+  ]
+}

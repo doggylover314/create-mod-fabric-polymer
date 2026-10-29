@@ -1,0 +1,12 @@
+{
+  "type": "create:milling",
+  "ingredients": [
+    "minecraft:gravel"
+  ],
+  "results": [
+    {
+      "id": "minecraft:flint"
+    }
+  ],
+  "processing_time": 250
+}
