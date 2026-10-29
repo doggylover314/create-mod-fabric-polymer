@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "#minecraft:wooden_trapdoors",
+    "create:framed_glass"
+  ],
+  "result": {
+    "id": "create:framed_glass_trapdoor",
+    "count": 1
+  }
+}

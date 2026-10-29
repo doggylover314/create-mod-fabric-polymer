@@ -2,6 +2,7 @@ package dev.createpolymer.kinetics.simple;
 
 import org.jspecify.annotations.Nullable;
 
+import dev.createpolymer.decoration.bracket.BracketDisplay;
 import dev.createpolymer.kinetics.base.KineticBlockEntity;
 import dev.createpolymer.kinetics.base.RotatedPillarKineticBlock;
 import dev.createpolymer.registry.ModBlockEntities;
@@ -118,6 +119,7 @@ public abstract class AbstractShaftBlock extends RotatedPillarKineticBlock imple
 	public static class SpinningAxisModel extends BaseModel {
 		private final Part part;
 		private final boolean largeCog;
+		private final BracketDisplay bracket = new BracketDisplay(this);
 
 		public SpinningAxisModel(BlockState state, ItemStack model, boolean largeCog) {
 			super(state);
@@ -134,6 +136,7 @@ public abstract class AbstractShaftBlock extends RotatedPillarKineticBlock imple
 
 		@Override
 		protected void update(ServerLevel level, BlockPos pos, @Nullable BlockEntity be, long time) {
+			bracket.update(be);
 			if (!(be instanceof KineticBlockEntity kbe))
 				return;
 			Axis axis = state.getValue(AXIS);

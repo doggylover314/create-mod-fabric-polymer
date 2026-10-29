@@ -2,6 +2,7 @@ package dev.createpolymer.fluids.pipes;
 
 import java.util.List;
 
+import dev.createpolymer.decoration.bracket.BracketedBlockEntityBehaviour;
 import dev.createpolymer.fluids.FluidPropagator;
 import dev.createpolymer.fluids.FluidTransportBehaviour;
 import dev.createpolymer.fluids.pipes.valve.FluidValveBlock;
@@ -23,6 +24,7 @@ public class StraightPipeBlockEntity extends SmartBlockEntity {
 	@Override
 	public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
 		behaviours.add(new StraightPipeFluidTransportBehaviour(this));
+		behaviours.add(new BracketedBlockEntityBehaviour(this));
 	}
 
 	/** Create's Block#onRemove: a replaced pipe tells the pipes and pumps around it to rebuild their network. */

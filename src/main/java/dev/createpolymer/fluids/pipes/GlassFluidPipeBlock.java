@@ -2,6 +2,7 @@ package dev.createpolymer.fluids.pipes;
 
 import org.jspecify.annotations.Nullable;
 
+import dev.createpolymer.decoration.bracket.BracketDisplay;
 import dev.createpolymer.fluids.FluidTransportBehaviour;
 import dev.createpolymer.foundation.block.IBE;
 import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
@@ -45,6 +46,8 @@ public class GlassFluidPipeBlock extends AxisPipeBlock implements IBE<StraightPi
 
 	@Override
 	public InteractionResult onWrenched(BlockState state, UseOnContext context) {
+		if (tryRemoveBracket(context))
+			return InteractionResult.SUCCESS;
 		BlockState newState;
 		Level world = context.getLevel();
 		BlockPos pos = context.getClickedPos();
@@ -104,6 +107,7 @@ public class GlassFluidPipeBlock extends AxisPipeBlock implements IBE<StraightPi
 	public static class Model extends BaseModel {
 		private final dev.createpolymer.visual.Part window;
 		private final PipeAttachments attachments;
+		private final BracketDisplay bracket = new BracketDisplay(this);
 		private boolean dirty = true;
 
 		public Model(BlockState state) {
@@ -123,6 +127,7 @@ public class GlassFluidPipeBlock extends AxisPipeBlock implements IBE<StraightPi
 			if (!dirty && time % 5 != 0)
 				return;
 			dirty = false;
+			bracket.update(be);
 			attachments.update(level, pos, state, BlockEntityBehaviour.get(be, FluidTransportBehaviour.TYPE));
 		}
 	}

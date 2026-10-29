@@ -1,5 +1,6 @@
 package dev.createpolymer.trains.station;
 
+import dev.createpolymer.decoration.slidingDoor.DoorControlGui;
 import dev.createpolymer.contraptions.AssemblyException;
 import dev.createpolymer.registry.feature.SchedulesRegistry;
 import dev.createpolymer.registry.feature.TrackRegistry;
@@ -85,6 +86,7 @@ public class StationGui extends SimpleGui {
 		} else {
 			showAutoSchedule();
 			showStation(station);
+			setSlot(20, DoorControlGui.button(player, be.doorControls, this::refresh));
 		}
 		setSlot(CLOSE, closeButton());
 	}

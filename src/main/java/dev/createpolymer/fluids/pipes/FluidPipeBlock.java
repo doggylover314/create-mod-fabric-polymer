@@ -1,6 +1,7 @@
 package dev.createpolymer.fluids.pipes;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import org.jspecify.annotations.Nullable;
 
@@ -8,7 +9,9 @@ import dev.createpolymer.fluids.FluidPropagator;
 import dev.createpolymer.fluids.FluidTransportBehaviour;
 import dev.createpolymer.foundation.block.IBE;
 import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
-import dev.createpolymer.item.IWrenchable;
+import dev.createpolymer.decoration.bracket.BracketDisplay;
+import dev.createpolymer.decoration.bracket.BracketedBlockEntityBehaviour;
+import dev.createpolymer.item.IWrenchableWithBracket;
 import dev.createpolymer.registry.feature.PipesRegistry;
 import dev.createpolymer.util.Iterate;
 import dev.createpolymer.util.ShapeUtil;
@@ -52,7 +55,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.ticks.TickPriority;
 
-public class FluidPipeBlock extends PipeBlock implements SimpleWaterloggedBlock, IWrenchable,
+public class FluidPipeBlock extends PipeBlock implements SimpleWaterloggedBlock, IWrenchableWithBracket,
 	IBE<FluidPipeBlockEntity>, PolymerModelBlock {
 
 	private static final VoxelShape OCCLUSION_BOX = ShapeUtil.box(4, 4, 4, 12, 12, 12);
@@ -64,6 +67,9 @@ public class FluidPipeBlock extends PipeBlock implements SimpleWaterloggedBlock,
 
 	@Override
 	public InteractionResult onWrenched(BlockState state, UseOnContext context) {
+		if (tryRemoveBracket(context))
+			return InteractionResult.SUCCESS;
+
 		Level world = context.getLevel();
 		BlockPos pos = context.getClickedPos();
 		Direction clickedFace = context.getClickedFace();
@@ -148,8 +154,11 @@ public class FluidPipeBlock extends PipeBlock implements SimpleWaterloggedBlock,
 		if (VanillaFluidTargets.canProvideFluidWithoutCapability(neighbour))
 			return true;
 		FluidTransportBehaviour transport = BlockEntityBehaviour.get(world, neighbourPos, FluidTransportBehaviour.TYPE);
+		BracketedBlockEntityBehaviour bracket =
+			BlockEntityBehaviour.get(world, neighbourPos, BracketedBlockEntityBehaviour.TYPE);
 		if (isPipe(neighbour))
-			return true;
+			return bracket == null || !bracket.isBracketPresent()
+				|| FluidPropagator.getStraightPipeAxis(neighbour) == direction.getAxis();
 		if (transport == null)
 			return false;
 		return transport.canHaveFlowToward(neighbour, direction.getOpposite());
@@ -221,6 +230,10 @@ public class FluidPipeBlock extends PipeBlock implements SimpleWaterloggedBlock,
 	public BlockState updateBlockState(BlockState state, Direction preferredDirection, @Nullable Direction ignore,
 		BlockGetter world, BlockPos pos) {
 
+		BracketedBlockEntityBehaviour bracket = BlockEntityBehaviour.get(world, pos, BracketedBlockEntityBehaviour.TYPE);
+		if (bracket != null && bracket.isBracketPresent())
+			return state;
+
 		BlockState prevState = state;
 		int prevStateSides = (int) Arrays.stream(Iterate.directions)
 			.map(PROPERTY_BY_DIRECTION::get)
@@ -261,6 +274,18 @@ public class FluidPipeBlock extends PipeBlock implements SimpleWaterloggedBlock,
 	protected FluidState getFluidState(BlockState state) {
 		return state.getValue(BlockStateProperties.WATERLOGGED) ? Fluids.WATER.getSource(false)
 			: Fluids.EMPTY.defaultFluidState();
+	}
+
+	@Override
+	public Optional<ItemStack> removeBracket(BlockGetter world, BlockPos pos, boolean inOnReplacedContext) {
+		BracketedBlockEntityBehaviour behaviour =
+			BlockEntityBehaviour.get(world, pos, BracketedBlockEntityBehaviour.TYPE);
+		if (behaviour == null)
+			return Optional.empty();
+		BlockState bracket = behaviour.removeBracket(inOnReplacedContext);
+		if (bracket == null)
+			return Optional.empty();
+		return Optional.of(new ItemStack(bracket.getBlock()));
 	}
 
 	@Override
@@ -323,6 +348,7 @@ public class FluidPipeBlock extends PipeBlock implements SimpleWaterloggedBlock,
 	public static class Model extends BaseModel {
 		private final Part core;
 		private final PipeAttachments attachments;
+		private final BracketDisplay bracket = new BracketDisplay(this);
 		private boolean dirty = true;
 
 		public Model(BlockState state) {
@@ -352,6 +378,7 @@ public class FluidPipeBlock extends PipeBlock implements SimpleWaterloggedBlock,
 			if (!dirty && time % 5 != 0)
 				return;
 			dirty = false;
+			bracket.update(be);
 			attachments.update(level, pos, state, BlockEntityBehaviour.get(be, FluidTransportBehaviour.TYPE));
 		}
 	}

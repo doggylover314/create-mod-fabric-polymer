@@ -18,6 +18,7 @@ import dev.createpolymer.api.contraption.transformable.TransformableBlockEntity;
 import dev.createpolymer.contraptions.AssemblyException;
 import dev.createpolymer.contraptions.StructureTransform;
 import dev.createpolymer.contraptions.bearing.BearingSounds;
+import dev.createpolymer.decoration.slidingDoor.DoorControlBehaviour;
 import dev.createpolymer.foundation.blockEntity.SmartBlockEntity;
 import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import dev.createpolymer.foundation.item.handler.ItemHandlerLookup;
@@ -88,6 +89,7 @@ public class StationBlockEntity extends SmartBlockEntity implements Transformabl
 
 	public TrackTargetingBehaviour<GlobalStation> edgePoint;
 	protected DepotBehaviour depotBehaviour;
+	public DoorControlBehaviour doorControls;
 	public LerpedFloat flag;
 
 	protected int failedCarriageIndex;
@@ -127,6 +129,7 @@ public class StationBlockEntity extends SmartBlockEntity implements Transformabl
 		behaviours.add(depotBehaviour = new DepotBehaviour(this).onlyAccepts(stack -> stack.is(SchedulesRegistry.SCHEDULE))
 			.withCallback(s -> applyAutoSchedule()));
 		depotBehaviour.addSubBehaviours(behaviours);
+		behaviours.add(doorControls = new DoorControlBehaviour(this));
 	}
 
 	@Override

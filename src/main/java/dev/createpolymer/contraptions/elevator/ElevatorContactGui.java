@@ -3,6 +3,7 @@ package dev.createpolymer.contraptions.elevator;
 import java.util.ArrayList;
 import java.util.List;
 
+import dev.createpolymer.decoration.slidingDoor.DoorControlGui;
 import dev.createpolymer.util.Couple;
 import dev.createpolymer.util.IntAttached;
 import eu.pb4.sgui.api.elements.GuiElementBuilder;
@@ -109,6 +110,8 @@ public class ElevatorContactGui extends SimpleGui {
 				.withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC))
 			.hideDefaultTooltip()
 			.setCallback(this::editNames));
+
+		setSlot(28, DoorControlGui.button(player, be.doorControls, this::refresh));
 
 		boolean active = column != null && column.isActive();
 		setSlot(31, new GuiElementBuilder(active ? Items.DYE.pick(DyeColor.LIME) : Items.DYE.pick(DyeColor.GRAY))

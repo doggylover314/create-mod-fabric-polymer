@@ -276,6 +276,8 @@ public class BlockMovementChecksImpl {
 		if (block instanceof dev.createpolymer.contraptions.piston.MechanicalPistonHeadBlock)
 			return facing.getAxis() != state.getValue(BlockStateProperties.FACING)
 				.getAxis();
+		if (state.getBlock() instanceof dev.createpolymer.decoration.slidingDoor.SlidingDoorBlock)
+			return false;
 		return BlockMovementChecks.isBrittle(state);
 	}
 }

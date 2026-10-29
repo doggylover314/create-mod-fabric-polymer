@@ -25,7 +25,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 /** Ported from Create's CogWheelBlock (MIT, The Create Team). Encasing is not ported yet. */
-public class CogWheelBlock extends AbstractShaftBlock implements ICogWheel {
+public class CogWheelBlock extends AbstractSimpleShaftBlock implements ICogWheel {
 	private static final VoxelShape POLE = ShapeUtil.box(5, 0, 5, 11, 16, 11);
 	public static final Map<Axis, VoxelShape> SMALL = ShapeUtil.forAxis(Shapes.or(ShapeUtil.box(2, 6, 2, 14, 10, 14), POLE));
 	public static final Map<Axis, VoxelShape> LARGE = ShapeUtil.forAxis(Shapes.or(ShapeUtil.box(0, 6, 0, 16, 10, 16), POLE));

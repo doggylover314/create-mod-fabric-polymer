@@ -2,6 +2,9 @@ package dev.createpolymer.fluids.pipes;
 
 import java.util.List;
 
+import dev.createpolymer.api.contraption.transformable.TransformableBlockEntity;
+import dev.createpolymer.contraptions.StructureTransform;
+import dev.createpolymer.decoration.bracket.BracketedBlockEntityBehaviour;
 import dev.createpolymer.fluids.FluidPropagator;
 import dev.createpolymer.fluids.FluidTransportBehaviour;
 import dev.createpolymer.foundation.blockEntity.SmartBlockEntity;
@@ -9,10 +12,11 @@ import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class FluidPipeBlockEntity extends SmartBlockEntity {
+public class FluidPipeBlockEntity extends SmartBlockEntity implements TransformableBlockEntity {
 
 	public FluidPipeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
@@ -21,6 +25,18 @@ public class FluidPipeBlockEntity extends SmartBlockEntity {
 	@Override
 	public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
 		behaviours.add(new StandardPipeFluidTransportBehaviour(this));
+		behaviours.add(new BracketedBlockEntityBehaviour(this, this::canHaveBracket));
+	}
+
+	@Override
+	public void transform(BlockEntity be, StructureTransform transform) {
+		BracketedBlockEntityBehaviour bracketBehaviour = getBehaviour(BracketedBlockEntityBehaviour.TYPE);
+		if (bracketBehaviour != null)
+			bracketBehaviour.transformBracket(transform);
+	}
+
+	private boolean canHaveBracket(BlockState state) {
+		return !(state.getBlock() instanceof EncasedPipeBlock);
 	}
 
 	/** Create's Block#onRemove: a replaced pipe tells the pipes and pumps around it to rebuild their network. */

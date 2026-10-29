@@ -592,7 +592,9 @@ public abstract class Contraption {
 		BlockState blockstate = world.getBlockState(pos);
 		if (blockstate.is(RedstoneRegistry.REDSTONE_CONTACT))
 			blockstate = blockstate.setValue(RedstoneContactBlock.POWERED, true);
-		// sliding doors are hidden on contraptions: with those blocks
+		// sliding doors rest closed or open on contraptions: their panels are not drawn by the block
+		if (blockstate.hasProperty(dev.createpolymer.decoration.slidingDoor.SlidingDoorBlock.VISIBLE))
+			blockstate = blockstate.setValue(dev.createpolymer.decoration.slidingDoor.SlidingDoorBlock.VISIBLE, false);
 		if (blockstate.getBlock() instanceof dev.createpolymer.contraptions.actors.trainControls.ControlsBlock
 			&& this instanceof dev.createpolymer.trains.entity.CarriageContraption)
 			blockstate = blockstate.setValue(dev.createpolymer.contraptions.actors.trainControls.ControlsBlock.OPEN, true);
@@ -1078,6 +1080,10 @@ public abstract class Contraption {
 				world.destroyBlock(targetPos, shouldDropBlocks);
 
 				// shafts re-pick their shaft type, sliding doors become visible again
+				if (state.hasProperty(dev.createpolymer.decoration.slidingDoor.SlidingDoorBlock.VISIBLE))
+					state = state.setValue(dev.createpolymer.decoration.slidingDoor.SlidingDoorBlock.VISIBLE,
+						!state.getValue(dev.createpolymer.decoration.slidingDoor.SlidingDoorBlock.OPEN))
+						.setValue(dev.createpolymer.decoration.slidingDoor.SlidingDoorBlock.POWERED, false);
 				// Stop Sculk shriekers from getting "stuck" if moved mid-shriek.
 				if (state.is(Blocks.SCULK_SHRIEKER)) {
 					state = Blocks.SCULK_SHRIEKER.defaultBlockState();
@@ -1281,6 +1287,8 @@ public abstract class Contraption {
 	protected boolean shouldUpdateAfterMovement(StructureBlockInfo info) {
 		if (PoiTypes.forState(info.state())
 			.isPresent())
+			return false;
+		if (info.state().getBlock() instanceof dev.createpolymer.decoration.slidingDoor.SlidingDoorBlock)
 			return false;
 		return true;
 	}

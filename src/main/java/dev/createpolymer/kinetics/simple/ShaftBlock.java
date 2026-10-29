@@ -4,6 +4,9 @@ import java.util.Map;
 
 import org.jspecify.annotations.Nullable;
 
+import dev.createpolymer.decoration.girder.GirderEncasedShaftBlock;
+import dev.createpolymer.kinetics.base.KineticBlockEntity;
+import dev.createpolymer.registry.feature.DoorsRegistry;
 import dev.createpolymer.util.ShapeUtil;
 import dev.createpolymer.visual.ModelItems;
 import eu.pb4.polymer.blocks.api.BlockModelType;
@@ -14,15 +17,21 @@ import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-/** Ported from Create's ShaftBlock (MIT, The Create Team). Encasing and girders are not ported yet. */
-public class ShaftBlock extends AbstractShaftBlock implements PolymerTexturedBlock {
+/** Ported from Create's ShaftBlock (MIT, The Create Team). */
+public class ShaftBlock extends AbstractSimpleShaftBlock implements PolymerTexturedBlock {
 	public static final Map<Axis, VoxelShape> SHAPE = ShapeUtil.forAxis(ShapeUtil.box(5, 0, 5, 11, 16, 11));
 
 	// Invisible lightning-rod states: same thin hitbox as a shaft, no visible model.
@@ -50,6 +59,31 @@ public class ShaftBlock extends AbstractShaftBlock implements PolymerTexturedBlo
 		Map<Axis, BlockState> map = state.getValue(BlockStateProperties.WATERLOGGED) ? CLIENT_WET : CLIENT_DRY;
 		BlockState client = map.get(state.getValue(AXIS));
 		return client != null ? client : super.getPolymerBlockState(state, context);
+	}
+
+	@Override
+	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player,
+										  InteractionHand hand, BlockHitResult hitResult) {
+		if (player.isShiftKeyDown() || !player.mayBuild())
+			return InteractionResult.TRY_WITH_EMPTY_HAND;
+
+		InteractionResult result = super.useItemOn(stack, state, level, pos, player, hand, hitResult);
+		if (result.consumesAction())
+			return result;
+
+		if (stack.is(DoorsRegistry.METAL_GIRDER_ITEM) && state.getValue(AXIS) != Axis.Y) {
+			KineticBlockEntity.switchToBlockState(level, pos, DoorsRegistry.METAL_GIRDER_ENCASED_SHAFT.defaultBlockState()
+				.setValue(BlockStateProperties.WATERLOGGED, state.getValue(BlockStateProperties.WATERLOGGED))
+				.setValue(GirderEncasedShaftBlock.HORIZONTAL_AXIS, state.getValue(AXIS) == Axis.Z ? Axis.Z : Axis.X));
+			if (!level.isClientSide() && !player.isCreative()) {
+				stack.shrink(1);
+				if (stack.isEmpty())
+					player.setItemInHand(hand, ItemStack.EMPTY);
+			}
+			return InteractionResult.SUCCESS;
+		}
+
+		return InteractionResult.TRY_WITH_EMPTY_HAND;
 	}
 
 	@Override

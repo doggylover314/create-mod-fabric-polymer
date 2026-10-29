@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "#minecraft:wooden_doors",
+    "create:andesite_casing"
+  ],
+  "result": {
+    "id": "create:andesite_door",
+    "count": 1
+  }
+}

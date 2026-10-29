@@ -4,7 +4,11 @@ import java.util.Map;
 
 import dev.createpolymer.fluids.FluidPropagator;
 import dev.createpolymer.fluids.FluidTransportBehaviour;
-import dev.createpolymer.item.IWrenchable;
+import java.util.Optional;
+
+import dev.createpolymer.decoration.bracket.BracketedBlockEntityBehaviour;
+import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
+import dev.createpolymer.item.IWrenchableWithBracket;
 import dev.createpolymer.registry.feature.PipesRegistry;
 import dev.createpolymer.util.Iterate;
 import net.minecraft.core.BlockPos;
@@ -30,7 +34,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.ticks.TickPriority;
 
-public class AxisPipeBlock extends RotatedPillarBlock implements IWrenchable, IAxisPipe {
+public class AxisPipeBlock extends RotatedPillarBlock implements IWrenchableWithBracket, IAxisPipe {
 
 	public AxisPipeBlock(Properties p_i48339_1_) {
 		super(p_i48339_1_);
@@ -108,6 +112,18 @@ public class AxisPipeBlock extends RotatedPillarBlock implements IWrenchable, IA
 	@Override
 	public Axis getAxis(BlockState state) {
 		return state.getValue(AXIS);
+	}
+
+	@Override
+	public Optional<ItemStack> removeBracket(BlockGetter world, BlockPos pos, boolean inOnReplacedContext) {
+		BracketedBlockEntityBehaviour behaviour =
+			BlockEntityBehaviour.get(world, pos, BracketedBlockEntityBehaviour.TYPE);
+		if (behaviour == null)
+			return Optional.empty();
+		BlockState bracket = behaviour.removeBracket(inOnReplacedContext);
+		if (bracket == null)
+			return Optional.empty();
+		return Optional.of(new ItemStack(bracket.getBlock()));
 	}
 
 }

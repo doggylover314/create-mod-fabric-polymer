@@ -1,0 +1,91 @@
+{
+  "items": [
+    "andesite_door",
+    "brass_door",
+    "copper_door",
+    "train_door",
+    "framed_glass_door",
+    "train_trapdoor",
+    "framed_glass_trapdoor",
+    "metal_girder",
+    "metal_bracket",
+    "wooden_bracket",
+    "placard"
+  ],
+  "blocks": [
+    "andesite_door",
+    "brass_door",
+    "copper_door",
+    "train_door",
+    "framed_glass_door",
+    "train_trapdoor",
+    "framed_glass_trapdoor",
+    "metal_girder",
+    "metal_girder_encased_shaft",
+    "metal_bracket",
+    "wooden_bracket",
+    "placard"
+  ],
+  "display_models": [
+    "block/andesite_door/fold_left",
+    "block/andesite_door/fold_right",
+    "block/copper_door/fold_left",
+    "block/copper_door/fold_right",
+    "block/metal_girder/block_pole",
+    "block/metal_girder/block_x",
+    "block/metal_girder/block_z",
+    "block/metal_girder/block_cross",
+    "block/metal_girder/block_top",
+    "block/metal_girder/block_bottom",
+    "block/metal_girder/bracket_north",
+    "block/metal_girder/bracket_east",
+    "block/metal_girder/bracket_south",
+    "block/metal_girder/bracket_west",
+    "block/metal_girder_encased_shaft/block",
+    "block/metal_girder_encased_shaft/block_top",
+    "block/metal_girder_encased_shaft/block_bottom",
+    "block/shaft"
+  ],
+  "blockstates": [
+    "andesite_door",
+    "brass_door",
+    "copper_door",
+    "train_door",
+    "framed_glass_door",
+    "train_trapdoor",
+    "framed_glass_trapdoor",
+    "metal_bracket",
+    "wooden_bracket",
+    "placard"
+  ],
+  "crafting": [
+    "kinetics/andesite_door",
+    "kinetics/brass_door",
+    "kinetics/copper_door",
+    "kinetics/train_door",
+    "kinetics/framed_glass_door",
+    "kinetics/train_trapdoor",
+    "kinetics/framed_glass_trapdoor",
+    "kinetics/metal_girder",
+    "kinetics/metal_bracket",
+    "kinetics/wooden_bracket",
+    "kinetics/placard"
+  ],
+  "lang_ids": [
+    "andesite_door",
+    "brass_door",
+    "copper_door",
+    "train_door",
+    "framed_glass_door",
+    "train_trapdoor",
+    "framed_glass_trapdoor",
+    "metal_girder",
+    "metal_girder_encased_shaft",
+    "metal_bracket",
+    "wooden_bracket",
+    "placard"
+  ],
+  "lang_prefixes": [
+    "create.contraption.door_control"
+  ]
+}

@@ -1,6 +1,10 @@
 package dev.createpolymer.contraptions.elevator;
 
+import java.util.List;
+
 import dev.createpolymer.contraptions.elevator.ElevatorColumn.ColumnCoords;
+import dev.createpolymer.decoration.slidingDoor.DoorControlBehaviour;
+import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import dev.createpolymer.foundation.blockEntity.SmartBlockEntity;
 import dev.createpolymer.util.Couple;
 import net.minecraft.core.BlockPos;
@@ -22,13 +26,18 @@ public class ElevatorContactBlockEntity extends SmartBlockEntity {
 	private int yTargetFromNBT = Integer.MIN_VALUE;
 	private boolean deferNameGenerator;
 
-	// Create adds a DoorControlBehaviour here; sliding doors are not part of this port
+	public DoorControlBehaviour doorControls;
 
 	public ElevatorContactBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
 		shortName = "";
 		longName = "";
 		deferNameGenerator = false;
+	}
+
+	@Override
+	public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
+		behaviours.add(doorControls = new DoorControlBehaviour(this));
 	}
 
 	@Override

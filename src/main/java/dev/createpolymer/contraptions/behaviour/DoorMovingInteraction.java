@@ -1,17 +1,22 @@
 package dev.createpolymer.contraptions.behaviour;
 
 import dev.createpolymer.contraptions.Contraption;
+import dev.createpolymer.decoration.slidingDoor.SlidingDoorBlock;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.DoorHingeSide;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 
 /**
- * Opens and closes doors on contraptions. Create's sliding (train) door branch is left out until those doors exist.
+ * Opens and closes doors on contraptions. A sliding door opens its other half of a double door too and is silent
+ * while it closes.
  */
 public class DoorMovingInteraction extends SimpleBlockMovingInteraction {
 
@@ -20,8 +25,9 @@ public class DoorMovingInteraction extends SimpleBlockMovingInteraction {
 		if (!(currentState.getBlock() instanceof DoorBlock))
 			return currentState;
 
-		SoundEvent sound = currentState.getValue(DoorBlock.OPEN) ? SoundEvents.WOODEN_DOOR_CLOSE
-			: SoundEvents.WOODEN_DOOR_OPEN;
+		boolean trainDoor = currentState.getBlock() instanceof SlidingDoorBlock;
+		SoundEvent sound = currentState.getValue(DoorBlock.OPEN) ? trainDoor ? null : SoundEvents.WOODEN_DOOR_CLOSE
+			: trainDoor ? SoundEvents.IRON_DOOR_OPEN : SoundEvents.WOODEN_DOOR_OPEN;
 
 		BlockPos otherPos = currentState.getValue(DoorBlock.HALF) == DoubleBlockHalf.LOWER ? pos.above() : pos.below();
 		StructureBlockInfo info = contraption.getBlocks()
@@ -34,8 +40,22 @@ public class DoorMovingInteraction extends SimpleBlockMovingInteraction {
 		currentState = currentState.cycle(DoorBlock.OPEN);
 
 		if (player != null) {
+
+			if (trainDoor) {
+				DoorHingeSide hinge = currentState.getValue(SlidingDoorBlock.HINGE);
+				Direction facing = currentState.getValue(SlidingDoorBlock.FACING);
+				BlockPos doublePos =
+					pos.relative(hinge == DoorHingeSide.LEFT ? facing.getClockWise() : facing.getCounterClockWise());
+				StructureBlockInfo doubleInfo = contraption.getBlocks()
+					.get(doublePos);
+				if (doubleInfo != null
+					&& SlidingDoorBlock.isDoubleDoor(currentState, hinge, facing, doubleInfo.state()))
+					handlePlayerInteraction(null, InteractionHand.MAIN_HAND, doublePos, contraption.entity);
+			}
+
 			float pitch = player.level().getRandom().nextFloat() * 0.1F + 0.9F;
-			playSound(player, sound, pitch);
+			if (sound != null)
+				playSound(player, sound, pitch);
 		}
 
 		return currentState;

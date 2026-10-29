@@ -20,6 +20,7 @@
  "block.create.brass_belt_funnel": "قیف تسمه‌ی برنجی",
  "block.create.brass_block": "بلوک فلز برنج",
  "block.create.brass_casing": "پوشاننده برنجی",
+ "block.create.brass_door": "در برنجی",
  "block.create.brass_encased_cogwheel": "چرخ‌دنده با روکش برنجی",
  "block.create.brass_encased_large_cogwheel": "چرخ‌دنده بزرگ با روکش برنجی",
  "block.create.brass_encased_shaft": "محور با روکش برنجی",
@@ -39,6 +40,7 @@
  "block.create.copper_backtank": "مخزن‌همراه مسی",
  "block.create.copper_bars": "نرده‌های مسی",
  "block.create.copper_casing": "کیسینگ مسی",
+ "block.create.copper_door": "در مسی",
  "block.create.copper_ladder": "نردبان مسی",
  "block.create.copper_scaffolding": "داربست مسی",
  "block.create.copper_valve_handle": "دسته شیر مسی",
@@ -54,6 +56,7 @@
  "block.create.ornate_iron_window_pane": "پنجره آهنی تزئین شده",
  "block.create.spruce_window": "بلوک پنجره صنوبر",
  "block.create.spruce_window_pane": "پنجره چوب صنوبر",
+ "block.create.train_door": "در قطار",
  "block.create.warped_window": "بلوک پنجره پیچ خورده",
  "block.create.warped_window_pane": "پنجره چوب پیچ دار",
  "create.station.close": "بستن پنجره"

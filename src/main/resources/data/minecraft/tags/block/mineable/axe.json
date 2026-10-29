@@ -29,6 +29,7 @@
     "create:weighted_ejector",
     "create:speedometer",
     "create:stressometer",
+    "create:wooden_bracket",
     "create:encased_fluid_pipe",
     "create:portable_fluid_interface",
     "create:mechanical_piston",
