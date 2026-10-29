@@ -41,7 +41,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class FunnelBlockEntity extends SmartBlockEntity implements Clearable {
 	/** Create's config logistics.defaultExtractionTimer */
-	static final int DEFAULT_EXTRACTION_TIMER = 8;
+	public static int DEFAULT_EXTRACTION_TIMER = 8;
 
 	private FilteringBehaviour filtering;
 	private InvManipulationBehaviour invManipulation;

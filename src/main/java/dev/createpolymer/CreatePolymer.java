@@ -7,6 +7,8 @@ import java.nio.file.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dev.createpolymer.infrastructure.config.ConfigCommand;
+import dev.createpolymer.infrastructure.config.CreateConfig;
 import dev.createpolymer.item.GogglesInfo;
 import dev.createpolymer.kinetics.TorquePropagator;
 import dev.createpolymer.kinetics.simple.ShaftBlock;
@@ -117,6 +119,10 @@ public class CreatePolymer implements ModInitializer {
 		ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, resources, success) -> RecipeCache.invalidate());
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> RecipeCache.invalidate());
 		ServerTickEvents.END_SERVER_TICK.register(GogglesInfo::tick);
+
+		// Settings: all blocks are registered now, so the stress section of config/create.json can list them.
+		CreateConfig.load(FabricLoader.getInstance().getConfigDir());
+		ConfigCommand.register();
 
 		LOGGER.info("Create (Polymer) loaded");
 	}

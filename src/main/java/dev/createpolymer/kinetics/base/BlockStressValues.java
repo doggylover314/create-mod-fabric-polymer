@@ -28,6 +28,24 @@ public final class BlockStressValues {
 		GENERATOR_SPEEDS.put(block, rpm);
 	}
 
+	/** A copy of every impact set so far. */
+	public static Map<Block, Double> impacts() {
+		return new IdentityHashMap<>(IMPACTS);
+	}
+
+	/** A copy of every capacity set so far. */
+	public static Map<Block, Double> capacities() {
+		return new IdentityHashMap<>(CAPACITIES);
+	}
+
+	/** Replaces all impacts and capacities, used by the config to restore the registered values before applying overrides. */
+	public static void replaceAll(Map<Block, Double> impacts, Map<Block, Double> capacities) {
+		IMPACTS.clear();
+		IMPACTS.putAll(impacts);
+		CAPACITIES.clear();
+		CAPACITIES.putAll(capacities);
+	}
+
 	public static double getImpact(Block block) {
 		return IMPACTS.getOrDefault(block, 0d);
 	}

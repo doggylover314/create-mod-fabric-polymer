@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import dev.createpolymer.foundation.block.BlockHelper;
+import dev.createpolymer.kinetics.fan.FanConfig;
 import dev.createpolymer.foundation.blockEntity.SmartBlockEntity;
 import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import dev.createpolymer.foundation.blockEntity.behaviour.inventory.VersionedInventoryTrackerBehaviour;
@@ -51,9 +52,6 @@ import net.minecraft.world.phys.Vec3;
  * (Unfinished)
  */
 public class ChuteBlockEntity extends SmartBlockEntity implements Clearable { // , IAirCurrentSource {
-
-	/** Create's config kinetics.fanBlockCheckRate */
-	static final int FAN_BLOCK_CHECK_RATE = 30;
 
 	// public AirCurrent airCurrent;
 
@@ -257,7 +255,7 @@ public class ChuteBlockEntity extends SmartBlockEntity implements Clearable { //
 
 	private void tickAirStreams(float itemSpeed) {
 		if (!level.isClientSide() && airCurrentUpdateCooldown-- <= 0) {
-			airCurrentUpdateCooldown = FAN_BLOCK_CHECK_RATE;
+			airCurrentUpdateCooldown = FanConfig.fanBlockCheckRate;
 			updateAirFlow = true;
 		}
 

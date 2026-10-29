@@ -62,6 +62,34 @@ Players run an unmodded client, so everything that needs client code is replaced
    (`config/polymer/auto-host.json`) so players are offered the pack when they join.
    If your host blocks extra traffic on the game port, see Polymer's auto-host docs.
 
+## Configuration
+
+Server settings are in `config/create.json`, which is written with all defaults the first time the server starts.
+The sections are named after Create's server config (`kinetics`, `logistics`, `fluids`, `equipment`, `trains`,
+`recipes`) and the keys are Create's own, with Create's defaults, for example:
+
+```json
+{
+  "kinetics": { "maxBeltLength": 20, "maxBlocksMoved": 2048, "movableObsidian": "UNMOVABLE" },
+  "trains": { "maxBogeyCount": 20 },
+  "stress": {
+    "impact": { "millstone": 4.0 },
+    "capacity": { "hand_crank": 8.0 }
+  }
+}
+```
+
+- Values outside Create's allowed range are clamped to it, and a value of the wrong type falls back to the default.
+  Unknown keys are ignored. Each of these is reported as a warning in the server log.
+- Keys missing from the file are added the next time it is loaded; your own values are kept.
+- `stress` overrides the stress impact (`impact`) and the stress capacity (`capacity`) per Create block, using the block id
+  without the `create:` prefix. The file lists every block that has a value.
+- `/create config reload` (operator level 2) reads the file again. If the file cannot be parsed the current settings stay.
+  Sizes that are fixed when a block is placed, such as `vaultCapacity` and `fluidTankCapacity`, only affect new blocks.
+- Settings that only exist in Create's client config or for features this port does not have (schematics and the symmetry
+  wand) are not in the file. `fanParticleDensity` is a client option in Create and is a server
+  setting here, because the server sends the particles.
+
 ## Building and testing
 
 Requires JDK 25.

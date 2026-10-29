@@ -23,7 +23,7 @@ public final class DecorationPlacement {
 	private DecorationPlacement() {}
 
 	/** Create's config placementAssistRange. */
-	public static final int PLACEMENT_ASSIST_RANGE = 12;
+	public static int PLACEMENT_ASSIST_RANGE = 12;
 
 	public static InteractionResult placeInWorld(Level level, BlockItem blockItem, Player player, InteractionHand hand,
 		BlockPos newPos, UnaryOperator<BlockState> transform) {

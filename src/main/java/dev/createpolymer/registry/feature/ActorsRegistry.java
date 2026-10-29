@@ -80,7 +80,7 @@ public final class ActorsRegistry {
 	public static boolean harvesterReplants = true;
 	public static boolean harvestPartiallyGrown = false;
 	public static int rollerFillDepth = 12;
-	public static int psiTimeout = 20;
+	public static int psiTimeout = 60;
 
 	// ---- tags (data files in data/create/tags) ----
 

@@ -44,9 +44,9 @@ public class FluidTankBlockEntity extends SmartBlockEntity implements IHaveGoggl
 	private static final int MAX_SIZE = 3;
 
 	/** Create's config fluids.fluidTankCapacity (default): buckets per tank block. */
-	public static final int FLUID_TANK_CAPACITY = 8;
+	public static int FLUID_TANK_CAPACITY = 8;
 	/** Create's config fluids.fluidTankMaxHeight (default): the tallest a tank gets. */
-	public static final int FLUID_TANK_MAX_HEIGHT = 32;
+	public static int FLUID_TANK_MAX_HEIGHT = 32;
 
 	protected IFluidHandler fluidCapability;
 	protected boolean forceFluidLevelUpdate;

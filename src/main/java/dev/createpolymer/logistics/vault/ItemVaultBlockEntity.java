@@ -30,7 +30,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 public class ItemVaultBlockEntity extends SmartBlockEntity implements IMultiBlockEntityContainer.Inventory, Clearable {
 
 	/** Create's config logistics.vaultCapacity (default): the amount of stacks one vault block holds. */
-	public static final int VAULT_CAPACITY = 20;
+	public static int VAULT_CAPACITY = 20;
 
 	protected IItemHandler itemCapability = null;
 
