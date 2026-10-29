@@ -93,6 +93,7 @@ public class CreatePolymer implements ModInitializer {
 		DecorationRegistry.init();
 		RedstoneRegistry.init();
 		MiscRegistry.init();
+		dev.createpolymer.registry.feature.CopycatRegistry.init();
 		ArmRegistry.init();
 		FunnelRegistry.init();
 		EquipmentRegistry.init();

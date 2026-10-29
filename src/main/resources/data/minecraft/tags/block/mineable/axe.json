@@ -108,6 +108,8 @@
     "create:display_link",
     "create:redstone_link",
     "create:analog_lever",
+    "create:copycat_step",
+    "create:copycat_panel",
     "create:white_seat",
     "create:orange_seat",
     "create:magenta_seat",

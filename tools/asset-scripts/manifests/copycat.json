@@ -1,0 +1,23 @@
+{
+  "items": [
+    "copycat_step",
+    "copycat_panel"
+  ],
+  "blocks": [
+    "copycat_base",
+    "copycat_step",
+    "copycat_panel",
+    "copycat_bars"
+  ],
+  "display_models": [
+    "block/copycat_base/block",
+    "block/copycat_base/panel",
+    "block/copycat_base/step"
+  ],
+  "lang_ids": [
+    "copycat_base",
+    "copycat_step",
+    "copycat_panel",
+    "copycat_bars"
+  ]
+}
