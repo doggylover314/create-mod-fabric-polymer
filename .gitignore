@@ -9,3 +9,4 @@ bin/
 tools/client-harness/run/
 tools/client-harness/build/
 tools/client-harness/.gradle/
+__pycache__/

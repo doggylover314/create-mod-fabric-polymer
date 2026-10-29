@@ -15,6 +15,7 @@ import dev.createpolymer.registry.ModBlockEntities;
 import dev.createpolymer.registry.ModBlocks;
 import dev.createpolymer.registry.ModItems;
 import dev.createpolymer.registry.ModRecipeTypes;
+import dev.createpolymer.registry.feature.VaultRegistry;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import eu.pb4.polymer.resourcepack.extras.api.ResourcePackExtras;
 import net.fabricmc.api.EnvType;
@@ -40,6 +41,7 @@ public class CreatePolymer implements ModInitializer {
 		ModBlockEntities.init();
 		ModItems.init();
 		ModRecipeTypes.init();
+		VaultRegistry.init();
 
 		// Resource pack: Create's models/textures/lang from this jar, served by polymer-autohost.
 		enableAutoHostByDefault();

@@ -21,6 +21,7 @@
     "create:depot",
     "create:speedometer",
     "create:stressometer",
-    "create:andesite_casing"
+    "create:andesite_casing",
+    "create:item_vault"
   ]
 }

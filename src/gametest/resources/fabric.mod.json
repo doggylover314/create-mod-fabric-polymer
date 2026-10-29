@@ -5,7 +5,7 @@
 	"name": "Create (Polymer) game tests",
 	"environment": "*",
 	"entrypoints": {
-		"fabric-gametest": ["dev.createpolymer.test.KineticGameTests", "dev.createpolymer.test.ProcessingGameTests", "dev.createpolymer.test.TransmissionGameTests"]
+		"fabric-gametest": ["dev.createpolymer.test.KineticGameTests", "dev.createpolymer.test.ProcessingGameTests", "dev.createpolymer.test.TransmissionGameTests", "dev.createpolymer.test.VaultGameTests"]
 	},
 	"depends": {
 		"create": "*",

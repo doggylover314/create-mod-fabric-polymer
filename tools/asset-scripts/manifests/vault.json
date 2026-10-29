@@ -1,0 +1,80 @@
+{
+  "items": [
+    "item_vault"
+  ],
+  "blocks": [
+    "item_vault"
+  ],
+  "own_models": [
+    "block/item_vault/polymer_l_010100",
+    "block/item_vault/polymer_l_010101",
+    "block/item_vault/polymer_l_010110",
+    "block/item_vault/polymer_l_010111",
+    "block/item_vault/polymer_l_011000",
+    "block/item_vault/polymer_l_011001",
+    "block/item_vault/polymer_l_011010",
+    "block/item_vault/polymer_l_011011",
+    "block/item_vault/polymer_l_011100",
+    "block/item_vault/polymer_l_011101",
+    "block/item_vault/polymer_l_011110",
+    "block/item_vault/polymer_l_011111",
+    "block/item_vault/polymer_l_100100",
+    "block/item_vault/polymer_l_100101",
+    "block/item_vault/polymer_l_100110",
+    "block/item_vault/polymer_l_100111",
+    "block/item_vault/polymer_l_101000",
+    "block/item_vault/polymer_l_101001",
+    "block/item_vault/polymer_l_101010",
+    "block/item_vault/polymer_l_101011",
+    "block/item_vault/polymer_l_101100",
+    "block/item_vault/polymer_l_101101",
+    "block/item_vault/polymer_l_101110",
+    "block/item_vault/polymer_l_101111",
+    "block/item_vault/polymer_l_110100",
+    "block/item_vault/polymer_l_110101",
+    "block/item_vault/polymer_l_110110",
+    "block/item_vault/polymer_l_110111",
+    "block/item_vault/polymer_l_111000",
+    "block/item_vault/polymer_l_111001",
+    "block/item_vault/polymer_l_111010",
+    "block/item_vault/polymer_l_111011",
+    "block/item_vault/polymer_l_111100",
+    "block/item_vault/polymer_l_111101",
+    "block/item_vault/polymer_l_111110",
+    "block/item_vault/polymer_l_111111",
+    "block/item_vault/polymer_m_000000",
+    "block/item_vault/polymer_m_000001",
+    "block/item_vault/polymer_m_000010",
+    "block/item_vault/polymer_m_000011",
+    "block/item_vault/polymer_m_010100",
+    "block/item_vault/polymer_m_010101",
+    "block/item_vault/polymer_m_010110",
+    "block/item_vault/polymer_m_010111",
+    "block/item_vault/polymer_m_011000",
+    "block/item_vault/polymer_m_011001",
+    "block/item_vault/polymer_m_011010",
+    "block/item_vault/polymer_m_011011",
+    "block/item_vault/polymer_m_100100",
+    "block/item_vault/polymer_m_100101",
+    "block/item_vault/polymer_m_100110",
+    "block/item_vault/polymer_m_100111",
+    "block/item_vault/polymer_m_101000",
+    "block/item_vault/polymer_m_101001",
+    "block/item_vault/polymer_m_101010",
+    "block/item_vault/polymer_m_101011"
+  ],
+  "crafting": [
+    "kinetics/item_vault"
+  ],
+  "tags": {
+    "c:barrels/wooden": [
+      "minecraft:barrel"
+    ]
+  },
+  "known_tags": [
+    "c:barrels/wooden"
+  ],
+  "lang_ids": [
+    "item_vault"
+  ]
+}
