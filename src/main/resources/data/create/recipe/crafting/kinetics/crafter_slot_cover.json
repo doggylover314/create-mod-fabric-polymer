@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "AAA"
+  ],
+  "key": {
+    "A": "#c:nuggets/brass"
+  },
+  "result": {
+    "id": "create:crafter_slot_cover",
+    "count": 1
+  }
+}

@@ -33,6 +33,7 @@
     "create:andesite_casing",
     "create:brass_casing",
     "create:copper_casing",
+    "create:mechanical_crafter",
     "create:sequenced_gearshift",
     "create:flywheel"
   ]

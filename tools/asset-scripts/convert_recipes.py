@@ -117,5 +117,22 @@ for t in M['processing_types']:
         if out is not None:
             write(t + '/' + os.path.basename(f), out)
 
+# Mechanical crafter recipes: a shaped recipe of any size (Create's patterns go up to 5x5), type create:mechanical_crafting.
+# Every file in the folder is tried; those whose ingredients or result are not ported are skipped.
+for f in sorted(glob.glob(os.path.join(R, 'mechanical_crafting', '*.json'))):
+    d = json.load(open(f))
+    if 'neoforge:conditions' in d:
+        continue
+    key = {k: ingredient(v) for k, v in d['key'].items()}
+    res = result(d['result'])
+    if any(v is None for v in key.values()) or res is None:
+        print('skip (mechanical_crafting)', os.path.basename(f))
+        continue
+    out = {'type': d['type'], 'category': d.get('category', 'misc'), 'accept_mirrored': d['accept_mirrored'],
+           'pattern': d['pattern'], 'key': key, 'result': {'id': res['id'], 'count': res.get('count', 1)}}
+    if 'show_notification' in d:
+        out['show_notification'] = d['show_notification']
+    write('mechanical_crafting/' + os.path.basename(f), out)
+
 # andesite casing from stripped logs/wood (Create's item application, handled in code)
 print('written', written)

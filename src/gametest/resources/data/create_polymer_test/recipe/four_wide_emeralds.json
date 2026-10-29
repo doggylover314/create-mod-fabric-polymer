@@ -1,0 +1,18 @@
+{
+  "type": "create:mechanical_crafting",
+  "category": "misc",
+  "accept_mirrored": false,
+  "pattern": [
+    "IIII",
+    "SSSS"
+  ],
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "S": "minecraft:stick"
+  },
+  "result": {
+    "id": "minecraft:emerald",
+    "count": 3
+  },
+  "show_notification": false
+}

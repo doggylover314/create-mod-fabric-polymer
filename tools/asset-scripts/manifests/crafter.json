@@ -1,0 +1,25 @@
+{
+  "items": [
+    "mechanical_crafter",
+    "crafter_slot_cover"
+  ],
+  "blocks": [
+    "mechanical_crafter"
+  ],
+  "display_models": [
+    "block/mechanical_crafter/block",
+    "block/mechanical_crafter/arrow",
+    "block/mechanical_crafter/belt",
+    "block/mechanical_crafter/belt_animated",
+    "block/mechanical_crafter/lid",
+    "block/cogwheel_shaftless"
+  ],
+  "crafting": [
+    "kinetics/mechanical_crafter",
+    "kinetics/crafter_slot_cover"
+  ],
+  "lang_ids": [
+    "mechanical_crafter",
+    "crafter_slot_cover"
+  ]
+}
