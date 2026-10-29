@@ -1,0 +1,32 @@
+{
+  "items": [
+    "schedule"
+  ],
+  "crafting": [
+    "kinetics/schedule",
+    "appliances/schedule_clear"
+  ],
+  "known_tags": [
+    "c:plates/obsidian"
+  ],
+  "lang_ids": [
+    "schedule"
+  ],
+  "lang_prefixes": [
+    "create.schedule.",
+    "create.gui.schedule.",
+    "create.generic.daytime.",
+    "create.generic.unit.",
+    "create.display_source.station_summary"
+  ],
+  "lang_keys": [
+    "create.generic.duration",
+    "create.generic.timeUnit",
+    "create.generic.in_quotes",
+    "create.logistics.firstFrequency",
+    "create.logistics.secondFrequency",
+    "create.station.remove_schedule",
+    "create.station.remove_auto_schedule",
+    "create.gui.value_settings.confirm"
+  ]
+}

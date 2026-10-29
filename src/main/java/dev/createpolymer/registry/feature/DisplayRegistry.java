@@ -53,9 +53,9 @@ import net.minecraft.world.level.material.MapColor;
 
 /**
  * Create's display link and the display board, and the display sources and targets (Create's AllDisplaySources and
- * AllDisplayTargets). Not ported: the train station summary, train status and observed train name sources and the
- * elevator, factory gauge, package address, seat and computer sources, because the blocks they read from are not
- * part of this port.
+ * AllDisplayTargets). The station summary and observed train name sources are registered by SchedulesRegistry and
+ * SignalsRegistry. Not ported yet: the train status, elevator floor, factory gauge, package address, seat and
+ * computer sources.
  * <p>
  * Other features add their own sources and targets with {@link DisplaySource#register},
  * {@link DisplaySource#BY_BLOCK} and {@link DisplayTarget#BY_BLOCK}.

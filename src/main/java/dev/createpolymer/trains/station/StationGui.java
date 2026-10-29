@@ -1,6 +1,7 @@
 package dev.createpolymer.trains.station;
 
 import dev.createpolymer.contraptions.AssemblyException;
+import dev.createpolymer.registry.feature.SchedulesRegistry;
 import dev.createpolymer.registry.feature.TrackRegistry;
 import dev.createpolymer.trains.TrackNbt;
 import dev.createpolymer.trains.entity.Carriage;
@@ -12,6 +13,10 @@ import eu.pb4.sgui.api.gui.SimpleGui;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -25,6 +30,9 @@ import net.minecraft.world.item.Items;
 public class StationGui extends SimpleGui {
 	private static final int TITLE = 4;
 	private static final int CLOSE = 22;
+	/** The slot Create's station keeps the auto-schedule in, with the item that says what it is for. */
+	private static final int AUTO_SCHEDULE_LABEL = 24;
+	private static final int AUTO_SCHEDULE = 25;
 
 	private final StationBlockEntity be;
 	private int lastHash;
@@ -36,7 +44,7 @@ public class StationGui extends SimpleGui {
 	public StationGui(ServerPlayer player, StationBlockEntity be) {
 		super(MenuType.GENERIC_9x3, player, false);
 		this.be = be;
-		setLockPlayerInventory(true);
+		// the slot for the auto-schedule is a real one, so the inventory of the player has to work
 		refresh();
 	}
 
@@ -57,9 +65,11 @@ public class StationGui extends SimpleGui {
 
 	private void refresh() {
 		for (int i = 0; i < 27; i++)
-			clearSlot(i);
+			if (i != AUTO_SCHEDULE)
+				clearSlot(i);
 		GlobalStation station = station();
 		if (station == null) {
+			clearSlot(AUTO_SCHEDULE);
 			setTitle(Component.translatable(be.getBlockState()
 				.getBlock()
 				.getDescriptionId()));
@@ -69,10 +79,13 @@ public class StationGui extends SimpleGui {
 			return;
 		}
 
-		if (be.isAssembling() && station.getPresentTrain() == null)
+		if (be.isAssembling() && station.getPresentTrain() == null) {
+			clearSlot(AUTO_SCHEDULE);
 			showAssembly(station);
-		else
+		} else {
+			showAutoSchedule();
 			showStation(station);
+		}
 		setSlot(CLOSE, closeButton());
 	}
 
@@ -80,6 +93,107 @@ public class StationGui extends SimpleGui {
 		return new GuiElementBuilder(Items.EMERALD).setName(Component.translatable("create.gui.value_settings.confirm"))
 			.hideDefaultTooltip()
 			.setCallback(() -> close());
+	}
+
+	// ---- the auto-schedule ----
+
+	/**
+	 * Create's station takes a schedule item in its depot (from belts and funnels as well); the inventory slot of its
+	 * screen is that depot. Every train that stops at the station gets the schedule.
+	 */
+	private void showAutoSchedule() {
+		setSlot(AUTO_SCHEDULE_LABEL, new GuiElementBuilder(Items.BOOK)
+			.setName(Component.translatableWithFallback("create.station.auto_schedule", "Auto-Schedule")
+				.withStyle(ChatFormatting.GOLD))
+			.addLoreLine(Component.translatableWithFallback("create.station.auto_schedule_1",
+				"A schedule placed here is given to every train that stops")
+				.withStyle(ChatFormatting.GRAY))
+			.hideDefaultTooltip());
+		if (getCustomSlot(AUTO_SCHEDULE) == null)
+			setSlot(AUTO_SCHEDULE, new AutoScheduleSlot(new AutoScheduleContainer(be)));
+	}
+
+	/** The depot of the station as a container of one stack. */
+	private static class AutoScheduleContainer implements Container {
+		private final StationBlockEntity be;
+
+		AutoScheduleContainer(StationBlockEntity be) {
+			this.be = be;
+		}
+
+		@Override
+		public int getContainerSize() {
+			return 1;
+		}
+
+		@Override
+		public boolean isEmpty() {
+			return be.getAutoSchedule()
+				.isEmpty();
+		}
+
+		@Override
+		public ItemStack getItem(int slot) {
+			return be.getAutoSchedule();
+		}
+
+		@Override
+		public ItemStack removeItem(int slot, int count) {
+			ItemStack held = be.getAutoSchedule();
+			if (held.isEmpty())
+				return ItemStack.EMPTY;
+			ItemStack removed = held.split(count);
+			if (held.isEmpty())
+				be.setAutoSchedule(ItemStack.EMPTY);
+			else
+				be.notifyUpdate();
+			return removed;
+		}
+
+		@Override
+		public ItemStack removeItemNoUpdate(int slot) {
+			ItemStack held = be.getAutoSchedule()
+				.copy();
+			be.setAutoSchedule(ItemStack.EMPTY);
+			return held;
+		}
+
+		@Override
+		public void setItem(int slot, ItemStack stack) {
+			be.setAutoSchedule(stack);
+		}
+
+		@Override
+		public void setChanged() {
+			be.notifyUpdate();
+		}
+
+		@Override
+		public boolean stillValid(Player player) {
+			return !be.isRemoved();
+		}
+
+		@Override
+		public void clearContent() {
+			be.setAutoSchedule(ItemStack.EMPTY);
+		}
+	}
+
+	private static class AutoScheduleSlot extends Slot {
+		AutoScheduleSlot(Container container) {
+			super(container, 0, 0, 0);
+		}
+
+		// vanilla slots do not ask the container, so the check for schedules has to be here
+		@Override
+		public boolean mayPlace(ItemStack stack) {
+			return stack.is(SchedulesRegistry.SCHEDULE);
+		}
+
+		@Override
+		public int getMaxStackSize() {
+			return 1;
+		}
 	}
 
 	// ---- the station ----

@@ -1,0 +1,36 @@
+package dev.createpolymer.trains.schedule.condition;
+
+import dev.createpolymer.CreatePolymer;
+import dev.createpolymer.trains.entity.Train;
+import dev.createpolymer.trains.schedule.ScheduleLang;
+import dev.createpolymer.util.Pair;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+
+public class ScheduledDelay extends TimedWaitCondition {
+
+	@Override
+	public Pair<ItemStack, Component> getSummary() {
+		return Pair.of(ItemStack.EMPTY, ScheduleLang.translate("schedule.condition.delay_short", formatTime(true)));
+	}
+
+	@Override
+	public boolean tickCompletion(Level level, Train train, CompoundTag context) {
+		int time = context.getIntOr("Time", 0);
+		if (time >= totalWaitTicks())
+			return true;
+
+		context.putInt("Time", time + 1);
+		requestDisplayIfNecessary(context, time);
+		return false;
+	}
+
+	@Override
+	public Identifier getId() {
+		return CreatePolymer.id("delay");
+	}
+
+}

@@ -20,8 +20,12 @@ import dev.createpolymer.contraptions.StructureTransform;
 import dev.createpolymer.contraptions.bearing.BearingSounds;
 import dev.createpolymer.foundation.blockEntity.SmartBlockEntity;
 import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
+import dev.createpolymer.foundation.item.handler.ItemHandlerLookup;
+import dev.createpolymer.kinetics.belt.transport.TransportedItemStack;
+import dev.createpolymer.logistics.depot.DepotBehaviour;
 import dev.createpolymer.foundation.block.ProperWaterloggedBlock;
 import dev.createpolymer.registry.ModSounds;
+import dev.createpolymer.registry.feature.SchedulesRegistry;
 import dev.createpolymer.registry.feature.TrackRegistry;
 import dev.createpolymer.registry.feature.TrainsRegistry;
 import dev.createpolymer.redstone.displayLink.DisplayLinkBlock;
@@ -42,6 +46,9 @@ import dev.createpolymer.trains.graph.TrackGraphLocation;
 import dev.createpolymer.trains.graph.TrackNode;
 import dev.createpolymer.trains.graph.TrackNodeLocation;
 import dev.createpolymer.trains.graph.TrackNodeLocation.DiscoveredLocation;
+import dev.createpolymer.trains.schedule.Schedule;
+import dev.createpolymer.trains.schedule.ScheduleItem;
+import dev.createpolymer.trains.schedule.ScheduleSounds;
 import dev.createpolymer.trains.track.ITrackBlock;
 import dev.createpolymer.trains.track.TrackTargetingBehaviour;
 import dev.createpolymer.util.Iterate;
@@ -80,6 +87,7 @@ import net.minecraft.world.phys.Vec3;
 public class StationBlockEntity extends SmartBlockEntity implements TransformableBlockEntity {
 
 	public TrackTargetingBehaviour<GlobalStation> edgePoint;
+	protected DepotBehaviour depotBehaviour;
 	public LerpedFloat flag;
 
 	protected int failedCarriageIndex;
@@ -108,9 +116,17 @@ public class StationBlockEntity extends SmartBlockEntity implements Transformabl
 			.startWithValue(0);
 	}
 
+	public static void registerCapabilities() {
+		ItemHandlerLookup.registerBlockEntity(TrainsRegistry.TRACK_STATION_BLOCK_ENTITY,
+			(be, side) -> be.depotBehaviour.itemHandler);
+	}
+
 	@Override
 	public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
 		behaviours.add(edgePoint = new TrackTargetingBehaviour<>(this, EdgePointType.STATION));
+		behaviours.add(depotBehaviour = new DepotBehaviour(this).onlyAccepts(stack -> stack.is(SchedulesRegistry.SCHEDULE))
+			.withCallback(s -> applyAutoSchedule()));
+		depotBehaviour.addSubBehaviours(behaviours);
 	}
 
 	@Override
@@ -829,16 +845,39 @@ public class StationBlockEntity extends SmartBlockEntity implements Transformabl
 		return trainBackwards;
 	}
 
-	/** Create lets a schedule item rest on the station's depot; the schedule items come with the schedules. */
 	public ItemStack getAutoSchedule() {
-		return ItemStack.EMPTY;
+		return depotBehaviour.getHeldItemStack();
+	}
+
+	/** Puts a schedule on the station, as the screen's inventory slot does; an empty stack takes it off. */
+	public void setAutoSchedule(ItemStack stack) {
+		if (stack.isEmpty()) {
+			depotBehaviour.removeHeldItem();
+			notifyUpdate();
+			return;
+		}
+		depotBehaviour.setCenteredHeldItem(new TransportedItemStack(stack));
+		notifyUpdate();
+		applyAutoSchedule();
 	}
 
 	private void applyAutoSchedule() {
 		ItemStack stack = getAutoSchedule();
-		if (stack.isEmpty())
+		if (!stack.is(SchedulesRegistry.SCHEDULE))
 			return;
-		// the schedule item is applied to the train that arrived with the schedules
+		Schedule schedule = ScheduleItem.getSchedule(level.registryAccess(), stack);
+		if (schedule == null || schedule.entries.isEmpty())
+			return;
+		GlobalStation station = getStation();
+		if (station == null)
+			return;
+		Train imminentTrain = station.getImminentTrain();
+		if (imminentTrain == null || imminentTrain.getCurrentStation() != station)
+			return;
+
+		imminentTrain.runtime.setSchedule(schedule, true);
+		ScheduleSounds.confirm(level, worldPosition);
+
 		if (!(level instanceof ServerLevel server))
 			return;
 
@@ -879,7 +918,7 @@ public class StationBlockEntity extends SmartBlockEntity implements Transformabl
 
 	@Override
 	public void transform(BlockEntity be, StructureTransform transform) {
-		// Create rotates the target of the track targeting behaviour here
+		edgePoint.transform(be, transform);
 	}
 
 	public int getFlagYRot() {

@@ -6,6 +6,7 @@ import dev.createpolymer.item.IWrenchable;
 import dev.createpolymer.logistics.depot.SharedDepotBlockMethods;
 import dev.createpolymer.registry.ModItems;
 import dev.createpolymer.registry.feature.TrainsRegistry;
+import dev.createpolymer.trains.schedule.ScheduleSounds;
 import dev.createpolymer.util.ShapeUtil;
 import dev.createpolymer.visual.PolymerModelBlock;
 import eu.pb4.polymer.virtualentity.api.ElementHolder;
@@ -106,7 +107,9 @@ public class StationBlock extends Block
 				return InteractionResult.SUCCESS;
 			player.getInventory()
 				.placeItemBackInInventory(autoSchedule.copy(), net.minecraft.util.Prediction.SERVER_ONLY);
+			station.depotBehaviour.removeHeldItem();
 			station.notifyUpdate();
+			ScheduleSounds.itemPickup(player);
 			return InteractionResult.SUCCESS;
 		});
 

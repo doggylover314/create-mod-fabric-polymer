@@ -3,6 +3,7 @@ package dev.createpolymer.trains.station;
 import org.jspecify.annotations.Nullable;
 import org.joml.Matrix4f;
 
+import dev.createpolymer.logistics.depot.DepotRenderer;
 import dev.createpolymer.visual.BaseModel;
 import dev.createpolymer.visual.ModelItems;
 import dev.createpolymer.visual.Part;
@@ -26,6 +27,8 @@ public class StationModel extends BaseModel {
 
 	private final Part base;
 	private final Part flag;
+	/** The auto-schedule that rests on the station (Create: StationRenderer draws the items of the depot). */
+	private final DepotRenderer items;
 
 	private ItemStack shownFlag = ItemStack.EMPTY;
 	private float shownFlagValue = Float.NaN;
@@ -37,10 +40,14 @@ public class StationModel extends BaseModel {
 		base = addPart(BASE);
 		base.apply(0);
 		flag = addPart(ItemStack.EMPTY);
+		items = new DepotRenderer(this);
 	}
 
 	@Override
 	protected void update(ServerLevel level, BlockPos pos, @Nullable BlockEntity be, long time) {
+		if (be instanceof StationBlockEntity station)
+			items.render(station.depotBehaviour, station.getDataVersion());
+
 		if (!(be instanceof StationBlockEntity station) || !station.resolveFlagAngle()) {
 			if (!shownFlag.isEmpty()) {
 				flag.setItem(ItemStack.EMPTY);

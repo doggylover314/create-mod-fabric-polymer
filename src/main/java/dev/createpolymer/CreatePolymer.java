@@ -109,6 +109,7 @@ public class CreatePolymer implements ModInitializer {
 		TrackRegistry.init();
 		dev.createpolymer.registry.feature.TrainsRegistry.init();
 		dev.createpolymer.registry.feature.SignalsRegistry.init();
+		dev.createpolymer.registry.feature.SchedulesRegistry.init();
 
 		// Resource pack: Create's models/textures/lang from this jar, served by polymer-autohost.
 		enableAutoHostByDefault();

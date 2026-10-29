@@ -1,0 +1,110 @@
+package dev.createpolymer.trains.schedule.condition;
+
+import java.util.List;
+
+import com.google.common.collect.ImmutableList;
+
+import dev.createpolymer.trains.entity.Train;
+import dev.createpolymer.trains.schedule.ScheduleConfigBuilder;
+import dev.createpolymer.trains.schedule.ScheduleLang;
+import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+
+public abstract class TimedWaitCondition extends ScheduleWaitCondition {
+
+	public static enum TimeUnit {
+		TICKS(1, "t", "generic.unit.ticks"),
+		SECONDS(20, "s", "generic.unit.seconds"),
+		MINUTES(20 * 60, "min", "generic.unit.minutes");
+
+		public int ticksPer;
+		public String suffix;
+		public String key;
+
+		private TimeUnit(int ticksPer, String suffix, String key) {
+			this.ticksPer = ticksPer;
+			this.suffix = suffix;
+			this.key = key;
+		}
+
+		public static List<Component> translatedOptions() {
+			return ScheduleLang.translatedOptions(null, TICKS.key, SECONDS.key, MINUTES.key);
+		}
+	}
+
+	protected void requestDisplayIfNecessary(CompoundTag context, int time) {
+		int ticksUntilDeparture = totalWaitTicks() - time;
+		if (ticksUntilDeparture < 20 * 60 && ticksUntilDeparture % 100 == 0)
+			requestStatusToUpdate(context);
+		if (ticksUntilDeparture >= 20 * 60 && ticksUntilDeparture % (20 * 60) == 0)
+			requestStatusToUpdate(context);
+	}
+
+	public int totalWaitTicks() {
+		return getValue() * getUnit().ticksPer;
+	}
+
+	public TimedWaitCondition() {
+		data.putInt("Value", 5);
+		data.putInt("TimeUnit", TimeUnit.SECONDS.ordinal());
+	}
+
+	protected Component formatTime(boolean compact) {
+		if (compact) {
+			return Component.literal(getValue() + getUnit().suffix);
+		}
+		return Component.literal(getValue() + " ").append(ScheduleLang.translate(getUnit().key));
+	}
+
+	@Override
+	public List<Component> getTitleAs(String type) {
+		return ImmutableList.of(
+			Component.translatable(getId().getNamespace() + ".schedule." + type + "." + getId().getPath()),
+			ScheduleLang.translate("schedule.condition.for_x_time", formatTime(false))
+				.withStyle(ChatFormatting.DARK_AQUA));
+	}
+
+	@Override
+	public ItemStack getSecondLineIcon() {
+		return new ItemStack(Items.REPEATER);
+	}
+
+	@Override
+	public List<Component> getSecondLineTooltip(int slot) {
+		return ImmutableList.of(ScheduleLang.translate("generic.duration"));
+	}
+
+	public int getValue() {
+		return intData("Value");
+	}
+
+	public TimeUnit getUnit() {
+		return enumData("TimeUnit", TimeUnit.class);
+	}
+
+	@Override
+	public void initConfigurationWidgets(ScheduleConfigBuilder builder) {
+		builder.addScrollInput("Value", ScheduleLang.translate("generic.duration"), 0, 121, 1, 15, "");
+		builder.addSelectionScrollInput("TimeUnit", ScheduleLang.translate("generic.timeUnit"),
+			TimeUnit.translatedOptions());
+	}
+
+	@Override
+	public MutableComponent getWaitingStatus(Level level, Train train, CompoundTag tag) {
+		int time = tag.getIntOr("Time", 0);
+		int ticksUntilDeparture = totalWaitTicks() - time;
+		boolean showInMinutes = ticksUntilDeparture >= 20 * 60;
+		int num =
+			(int) (showInMinutes ? Math.floor(ticksUntilDeparture / (20 * 60f)) : Math.ceil(ticksUntilDeparture / 100f) * 5);
+		String key = "generic." + (showInMinutes ? num == 1 ? "daytime.minute" : "unit.minutes"
+			: num == 1 ? "daytime.second" : "unit.seconds");
+		return ScheduleLang.translate("schedule.condition." + getId().getPath() + ".status",
+			Component.literal(num + " ").append(ScheduleLang.translate(key)));
+	}
+
+}
