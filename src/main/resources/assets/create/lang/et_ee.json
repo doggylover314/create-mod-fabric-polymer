@@ -1,13 +1,16 @@
 {
+ "block.create.andesite_alloy_block": "Andesiidi sulami plokk",
  "block.create.andesite_casing": "Andesiitkorpus",
  "block.create.andesite_encased_cogwheel": "Andesiidiga kaetud hammasratas",
  "block.create.andesite_encased_large_cogwheel": "Andesiidiga kaetud suur hammasratas",
  "block.create.andesite_encased_shaft": "Andesiidiga kaetud võll",
  "block.create.basin": "Valamu",
  "block.create.blaze_burner": "Lõõmapõleti",
+ "block.create.brass_block": "Messingi plokk",
  "block.create.clutch": "Sidur",
  "block.create.cogwheel": "Hammasratas",
  "block.create.creative_motor": "Loomingurežiimi mootor",
+ "block.create.deepslate_zinc_ore": "Süvakilda tsingimaak",
  "block.create.depot": "Depoo",
  "block.create.encased_chain_drive": "Kaetud kettajam",
  "block.create.gearbox": "Käigukast",
@@ -18,6 +21,8 @@
  "block.create.mechanical_press": "Mehhaaniline press",
  "block.create.speedometer": "Spidomeeter",
  "block.create.stressometer": "Stressimõõtur",
+ "item.create.cinder_flour": "Tuhajahu",
+ "item.create.rose_quartz": "Roosakvarts",
  "item.create.wheat_flour": "Nisujahu",
  "item.create.whisk": "Vispel"
 }

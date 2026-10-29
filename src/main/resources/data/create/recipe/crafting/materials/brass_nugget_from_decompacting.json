@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "#c:ingots/brass"
+  ],
+  "result": {
+    "id": "create:brass_nugget",
+    "count": 9
+  }
+}

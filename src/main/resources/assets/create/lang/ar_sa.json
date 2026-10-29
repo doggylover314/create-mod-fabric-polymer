@@ -1,10 +1,12 @@
 {
+ "block.create.andesite_alloy_block": "كتلة سبيكة الأنديسيت",
  "block.create.andesite_casing": "غلاف الأنديسايت",
  "block.create.andesite_encased_cogwheel": "الترس المُغلف بالأنديسايت",
  "block.create.andesite_encased_large_cogwheel": "تُرْس كبير مغلف بالأنديسايت",
  "block.create.andesite_encased_shaft": "عمود الدوران المُغلف بالأنديسايت",
  "block.create.basin": "الوعاء الميكانيكي",
  "block.create.blaze_burner": "موقد الملتهب",
+ "block.create.brass_block": "بلوك من النحاس الأصفر",
  "block.create.clutch": "قابض ميكانيكي",
  "block.create.cogwheel": "تُرْس مسنن",
  "block.create.encased_chain_drive": "ناقل الحركة المسلسل",
@@ -22,5 +24,7 @@
  "item.create.goggles": "نظارات المهندس",
  "item.create.golden_sheet": "لوح ذهبي",
  "item.create.wrench": "مفتاح الربط",
+ "item.create.zinc_ingot": "سبكة زنك",
+ "item.create.zinc_nugget": "زنك ناجت",
  "itemGroup.create.base": "كريايت"
 }

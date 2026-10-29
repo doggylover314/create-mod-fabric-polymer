@@ -2,5 +2,7 @@
  "item.create.wheat_flour": "Weizemähl",
  "item.create.whisk": "Rührstab",
  "item.create.wrench": "Schruuveschlössel",
+ "item.create.zinc_ingot": "Zinkbarren",
+ "item.create.zinc_nugget": "Zinkklumpen",
  "itemGroup.create.base": "Create"
 }

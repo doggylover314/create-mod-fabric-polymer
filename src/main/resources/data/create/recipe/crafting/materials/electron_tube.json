@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "L",
+    "N"
+  ],
+  "key": {
+    "L": "create:polished_rose_quartz",
+    "N": "#c:plates/iron"
+  },
+  "result": {
+    "id": "create:electron_tube",
+    "count": 1
+  }
+}

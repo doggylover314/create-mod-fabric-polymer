@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " S ",
+    "SCS",
+    " S "
+  ],
+  "key": {
+    "C": "create:andesite_alloy",
+    "S": "#c:plates/iron"
+  },
+  "result": {
+    "id": "create:propeller",
+    "count": 1
+  }
+}
