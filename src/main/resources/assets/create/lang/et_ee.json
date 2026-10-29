@@ -310,6 +310,7 @@
  "create.stock_keeper.out_of_stock": "Laost otsas",
  "create.stock_keeper.too_broke": "Sa ei saa seda ostu endale lubada",
  "create.tooltip.capacityProvided": "Kineetiline stressi mahtuvus:",
+ "create.track.valid_connection": "Saab ühendada ✔",
  "create.tunnel.selection_mode.split": "Poolita",
  "death.attack.create.potato_cannon": "%1$s lasti %2$s kartulikahuriga",
  "death.attack.create.potato_cannon.item": "%1$s lasti %2$s poolt kasutades %3$s",

@@ -105,6 +105,7 @@
     "create:flywheel",
     "create:rotation_speed_controller",
     "create:mechanical_arm",
+    "create:track",
     "create:andesite_funnel",
     "create:andesite_belt_funnel",
     "create:brass_funnel",

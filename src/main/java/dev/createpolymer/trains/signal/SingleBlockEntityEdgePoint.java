@@ -1,0 +1,65 @@
+package dev.createpolymer.trains.signal;
+
+import dev.createpolymer.trains.TrackNbt;
+import dev.createpolymer.trains.graph.DimensionPalette;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.entity.BlockEntity;
+
+public abstract class SingleBlockEntityEdgePoint extends TrackEdgePoint {
+
+	public ResourceKey<Level> blockEntityDimension;
+	public BlockPos blockEntityPos;
+
+	public BlockPos getBlockEntityPos() {
+		return blockEntityPos;
+	}
+
+	public ResourceKey<Level> getBlockEntityDimension() {
+		return blockEntityDimension;
+	}
+
+	@Override
+	public void blockEntityAdded(BlockEntity blockEntity, boolean front) {
+		this.blockEntityPos = blockEntity.getBlockPos();
+		this.blockEntityDimension = blockEntity.getLevel()
+			.dimension();
+	}
+
+	@Override
+	public void blockEntityRemoved(BlockPos blockEntityPos, boolean front) {
+		removeFromAllGraphs();
+	}
+
+	@Override
+	public void invalidate(LevelAccessor level) {
+		invalidateAt(level, blockEntityPos);
+	}
+
+	@Override
+	public boolean canMerge() {
+		return false;
+	}
+
+	@Override
+	public void read(CompoundTag nbt, HolderLookup.Provider registries, boolean migration, DimensionPalette dimensions) {
+		super.read(nbt, registries, migration, dimensions);
+		if (migration)
+			return;
+		blockEntityPos = TrackNbt.getBlockPos(nbt, "BlockEntityPos");
+		blockEntityDimension =
+			dimensions.decode(nbt.getIntOr("BlockEntityDimension", -1));
+	}
+
+	@Override
+	public void write(CompoundTag nbt, HolderLookup.Provider registries, DimensionPalette dimensions) {
+		super.write(nbt, registries, dimensions);
+		TrackNbt.putBlockPos(nbt, "BlockEntityPos", blockEntityPos);
+		nbt.putInt("BlockEntityDimension", dimensions.encode(blockEntityDimension));
+	}
+
+}

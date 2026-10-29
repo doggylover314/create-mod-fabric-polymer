@@ -23,6 +23,17 @@ def known_item(i):
     ns, path = i.split(':')
     return ns == 'minecraft' or (ns == 'create' and path in OURS)
 
+TAG_OUT = os.path.join(out_root, 'src/main/resources/data/create/tags/item/recipe_ingredients')
+shutil.rmtree(TAG_OUT, ignore_errors=True)
+
+def combined_tag(values):
+    """A list ingredient that mixes tags and items cannot be written inline: make one tag of the whole list."""
+    import hashlib
+    name = hashlib.sha1(','.join(sorted(values)).encode()).hexdigest()[:12]
+    os.makedirs(TAG_OUT, exist_ok=True)
+    json.dump({'values': list(values)}, open(os.path.join(TAG_OUT, name + '.json'), 'w'), indent=2)
+    return '#create:recipe_ingredients/' + name
+
 def ingredient(o):
     """Old {"item"/"tag"} or list -> new string / list of strings. None if unsupported."""
     if isinstance(o, list):
@@ -32,6 +43,8 @@ def ingredient(o):
         flat = []
         for p in parts:
             flat.extend(p if isinstance(p, list) else [p])
+        if len(flat) > 1 and any(x.startswith('#') for x in flat):
+            return combined_tag(flat)
         return flat
     if 'type' in o or 'amount' in o or 'fluid' in o:
         return None

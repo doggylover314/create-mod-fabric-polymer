@@ -46,6 +46,7 @@ import dev.createpolymer.registry.feature.StockRegistry;
 import dev.createpolymer.registry.feature.DisplayRegistry;
 import dev.createpolymer.registry.feature.ChainConveyorRegistry;
 import dev.createpolymer.registry.feature.PulleyRegistry;
+import dev.createpolymer.registry.feature.TrackRegistry;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import eu.pb4.polymer.resourcepack.extras.api.ResourcePackExtras;
 import net.fabricmc.api.EnvType;
@@ -103,6 +104,7 @@ public class CreatePolymer implements ModInitializer {
 		FactoryGaugeRegistry.init();
 		dev.createpolymer.registry.feature.BearingRegistry.init();
 		ActorsRegistry.init();
+		TrackRegistry.init();
 
 		// Resource pack: Create's models/textures/lang from this jar, served by polymer-autohost.
 		enableAutoHostByDefault();

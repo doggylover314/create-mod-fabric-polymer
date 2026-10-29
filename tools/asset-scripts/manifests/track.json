@@ -1,0 +1,49 @@
+{
+  "items": [
+    "track"
+  ],
+  "blocks": [
+    "track"
+  ],
+  "display_models": [
+    "block/track/x_ortho",
+    "block/track/z_ortho",
+    "block/track/cross_ortho",
+    "block/track/teleport"
+  ],
+  "own_models": [
+    "block/track/ascending",
+    "block/track/diag",
+    "block/track/diag_2",
+    "block/track/cross_diag",
+    "block/track/cross_d1_xo",
+    "block/track/cross_d1_zo",
+    "block/track/cross_d2_xo",
+    "block/track/cross_d2_zo",
+    "block/track/tie",
+    "block/track/segment_left",
+    "block/track/segment_right"
+  ],
+  "processing_types": [
+    "sequenced_assembly"
+  ],
+  "tags": {
+    "create:sleepers": [
+      "minecraft:stone_slab",
+      "minecraft:smooth_stone_slab",
+      "minecraft:andesite_slab"
+    ]
+  },
+  "known_tags": [
+    "create:sleepers"
+  ],
+  "lang_ids": [
+    "track",
+    "fake_track"
+  ],
+  "lang_prefixes": [
+    "create.track.",
+    "create.track_target.",
+    "create.portal_track."
+  ]
+}
