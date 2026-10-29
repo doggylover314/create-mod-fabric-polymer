@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "#create:stone_types/limestone",
+  "result": {
+    "id": "create:layered_limestone",
+    "count": 1
+  }
+}

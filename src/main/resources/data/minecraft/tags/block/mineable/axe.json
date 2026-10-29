@@ -37,6 +37,8 @@
     "create:copper_casing",
     "create:mechanical_crafter",
     "create:sequenced_gearshift",
-    "create:flywheel"
+    "create:flywheel",
+    "create:cardboard_block",
+    "create:bound_cardboard_block"
   ]
 }

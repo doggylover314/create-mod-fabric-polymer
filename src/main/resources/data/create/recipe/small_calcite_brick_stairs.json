@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "small_calcite_brick_stairs",
+  "pattern": [
+    "X  ",
+    "XX ",
+    "XXX"
+  ],
+  "key": {
+    "X": "create:small_calcite_bricks"
+  },
+  "result": {
+    "id": "create:small_calcite_brick_stairs",
+    "count": 4
+  }
+}

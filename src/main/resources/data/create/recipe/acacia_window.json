@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    " # ",
+    "#X#"
+  ],
+  "key": {
+    "#": "minecraft:acacia_planks",
+    "X": "#c:glass_blocks/colorless"
+  },
+  "result": {
+    "id": "create:acacia_window",
+    "count": 2
+  }
+}

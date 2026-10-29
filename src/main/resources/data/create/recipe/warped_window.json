@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    " # ",
+    "#X#"
+  ],
+  "key": {
+    "#": "minecraft:warped_planks",
+    "X": "#c:glass_blocks/colorless"
+  },
+  "result": {
+    "id": "create:warped_window",
+    "count": 2
+  }
+}

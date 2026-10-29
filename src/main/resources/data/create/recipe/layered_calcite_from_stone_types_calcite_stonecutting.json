@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "#create:stone_types/calcite",
+  "result": {
+    "id": "create:layered_calcite",
+    "count": 1
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "create:acacia_window"
+  },
+  "result": {
+    "id": "create:acacia_window_pane",
+    "count": 16
+  }
+}

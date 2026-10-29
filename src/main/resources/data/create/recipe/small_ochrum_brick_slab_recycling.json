@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "create:small_ochrum_brick_slab",
+    "create:small_ochrum_brick_slab"
+  ],
+  "result": {
+    "id": "create:small_ochrum_bricks",
+    "count": 1
+  }
+}

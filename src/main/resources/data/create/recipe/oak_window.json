@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    " # ",
+    "#X#"
+  ],
+  "key": {
+    "#": "minecraft:oak_planks",
+    "X": "#c:glass_blocks/colorless"
+  },
+  "result": {
+    "id": "create:oak_window",
+    "count": 2
+  }
+}

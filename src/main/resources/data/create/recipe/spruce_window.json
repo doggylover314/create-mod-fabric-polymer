@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    " # ",
+    "#X#"
+  ],
+  "key": {
+    "#": "minecraft:spruce_planks",
+    "X": "#c:glass_blocks/colorless"
+  },
+  "result": {
+    "id": "create:spruce_window",
+    "count": 2
+  }
+}

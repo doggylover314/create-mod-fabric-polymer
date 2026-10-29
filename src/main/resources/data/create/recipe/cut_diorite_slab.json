@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "cut_diorite_slab",
+  "pattern": [
+    "XXX"
+  ],
+  "key": {
+    "X": "create:cut_diorite"
+  },
+  "result": {
+    "id": "create:cut_diorite_slab",
+    "count": 6
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "create:industrial_iron_window"
+  },
+  "result": {
+    "id": "create:industrial_iron_window_pane",
+    "count": 16
+  }
+}

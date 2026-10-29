@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "#create:stone_types/deepslate",
+  "result": {
+    "id": "create:cut_deepslate_stairs",
+    "count": 1
+  }
+}

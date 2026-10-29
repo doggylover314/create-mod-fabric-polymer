@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "create:bamboo_window"
+  },
+  "result": {
+    "id": "create:bamboo_window_pane",
+    "count": 16
+  }
+}

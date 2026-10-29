@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "modifier": [
+            {
+              "add": false,
+              "condition": {
+                "type": "minecraft:match_block",
+                "blocks": "create:cut_tuff_brick_slab",
+                "state": {
+                  "type": "double"
+                }
+              },
+              "count": 2.0,
+              "type": "minecraft:set_count"
+            },
+            {
+              "type": "minecraft:explosion_decay"
+            }
+          ],
+          "name": "create:cut_tuff_brick_slab"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "create:blocks/cut_tuff_brick_slab"
+}

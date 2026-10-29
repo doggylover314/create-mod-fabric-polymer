@@ -52,6 +52,9 @@ public class SawGameTests {
 		BlockPos saw = new BlockPos(2, 1, 2);
 		helper.setBlock(saw, upwardSaw());
 		powerFromNorth(helper, saw, 128);
+		// andesite alloy also has stonecutting recipes (ladders, bars, scaffolding); pick the cutting one like a player would
+		helper.runAfterDelay(3, () -> helper.getBlockEntity(saw, SawBlockEntity.class).getBehaviour(FilteringBehaviour.TYPE)
+			.setFilter(new ItemStack(ModItems.SHAFT)));
 		helper.runAfterDelay(4, () -> helper.spawnItem(ModItems.ANDESITE_ALLOY, 2.5f, 3f, 2.5f));
 		// Create's cutting recipe: one andesite alloy makes six shafts, which the saw throws out in front of it
 		helper.succeedWhen(() -> helper.assertItemEntityCountIs(ModItems.SHAFT, new BlockPos(3, 1, 2), 2, 6));
@@ -63,6 +66,9 @@ public class SawGameTests {
 		BlockPos saw = new BlockPos(4, 1, 2);
 		helper.setBlock(saw, upwardSaw());
 		powerFromNorth(helper, saw, -128);
+		// andesite alloy also has stonecutting recipes (ladders, bars, scaffolding); pick the cutting one like a player would
+		helper.runAfterDelay(3, () -> helper.getBlockEntity(saw, SawBlockEntity.class).getBehaviour(FilteringBehaviour.TYPE)
+			.setFilter(new ItemStack(ModItems.SHAFT)));
 		helper.runAfterDelay(4, () -> helper.spawnItem(ModItems.ANDESITE_ALLOY, 4.5f, 3f, 2.5f));
 		helper.succeedWhen(() -> helper.assertItemEntityCountIs(ModItems.SHAFT, new BlockPos(3, 1, 2), .6, 6));
 	}
@@ -75,6 +81,9 @@ public class SawGameTests {
 		helper.setBlock(saw, upwardSaw());
 		helper.setBlock(depot, ModBlocks.DEPOT);
 		powerFromNorth(helper, saw, 128);
+		// andesite alloy also has stonecutting recipes (ladders, bars, scaffolding); pick the cutting one like a player would
+		helper.runAfterDelay(3, () -> helper.getBlockEntity(saw, SawBlockEntity.class).getBehaviour(FilteringBehaviour.TYPE)
+			.setFilter(new ItemStack(ModItems.SHAFT)));
 		// what a belt does: hand the item to the saw's direct belt input
 		helper.runAfterDelay(4, () -> {
 			DirectBeltInputBehaviour input = helper.getBlockEntity(saw, SawBlockEntity.class).getBehaviour(DirectBeltInputBehaviour.TYPE);

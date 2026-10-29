@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "create:jungle_window"
+  },
+  "result": {
+    "id": "create:jungle_window_pane",
+    "count": 16
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "cut_veridium_brick_slab",
+  "pattern": [
+    "XXX"
+  ],
+  "key": {
+    "X": "create:cut_veridium_bricks"
+  },
+  "result": {
+    "id": "create:cut_veridium_brick_slab",
+    "count": 6
+  }
+}

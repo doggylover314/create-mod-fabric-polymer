@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "#create:stone_types/crimsite",
+  "result": {
+    "id": "create:polished_cut_crimsite_stairs",
+    "count": 1
+  }
+}

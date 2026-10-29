@@ -2,6 +2,9 @@
   "values": [
     "create:blaze_burner",
     "create:lit_blaze_burner",
+    "create:andesite_bars",
+    "create:brass_bars",
+    "create:copper_bars",
     "minecraft:iron_bars",
     "minecraft:mangrove_roots",
     "minecraft:copper_grate",

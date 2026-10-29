@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "#create:stone_types/ochrum",
+  "result": {
+    "id": "create:polished_cut_ochrum_stairs",
+    "count": 1
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "XXX",
+    "XXX"
+  ],
+  "key": {
+    "X": "create:polished_cut_scoria"
+  },
+  "result": {
+    "id": "create:polished_cut_scoria_wall",
+    "count": 6
+  }
+}

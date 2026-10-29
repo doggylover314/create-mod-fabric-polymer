@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "create:cut_asurine_slab",
+    "create:cut_asurine_slab"
+  ],
+  "result": {
+    "id": "create:cut_asurine",
+    "count": 1
+  }
+}

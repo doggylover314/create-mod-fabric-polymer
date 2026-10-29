@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "create:tiled_glass"
+  },
+  "result": {
+    "id": "create:tiled_glass_pane",
+    "count": 16
+  }
+}

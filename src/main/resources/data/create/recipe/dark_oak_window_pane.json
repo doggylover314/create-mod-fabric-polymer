@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "create:dark_oak_window"
+  },
+  "result": {
+    "id": "create:dark_oak_window_pane",
+    "count": 16
+  }
+}
