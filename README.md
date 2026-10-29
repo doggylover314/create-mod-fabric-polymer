@@ -41,6 +41,11 @@ wheel, Ponder, JEI-style recipe viewing, and many more.
 - Andesite casing uses one of Polymer's spare vanilla block states, so it renders as a normal full block.
 - Machine screens are not needed: everything here works by clicking, hoppers or dropped items.
 
+## Screenshots (unmodded 26.3 client)
+
+![Cogwheels](docs/screenshots/cogs.png)
+![Hand cranks](docs/screenshots/cranks.png)
+
 ## Installing on a server
 
 1. Fabric Loader ≥ 0.20.1 and Fabric API for 26.3.
@@ -58,6 +63,9 @@ Requires JDK 25.
 ./gradlew runGametest    # 16 in-world tests (kinetics, gears, overstress, millstone, press, mixer, hoppers, water wheel)
 ./gradlew runServer      # dev server in ./run
 ```
+
+Tools: `tools/asset-scripts` regenerates recipes/assets from a Create checkout; `tools/client-harness`
+drives an unmodded client to take screenshots.
 
 ## Licences
 

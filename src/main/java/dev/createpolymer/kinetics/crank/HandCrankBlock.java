@@ -165,8 +165,9 @@ public class HandCrankBlock extends DirectionalKineticBlock implements SimpleWat
 		@Override
 		protected void onStateChanged(BlockState state) {
 			Direction facing = state.getValue(FACING);
-			for (Part p : new Part[] { base, handle })
-				p.orientation(Orientation.forFacing(facing)).spinAxis(facing.getAxis()).apply(0);
+			// Create's base model points up, the handle model points north (HandCrankVisual).
+			base.orientation(Orientation.forFacing(facing)).spinAxis(facing.getAxis()).apply(0);
+			handle.orientation(Orientation.fromNorth(facing)).spinAxis(facing.getAxis()).apply(0);
 		}
 
 		@Override

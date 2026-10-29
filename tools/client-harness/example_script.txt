@@ -1,0 +1,23 @@
+wait 300
+cmd /gamemode creative
+cmd /time set 6000
+cmd /setblock 2 -60 5 minecraft:stone
+cmd /setblock 2 -60 4 create:hand_crank[facing=north]
+cmd /setblock 5 -60 5 minecraft:stone
+cmd /setblock 5 -60 6 create:hand_crank[facing=south]
+cmd /setblock 8 -60 5 create:hand_crank[facing=up]
+cmd /setblock 11 -60 5 minecraft:stone
+cmd /setblock 10 -60 5 create:hand_crank[facing=west]
+cmd /setblock 2 -60 12 create:creative_motor[facing=up]
+cmd /setblock 2 -59 12 create:large_cogwheel[axis=y]
+cmd /setblock 3 -59 13 create:cogwheel[axis=y]
+cmd /setblock 4 -59 13 create:cogwheel[axis=y]
+cmd /tp Tester 6.5 -57.5 1 facing 6.5 -60 5.5
+wait 40
+shot cranks_all
+cmd /tp Tester 3 -56 13 facing 3 -59 13.01
+wait 40
+shot spin_a
+wait 3
+shot spin_b
+quit

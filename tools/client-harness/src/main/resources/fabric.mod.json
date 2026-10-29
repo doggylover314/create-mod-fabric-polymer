@@ -1,0 +1,8 @@
+{
+	"schemaVersion": 1,
+	"id": "harness",
+	"version": "1.0.0",
+	"environment": "client",
+	"mixins": ["harness.mixins.json"],
+	"depends": { "fabricloader": "*", "minecraft": "*" }
+}

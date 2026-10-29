@@ -6,3 +6,6 @@ out/
 .idea/
 .vscode/
 bin/
+tools/client-harness/run/
+tools/client-harness/build/
+tools/client-harness/.gradle/
