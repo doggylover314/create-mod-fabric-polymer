@@ -1,0 +1,15 @@
+plugins { id 'net.fabricmc.fabric-loom' version '1.19-SNAPSHOT' }
+// A vanilla-equivalent 26.3 client: Fabric Loader only (no Fabric API, no Create).
+// The tiny harness mod only accepts the server pack, runs scripted commands and takes screenshots.
+dependencies {
+	minecraft "com.mojang:minecraft:26.3"
+	implementation "net.fabricmc:fabric-loader:0.20.1"
+}
+tasks.withType(JavaCompile).configureEach { it.options.release = 25 }
+loom {
+	runs {
+		client {
+			programArgs "--quickPlayMultiplayer", "localhost:25565", "--username", "Tester"
+		}
+	}
+}

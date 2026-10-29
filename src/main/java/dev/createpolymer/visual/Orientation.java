@@ -48,6 +48,19 @@ public final class Orientation {
 		};
 	}
 
+	/** Rotation that turns a model pointing north (-Z) to point at {@code facing} (Create's crank handle). */
+	public static Quaternionf fromNorth(Direction facing) {
+		return new Quaternionf().rotateTo(0, 0, -1, facing.getStepX(), facing.getStepY(), facing.getStepZ());
+	}
+
+	/** Create's AngleHelper.horizontalAngle based rotation about +Y (used for the press head). */
+	public static Quaternionf horizontalAngle(Direction facing) {
+		float angle = facing.toYRot();
+		if (facing.getAxis() == Direction.Axis.X)
+			angle = -angle;
+		return new Quaternionf().rotationY((float) Math.toRadians(angle));
+	}
+
 	/** Rotation that turns a model pointing south (+Z) to point at {@code facing}. */
 	public static Quaternionf fromSouth(Direction facing) {
 		return new Quaternionf(facing.getRotation()).mul(new Quaternionf().rotationX((float) (-Math.PI / 2)));

@@ -107,7 +107,7 @@ public class MechanicalPressBlock extends HorizontalKineticBlock {
 		protected void onStateChanged(BlockState state) {
 			Direction facing = state.getValue(HORIZONTAL_FACING);
 			body.orientation(Orientation.forHorizontal(facing)).apply(0);
-			head.orientation(Orientation.forHorizontal(facing)).apply(0);
+			head.orientation(Orientation.horizontalAngle(facing)).apply(0);
 			shaft.orientation(Orientation.forAxis(facing.getAxis())).spinAxis(facing.getAxis()).apply(0);
 		}
 
