@@ -102,7 +102,6 @@ public final class MaterialsRegistry {
 	public static final Item PROPELLER = ModItems.simple("propeller");
 	public static final Item BRASS_HAND = ModItems.simple("brass_hand");
 	public static final Item PRECISION_MECHANISM = ModItems.simple("precision_mechanism");
-	public static final Item INCOMPLETE_PRECISION_MECHANISM = ModItems.simple("incomplete_precision_mechanism");
 	public static final Item CARDBOARD = ModItems.simple("cardboard");
 
 	public static void init() {

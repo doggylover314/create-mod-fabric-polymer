@@ -1,0 +1,13 @@
+{
+  "type": "create:deploying",
+  "ingredients": [
+    "minecraft:oxidized_cut_copper",
+    "#minecraft:axes"
+  ],
+  "results": [
+    {
+      "id": "minecraft:weathered_cut_copper"
+    }
+  ],
+  "keep_held_item": true
+}

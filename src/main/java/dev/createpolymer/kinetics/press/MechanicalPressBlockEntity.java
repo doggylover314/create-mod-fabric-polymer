@@ -13,6 +13,7 @@ import dev.createpolymer.processing.basin.BasinBlockEntity;
 import dev.createpolymer.processing.basin.BasinOperatingBlockEntity;
 import dev.createpolymer.processing.recipe.PressingRecipe;
 import dev.createpolymer.processing.recipe.RecipeApplier;
+import dev.createpolymer.processing.sequenced.SequencedAssemblyRecipe;
 import dev.createpolymer.registry.ModBlockEntities;
 import dev.createpolymer.registry.ModRecipeTypes;
 import dev.createpolymer.util.VecHelper;
@@ -32,7 +33,6 @@ import net.minecraft.world.phys.Vec3;
 
 /**
  * Ported from Create's MechanicalPressBlockEntity (MIT, The Create Team).
- * Sequenced assembly is not ported yet.
  */
 public class MechanicalPressBlockEntity extends BasinOperatingBlockEntity implements PressingBehaviourSpecifics {
 
@@ -124,6 +124,11 @@ public class MechanicalPressBlockEntity extends BasinOperatingBlockEntity implem
 	public Optional<PressingRecipe> getRecipe(ItemStack item) {
 		if (!(level instanceof ServerLevel serverLevel))
 			return Optional.empty();
+		Optional<RecipeHolder<PressingRecipe>> assemblyRecipe =
+			SequencedAssemblyRecipe.getRecipe(level, item, ModRecipeTypes.PRESSING, PressingRecipe.class);
+		if (assemblyRecipe.isPresent())
+			return assemblyRecipe.map(RecipeHolder::value);
+
 		return serverLevel.recipeAccess().getRecipeFor(ModRecipeTypes.PRESSING, new SingleRecipeInput(item), level)
 			.map(RecipeHolder::value);
 	}

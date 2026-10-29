@@ -1,0 +1,13 @@
+{
+  "type": "create:deploying",
+  "ingredients": [
+    "minecraft:exposed_copper_door",
+    "#minecraft:axes"
+  ],
+  "results": [
+    {
+      "id": "minecraft:copper_door"
+    }
+  ],
+  "keep_held_item": true
+}

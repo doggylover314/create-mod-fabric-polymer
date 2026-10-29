@@ -28,7 +28,7 @@ dropping duplicates. Every key is optional and unknown keys are an error:
 - `blocks`: block ids that get loot tables, mineable tags and lang keys; recipes may use them too
 - `display_models`, `blockstates`, `own_models`: model paths and blockstate files to bundle (`own_models` are not copied from Create)
 - `crafting`: crafting recipe names (under `create/recipe/`)
-- `processing_types`: recipe folders converted like milling and pressing
+- `processing_types`: recipe folders converted like milling and pressing (`sequenced_assembly` is converted by its own rule: only recipes whose steps are all pressing or deploying and whose items are ported)
 - `tags`: `{"c:plates/iron": ["create:iron_sheet"]}`, written to `data/<namespace>/tags/item/<path>.json`
 - `known_tags`: tags recipes may use
 - `lang_ids`: ids whose `block.create.<id>` and `item.create.<id>` lang keys are kept

@@ -30,7 +30,8 @@ public final class RecipeApplier {
 		List<ItemStack> stacks = new ArrayList<>();
 		ItemStackTemplate remainder = stackIn.getItem().getCraftingRemainder();
 		for (int i = 0; i < stackIn.getCount(); i++) {
-			for (ItemStack stack : recipe.rollResults(level.getRandom())) {
+			// all outputs, including the block of a manual application recipe
+			for (ItemStack stack : recipe.rollResults(recipe.getRollableResults(), level.getRandom())) {
 				for (ItemStack previouslyRolled : stacks) {
 					if (stack.isEmpty())
 						continue;

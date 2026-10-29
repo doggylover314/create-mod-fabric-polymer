@@ -1,0 +1,38 @@
+{
+  "type": "create:sequenced_assembly",
+  "ingredient": "minecraft:diamond",
+  "transitional_item": {
+    "id": "create:incomplete_track"
+  },
+  "sequence": [
+    {
+      "type": "create:pressing",
+      "ingredients": [
+        "create:incomplete_track"
+      ],
+      "results": [
+        {
+          "id": "create:incomplete_track"
+        }
+      ]
+    },
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        "create:incomplete_track",
+        "minecraft:stick"
+      ],
+      "results": [
+        {
+          "id": "create:incomplete_track"
+        }
+      ]
+    }
+  ],
+  "results": [
+    {
+      "id": "minecraft:emerald"
+    }
+  ],
+  "loops": 1
+}

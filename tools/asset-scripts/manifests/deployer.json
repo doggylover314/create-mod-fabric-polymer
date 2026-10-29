@@ -1,0 +1,43 @@
+{
+  "items": [
+    "deployer",
+    "incomplete_precision_mechanism",
+    "unprocessed_obsidian_sheet",
+    "incomplete_track"
+  ],
+  "blocks": [
+    "deployer"
+  ],
+  "display_models": [
+    "block/deployer/pole",
+    "block/deployer/hand_pointing",
+    "block/deployer/hand_holding",
+    "block/deployer/hand_punching"
+  ],
+  "blockstates": [
+    "deployer"
+  ],
+  "crafting": [
+    "kinetics/deployer"
+  ],
+  "processing_types": [
+    "deploying",
+    "item_application",
+    "sequenced_assembly"
+  ],
+  "tags": {
+    "create:deployable_drink": [
+      "minecraft:milk_bucket",
+      "minecraft:potion"
+    ]
+  },
+  "lang_ids": [
+    "deployer",
+    "incomplete_precision_mechanism",
+    "unprocessed_obsidian_sheet",
+    "incomplete_track"
+  ],
+  "lang_keys": [
+    "create.block.deployer.damage_source_name"
+  ]
+}

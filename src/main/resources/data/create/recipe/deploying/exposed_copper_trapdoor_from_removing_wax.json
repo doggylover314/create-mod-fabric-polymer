@@ -1,0 +1,13 @@
+{
+  "type": "create:deploying",
+  "ingredients": [
+    "minecraft:waxed_exposed_copper_trapdoor",
+    "#minecraft:axes"
+  ],
+  "results": [
+    {
+      "id": "minecraft:exposed_copper_trapdoor"
+    }
+  ],
+  "keep_held_item": true
+}

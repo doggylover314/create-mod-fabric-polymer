@@ -5,7 +5,7 @@
 	"name": "Create (Polymer) game tests",
 	"environment": "*",
 	"entrypoints": {
-		"fabric-gametest": ["dev.createpolymer.test.KineticGameTests", "dev.createpolymer.test.ProcessingGameTests", "dev.createpolymer.test.TransmissionGameTests", "dev.createpolymer.test.VaultGameTests", "dev.createpolymer.test.FilterGameTests", "dev.createpolymer.test.DepotGameTests", "dev.createpolymer.test.FoundationGameTests", "dev.createpolymer.test.BurnerGameTests", "dev.createpolymer.test.MaterialsGameTests", "dev.createpolymer.test.ChuteGameTests", "dev.createpolymer.test.CrushingGameTests", "dev.createpolymer.test.KineticsExtraGameTests", "dev.createpolymer.test.FanGameTests", "dev.createpolymer.test.SawGameTests"]
+		"fabric-gametest": ["dev.createpolymer.test.KineticGameTests", "dev.createpolymer.test.ProcessingGameTests", "dev.createpolymer.test.TransmissionGameTests", "dev.createpolymer.test.VaultGameTests", "dev.createpolymer.test.FilterGameTests", "dev.createpolymer.test.DepotGameTests", "dev.createpolymer.test.FoundationGameTests", "dev.createpolymer.test.BurnerGameTests", "dev.createpolymer.test.MaterialsGameTests", "dev.createpolymer.test.ChuteGameTests", "dev.createpolymer.test.CrushingGameTests", "dev.createpolymer.test.KineticsExtraGameTests", "dev.createpolymer.test.FanGameTests", "dev.createpolymer.test.SawGameTests", "dev.createpolymer.test.DeployerGameTests"]
 	},
 	"depends": {
 		"create": "*",

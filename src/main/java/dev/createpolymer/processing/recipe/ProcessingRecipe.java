@@ -2,6 +2,7 @@ package dev.createpolymer.processing.recipe;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
@@ -33,7 +34,8 @@ public abstract class ProcessingRecipe<I extends RecipeInput> implements Recipe<
 		).apply(i, Params::new));
 	}
 
-	protected final Params params;
+	protected Params params;
+	private Supplier<ItemStack> forcedResult;
 
 	protected ProcessingRecipe(Params params) {
 		this.params = params;
@@ -81,14 +83,31 @@ public abstract class ProcessingRecipe<I extends RecipeInput> implements Recipe<
 		return params.requiredHeat();
 	}
 
+	/** Sequenced assembly makes the first output of the recipe step the next transitional item (or the final result). */
+	public void enforceNextResult(Supplier<ItemStack> stack) {
+		forcedResult = stack;
+	}
+
 	public List<ItemStack> rollResults(RandomSource randomSource) {
+		return rollResults(this.getRollableResults(), randomSource);
+	}
+
+	public List<ItemStack> rollResults(List<ProcessingOutput> rollableResults, RandomSource randomSource) {
 		List<ItemStack> results = new ArrayList<>();
-		for (ProcessingOutput output : getRollableResults()) {
-			ItemStack stack = output.rollOutput(randomSource);
+		for (int i = 0; i < rollableResults.size(); i++) {
+			ProcessingOutput output = rollableResults.get(i);
+			ItemStack stack = i == 0 && forcedResult != null ? forcedResult.get() : output.rollOutput(randomSource);
 			if (!stack.isEmpty())
 				results.add(stack);
 		}
 		return results;
+	}
+
+	/** Replaces one ingredient; sequenced assembly points the steps at its transitional item. */
+	public void setIngredient(int index, Ingredient ingredient) {
+		List<Ingredient> ingredients = new ArrayList<>(params.ingredients());
+		ingredients.set(index, ingredient);
+		params = new Params(List.copyOf(ingredients), params.results(), params.processingDuration(), params.requiredHeat());
 	}
 
 	public ItemStack getResultItem() {

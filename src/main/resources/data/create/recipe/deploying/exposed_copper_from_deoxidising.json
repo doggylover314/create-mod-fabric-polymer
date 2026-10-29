@@ -1,0 +1,13 @@
+{
+  "type": "create:deploying",
+  "ingredients": [
+    "minecraft:weathered_copper",
+    "#minecraft:axes"
+  ],
+  "results": [
+    {
+      "id": "minecraft:exposed_copper"
+    }
+  ],
+  "keep_held_item": true
+}

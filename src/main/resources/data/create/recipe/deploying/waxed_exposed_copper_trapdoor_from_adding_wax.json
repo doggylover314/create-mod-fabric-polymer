@@ -1,0 +1,13 @@
+{
+  "type": "create:deploying",
+  "ingredients": [
+    "minecraft:exposed_copper_trapdoor",
+    "minecraft:honeycomb_block"
+  ],
+  "results": [
+    {
+      "id": "minecraft:waxed_exposed_copper_trapdoor"
+    }
+  ],
+  "keep_held_item": true
+}

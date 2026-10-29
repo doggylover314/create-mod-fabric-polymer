@@ -68,21 +68,54 @@ for name in CRAFTING:
     out['result'] = {'id': d['result']['id'], 'count': d['result'].get('count', 1)}
     write('crafting/' + name + '.json', out)
 
+def processing(d):
+    """One processing recipe (also a sequenced assembly step) in the new format, or None if it uses unported things."""
+    if 'neoforge:conditions' in d:
+        return None
+    ings = [ingredient(i) for i in d['ingredients']]
+    res = [result(r) for r in d['results']]
+    if not ings or any(i is None for i in ings) or any(r is None for r in res):
+        return None
+    out = {'type': d['type'], 'ingredients': ings, 'results': res}
+    if 'processing_time' in d:
+        out['processing_time'] = d['processing_time']
+    if d.get('heat_requirement', 'none') != 'none':
+        out['heat_requirement'] = d['heat_requirement']
+    if 'keep_held_item' in d:
+        out['keep_held_item'] = d['keep_held_item']
+    return out
+
+# steps of a sequenced assembly: the machines that are ported
+SEQUENCE_STEPS = ('create:deploying', 'create:pressing')
+
+def sequenced_assembly(d):
+    """create:sequenced_assembly: ingredient, transitional_item, results and a sequence of processing recipes."""
+    if 'neoforge:conditions' in d:
+        return None
+    ing = ingredient(d['ingredient'])
+    transitional = result(d['transitional_item'])
+    res = [result(r) for r in d['results']]
+    if ing is None or transitional is None or not res or any(r is None for r in res):
+        return None
+    steps = []
+    for step in d['sequence']:
+        if step['type'] not in SEQUENCE_STEPS:
+            return None
+        converted = processing(step)
+        if converted is None:
+            return None
+        steps.append(converted)
+    out = {'type': d['type'], 'ingredient': ing, 'transitional_item': transitional, 'sequence': steps, 'results': res}
+    if 'loops' in d:
+        out['loops'] = d['loops']
+    return out
+
 for t in M['processing_types']:
+    convert = sequenced_assembly if t == 'sequenced_assembly' else processing
     for f in sorted(glob.glob(os.path.join(R, t, '*.json'))):
-        d = json.load(open(f))
-        if 'neoforge:conditions' in d:
-            continue
-        ings = [ingredient(i) for i in d['ingredients']]
-        res = [result(r) for r in d['results']]
-        if not ings or any(i is None for i in ings) or any(r is None for r in res):
-            continue
-        out = {'type': d['type'], 'ingredients': ings, 'results': res}
-        if 'processing_time' in d:
-            out['processing_time'] = d['processing_time']
-        if d.get('heat_requirement', 'none') != 'none':
-            out['heat_requirement'] = d['heat_requirement']
-        write(t + '/' + os.path.basename(f), out)
+        out = convert(json.load(open(f)))
+        if out is not None:
+            write(t + '/' + os.path.basename(f), out)
 
 # andesite casing from stripped logs/wood (Create's item application, handled in code)
 print('written', written)
