@@ -17,6 +17,7 @@
     "create:depot",
     "create:speedometer",
     "create:stressometer",
+    "create:mechanical_drill",
     "create:andesite_casing"
   ]
 }

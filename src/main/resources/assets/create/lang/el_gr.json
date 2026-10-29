@@ -11,6 +11,8 @@
  "block.create.clutch": "Συμπλέκτης",
  "block.create.cogwheel": "Γρανάζι",
  "block.create.creative_motor": "Δημιουργικός Κινητήρας",
+ "block.create.crushing_wheel": "Τροχός Θρυμματισμού",
+ "block.create.crushing_wheel_controller": "Ελεγκτής Τροχού Θρυμματισμού",
  "block.create.hand_crank": "Μανιβέλα",
  "block.create.shaft": "Άξονας",
  "item.create.brass_hand": "Χέρι Ορείχαλκου",

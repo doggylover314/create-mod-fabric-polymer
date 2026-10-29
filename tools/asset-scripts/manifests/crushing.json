@@ -1,0 +1,35 @@
+{
+  "items": [
+    "mechanical_drill",
+    "crushing_wheel"
+  ],
+  "blocks": [
+    "mechanical_drill",
+    "crushing_wheel"
+  ],
+  "display_models": [
+    "block/mechanical_drill/block",
+    "block/mechanical_drill/head"
+  ],
+  "own_models": [
+    "block/crushing_wheel/polymer_wheel",
+    "item/crushing_wheel"
+  ],
+  "crafting": [
+    "kinetics/mechanical_drill"
+  ],
+  "processing_types": [
+    "crushing"
+  ],
+  "lang_ids": [
+    "mechanical_drill",
+    "crushing_wheel",
+    "crushing_wheel_controller"
+  ],
+  "lang_keys": [
+    "death.attack.create.crush",
+    "death.attack.create.crush.player",
+    "death.attack.create.mechanical_drill",
+    "death.attack.create.mechanical_drill.player"
+  ]
+}

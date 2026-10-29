@@ -1,0 +1,454 @@
+{
+ "credit": "Approximation of Create's crushing wheel for vanilla clients (create-polymer)",
+ "textures": {
+  "insert": "create:block/crushing_wheel_insert",
+  "plates": "create:block/crushing_wheel_plates",
+  "axis": "create:block/axis",
+  "axis_top": "create:block/axis_top",
+  "log": "minecraft:block/spruce_log_top",
+  "particle": "create:block/crushing_wheel_plates"
+ },
+ "elements": [
+  {
+   "name": "disc",
+   "from": [
+    -3.3137,
+    1.92,
+    -3.3137
+   ],
+   "to": [
+    19.3137,
+    14.08,
+    19.3137
+   ],
+   "faces": {
+    "up": {
+     "uv": [
+      2.3431,
+      2.3431,
+      13.6569,
+      13.6569
+     ],
+     "texture": "#insert"
+    },
+    "down": {
+     "uv": [
+      2.3431,
+      2.3431,
+      13.6569,
+      13.6569
+     ],
+     "texture": "#insert"
+    },
+    "north": {
+     "uv": [
+      0,
+      2,
+      16,
+      14
+     ],
+     "texture": "#plates"
+    },
+    "south": {
+     "uv": [
+      0,
+      2,
+      16,
+      14
+     ],
+     "texture": "#plates"
+    },
+    "east": {
+     "uv": [
+      0,
+      2,
+      16,
+      14
+     ],
+     "texture": "#plates"
+    },
+    "west": {
+     "uv": [
+      0,
+      2,
+      16,
+      14
+     ],
+     "texture": "#plates"
+    }
+   }
+  },
+  {
+   "name": "disc",
+   "from": [
+    -3.3137,
+    1.93,
+    -3.3137
+   ],
+   "to": [
+    19.3137,
+    14.07,
+    19.3137
+   ],
+   "faces": {
+    "up": {
+     "uv": [
+      2.3431,
+      2.3431,
+      13.6569,
+      13.6569
+     ],
+     "texture": "#insert"
+    },
+    "down": {
+     "uv": [
+      2.3431,
+      2.3431,
+      13.6569,
+      13.6569
+     ],
+     "texture": "#insert"
+    },
+    "north": {
+     "uv": [
+      0,
+      2,
+      16,
+      14
+     ],
+     "texture": "#plates"
+    },
+    "south": {
+     "uv": [
+      0,
+      2,
+      16,
+      14
+     ],
+     "texture": "#plates"
+    },
+    "east": {
+     "uv": [
+      0,
+      2,
+      16,
+      14
+     ],
+     "texture": "#plates"
+    },
+    "west": {
+     "uv": [
+      0,
+      2,
+      16,
+      14
+     ],
+     "texture": "#plates"
+    }
+   },
+   "rotation": {
+    "origin": [
+     8,
+     8,
+     8
+    ],
+    "axis": "y",
+    "angle": 22.5
+   }
+  },
+  {
+   "name": "disc",
+   "from": [
+    -3.3137,
+    1.94,
+    -3.3137
+   ],
+   "to": [
+    19.3137,
+    14.06,
+    19.3137
+   ],
+   "faces": {
+    "up": {
+     "uv": [
+      2.3431,
+      2.3431,
+      13.6569,
+      13.6569
+     ],
+     "texture": "#insert"
+    },
+    "down": {
+     "uv": [
+      2.3431,
+      2.3431,
+      13.6569,
+      13.6569
+     ],
+     "texture": "#insert"
+    },
+    "north": {
+     "uv": [
+      0,
+      2,
+      16,
+      14
+     ],
+     "texture": "#plates"
+    },
+    "south": {
+     "uv": [
+      0,
+      2,
+      16,
+      14
+     ],
+     "texture": "#plates"
+    },
+    "east": {
+     "uv": [
+      0,
+      2,
+      16,
+      14
+     ],
+     "texture": "#plates"
+    },
+    "west": {
+     "uv": [
+      0,
+      2,
+      16,
+      14
+     ],
+     "texture": "#plates"
+    }
+   },
+   "rotation": {
+    "origin": [
+     8,
+     8,
+     8
+    ],
+    "axis": "y",
+    "angle": 45
+   }
+  },
+  {
+   "name": "disc",
+   "from": [
+    -3.3137,
+    1.95,
+    -3.3137
+   ],
+   "to": [
+    19.3137,
+    14.05,
+    19.3137
+   ],
+   "faces": {
+    "up": {
+     "uv": [
+      2.3431,
+      2.3431,
+      13.6569,
+      13.6569
+     ],
+     "texture": "#insert"
+    },
+    "down": {
+     "uv": [
+      2.3431,
+      2.3431,
+      13.6569,
+      13.6569
+     ],
+     "texture": "#insert"
+    },
+    "north": {
+     "uv": [
+      0,
+      2,
+      16,
+      14
+     ],
+     "texture": "#plates"
+    },
+    "south": {
+     "uv": [
+      0,
+      2,
+      16,
+      14
+     ],
+     "texture": "#plates"
+    },
+    "east": {
+     "uv": [
+      0,
+      2,
+      16,
+      14
+     ],
+     "texture": "#plates"
+    },
+    "west": {
+     "uv": [
+      0,
+      2,
+      16,
+      14
+     ],
+     "texture": "#plates"
+    }
+   },
+   "rotation": {
+    "origin": [
+     8,
+     8,
+     8
+    ],
+    "axis": "y",
+    "angle": -22.5
+   }
+  },
+  {
+   "name": "hub",
+   "from": [
+    4,
+    1,
+    4
+   ],
+   "to": [
+    12,
+    15,
+    12
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      8,
+      14
+     ],
+     "texture": "#log"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      8,
+      14
+     ],
+     "texture": "#log"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      8,
+      14
+     ],
+     "texture": "#log"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      8,
+      14
+     ],
+     "texture": "#log"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      8,
+      8
+     ],
+     "texture": "#log"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      8,
+      8
+     ],
+     "texture": "#log"
+    }
+   }
+  },
+  {
+   "name": "axle",
+   "from": [
+    6,
+    0,
+    6
+   ],
+   "to": [
+    10,
+    16,
+    10
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      4,
+      16
+     ],
+     "texture": "#axis"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      4,
+      16
+     ],
+     "texture": "#axis"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      4,
+      16
+     ],
+     "texture": "#axis"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      4,
+      16
+     ],
+     "texture": "#axis"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      4,
+      4
+     ],
+     "texture": "#axis_top"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      4,
+      4
+     ],
+     "texture": "#axis_top"
+    }
+   }
+  }
+ ]
+}

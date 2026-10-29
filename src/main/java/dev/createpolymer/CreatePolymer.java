@@ -17,6 +17,7 @@ import dev.createpolymer.registry.ModItems;
 import dev.createpolymer.registry.ModRecipeTypes;
 import dev.createpolymer.registry.feature.VaultRegistry;
 import dev.createpolymer.registry.feature.ChuteRegistry;
+import dev.createpolymer.registry.feature.CrushingRegistry;
 import dev.createpolymer.registry.feature.FilterRegistry;
 import dev.createpolymer.registry.feature.BurnerRegistry;
 import dev.createpolymer.registry.feature.MaterialsRegistry;
@@ -50,6 +51,7 @@ public class CreatePolymer implements ModInitializer {
 		BurnerRegistry.init();
 		MaterialsRegistry.init();
 		ChuteRegistry.init();
+		CrushingRegistry.init();
 
 		// Resource pack: Create's models/textures/lang from this jar, served by polymer-autohost.
 		enableAutoHostByDefault();
