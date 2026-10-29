@@ -41,6 +41,7 @@ import dev.createpolymer.registry.feature.EquipmentRegistry;
 import dev.createpolymer.registry.feature.PackagesRegistry;
 import dev.createpolymer.registry.feature.StockRegistry;
 import dev.createpolymer.registry.feature.DisplayRegistry;
+import dev.createpolymer.registry.feature.ChainConveyorRegistry;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import eu.pb4.polymer.resourcepack.extras.api.ResourcePackExtras;
 import net.fabricmc.api.EnvType;
@@ -92,6 +93,7 @@ public class CreatePolymer implements ModInitializer {
 		ContraptionRegistry.init();
 		StockRegistry.init();
 		DisplayRegistry.init();
+		ChainConveyorRegistry.init();
 
 		// Resource pack: Create's models/textures/lang from this jar, served by polymer-autohost.
 		enableAutoHostByDefault();

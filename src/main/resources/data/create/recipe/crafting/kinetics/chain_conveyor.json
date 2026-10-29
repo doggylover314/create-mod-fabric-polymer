@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " C ",
+    "CAC",
+    " C "
+  ],
+  "key": {
+    "A": "create:large_cogwheel",
+    "C": "create:andesite_casing"
+  },
+  "result": {
+    "id": "create:chain_conveyor",
+    "count": 2
+  }
+}

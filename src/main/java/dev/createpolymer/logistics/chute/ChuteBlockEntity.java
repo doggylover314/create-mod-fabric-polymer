@@ -22,6 +22,7 @@ import dev.createpolymer.kinetics.belt.behaviour.TransportedItemStackHandlerBeha
 import dev.createpolymer.kinetics.fan.AirCurrent;
 import dev.createpolymer.kinetics.fan.EncasedFanBlock;
 import dev.createpolymer.kinetics.fan.EncasedFanBlockEntity;
+import dev.createpolymer.logistics.box.PackageEntity;
 import dev.createpolymer.logistics.funnel.FunnelBlock;
 import dev.createpolymer.registry.feature.FanRegistry;
 import dev.createpolymer.registry.feature.ChuteRegistry;
@@ -33,6 +34,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Clearable;
 import net.minecraft.world.Containers;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -125,8 +127,8 @@ public class ChuteBlockEntity extends SmartBlockEntity implements Clearable { //
 		float itemMotion = getItemMotion();
 		tickAirStreams(itemMotion);
 
-		if (canPickUpItems && level.getGameTime() % 2 == 0)
-			collectItemEntities();
+		if (canPickUpItems)
+			collectItemEntities(level.getGameTime() % 2 == 0);
 
 		if (item.isEmpty()) {
 			if (itemMotion < 0)
@@ -165,10 +167,11 @@ public class ChuteBlockEntity extends SmartBlockEntity implements Clearable { //
 	 * Create gets items resting on top from Block.updateEntityAfterFallOn, which does not exist in 26.3, so the
 	 * item entities standing on this chute are looked up here.
 	 */
-	private void collectItemEntities() {
+	private void collectItemEntities(boolean items) {
 		AABB top = new AABB(worldPosition.getX(), worldPosition.getY() + 1, worldPosition.getZ(),
 			worldPosition.getX() + 1, worldPosition.getY() + 1.5, worldPosition.getZ() + 1);
-		for (ItemEntity itemEntity : level.getEntitiesOfClass(ItemEntity.class, top)) {
+		for (Entity itemEntity : level.getEntitiesOfClass(Entity.class, top,
+			e -> e instanceof PackageEntity || items && e instanceof ItemEntity)) {
 			if (!itemEntity.onGround())
 				continue;
 			BlockPos below = BlockPos.containing(itemEntity.position()

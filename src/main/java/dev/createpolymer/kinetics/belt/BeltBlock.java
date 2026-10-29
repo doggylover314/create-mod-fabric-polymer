@@ -23,6 +23,7 @@ import dev.createpolymer.kinetics.belt.BeltBlockEntity.CasingType;
 import dev.createpolymer.kinetics.belt.behaviour.TransportedItemStackHandlerBehaviour.TransportedResult;
 import dev.createpolymer.kinetics.belt.transport.BeltMovementHandler.TransportedEntityInfo;
 import dev.createpolymer.kinetics.belt.transport.BeltTunnelInteractionHandler;
+import dev.createpolymer.logistics.box.PackageEntity;
 import dev.createpolymer.logistics.funnel.FunnelBlock;
 import dev.createpolymer.logistics.tunnel.BeltTunnelBlock;
 import dev.createpolymer.registry.ModBlocks;
@@ -30,6 +31,7 @@ import dev.createpolymer.registry.ModItems;
 import dev.createpolymer.registry.feature.BeltRegistry;
 import dev.createpolymer.registry.feature.CrushingRegistry;
 import dev.createpolymer.util.Iterate;
+import dev.createpolymer.util.VecHelper;
 import eu.pb4.polymer.blocks.api.BlockModelType;
 import eu.pb4.polymer.blocks.api.PolymerBlockResourceUtils;
 import eu.pb4.polymer.blocks.api.PolymerTexturedBlock;
@@ -86,6 +88,7 @@ import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -173,6 +176,10 @@ public class BeltBlock extends HorizontalKineticBlock
 			if (worldIn.isClientSide())
 				return;
 			if (entityIn.getDeltaMovement().y > 0)
+				return;
+			Vec3 targetLocation = VecHelper.getCenterOf(pos)
+				.add(0, 5 / 16f, 0);
+			if (!PackageEntity.centerPackage(entityIn, targetLocation))
 				return;
 			if (BeltTunnelInteractionHandler.getTunnelOnPosition(worldIn, pos) != null)
 				return;

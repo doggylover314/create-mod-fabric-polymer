@@ -6,9 +6,11 @@ import dev.createpolymer.foundation.blockEntity.SmartBlockEntity;
 import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import dev.createpolymer.foundation.item.handler.ItemHandlerLookup;
 import dev.createpolymer.kinetics.belt.transport.TransportedItemStack;
+import dev.createpolymer.logistics.box.PackageEntity;
 import dev.createpolymer.registry.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.Clearable;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -39,15 +41,17 @@ public class DepotBlockEntity extends SmartBlockEntity implements Clearable {
 	@Override
 	public void tick() {
 		super.tick();
-		if (level.getGameTime() % 4 == 0)
-			collectItemEntities();
+		// Packages have to be centred on the depot over several ticks (PackageEntity.centerPackage), so they are
+		// looked at every tick, like Create's updateEntityAfterFallOn
+		collectItemEntities(level.getGameTime() % 4 == 0);
 	}
 
-	private void collectItemEntities() {
+	private void collectItemEntities(boolean items) {
 		AABB top = new AABB(worldPosition.getX(), worldPosition.getY() + 13 / 16d, worldPosition.getZ(),
 			worldPosition.getX() + 1, worldPosition.getY() + 1, worldPosition.getZ() + 1);
-		for (ItemEntity itemEntity : level.getEntitiesOfClass(ItemEntity.class, top))
-			SharedDepotBlockMethods.onLanded(level, itemEntity);
+		for (Entity entity : level.getEntitiesOfClass(Entity.class, top,
+			e -> e instanceof PackageEntity || items && e instanceof ItemEntity))
+			SharedDepotBlockMethods.onLanded(level, entity);
 	}
 
 	@Override

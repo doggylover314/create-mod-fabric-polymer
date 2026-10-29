@@ -1,5 +1,6 @@
 package dev.createpolymer.logistics.packagePort;
 
+import java.util.Map;
 import java.util.Optional;
 
 import org.jspecify.annotations.Nullable;
@@ -8,6 +9,11 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import dev.createpolymer.kinetics.chainConveyor.ChainConveyorBlockEntity;
+import dev.createpolymer.kinetics.chainConveyor.ChainConveyorBlockEntity.ConnectedPort;
+import dev.createpolymer.kinetics.chainConveyor.ChainConveyorBlockEntity.ConnectionStats;
+import dev.createpolymer.kinetics.chainConveyor.ChainConveyorPackage;
+import dev.createpolymer.registry.feature.ChainConveyorRegistry;
 import dev.createpolymer.registry.feature.PackagesRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
@@ -18,9 +24,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 
 /**
- * Where a package port sends its packages. Chain conveyors and train stations, the two things Create ports can
- * point at, are not ported yet: their target classes below keep the saved data and the interface, but cannot move a
- * package (see each method).
+ * Where a package port sends its packages: onto a chain conveyor, or (not ported yet, since there are no trains) to
+ * a train station, whose target class below keeps the saved data and the interface but cannot move a package.
  */
 public abstract class PackagePortTarget {
 	public static final Codec<PackagePortTarget> CODEC = AllPackagePortTargetTypes.BY_NAME_CODEC
@@ -82,33 +87,84 @@ public abstract class PackagePortTarget {
 			this.flipped = flipped;
 		}
 
-		/** Needs the chain conveyor: reads the speed direction of the conveyor to set {@link #flipped}. */
 		@Override
-		public void setup(PackagePortBlockEntity ppbe, LevelAccessor level, BlockPos portPos) {}
+		public void setup(PackagePortBlockEntity ppbe, LevelAccessor level, BlockPos portPos) {
+			if (be(level, portPos) instanceof ChainConveyorBlockEntity clbe)
+				flipped = clbe.getSpeed() < 0;
+		}
 
 		@Override
 		public ItemStack getIcon() {
-			return new ItemStack(Items.IRON_CHAIN);
+			return new ItemStack(ChainConveyorRegistry.CHAIN_CONVEYOR_ITEM);
 		}
 
-		/** Needs the chain conveyor: Create adds the package to the chain's looping or travelling packages. */
 		@Override
 		public boolean export(LevelAccessor level, BlockPos portPos, ItemStack box, boolean simulate) {
-			return false;
+			if (!(be(level, portPos) instanceof ChainConveyorBlockEntity clbe))
+				return false;
+			if (connection != null && !clbe.connections.contains(connection))
+				return false;
+			if (simulate)
+				return clbe.getSpeed() != 0 && clbe.canAcceptPackagesFor(connection);
+			ChainConveyorPackage box2 = new ChainConveyorPackage(chainPos, box.copy());
+			if (connection == null)
+				return clbe.addLoopingPackage(box2);
+			return clbe.addTravellingPackage(box2, connection);
 		}
 
-		/** Needs the chain conveyor: registers the port with the conveyor's routing table and port maps. */
 		@Override
-		public void register(PackagePortBlockEntity ppbe, LevelAccessor level, BlockPos portPos) {}
+		public void register(PackagePortBlockEntity ppbe, LevelAccessor level, BlockPos portPos) {
+			if (!(be(level, portPos) instanceof ChainConveyorBlockEntity clbe))
+				return;
+			ChainConveyorBlockEntity actualBe = clbe;
 
-		/** Needs the chain conveyor: removes the port from the conveyor's maps and routing table. */
+			// Jump to opposite chain if motion reversed
+			if (connection != null && clbe.getSpeed() < 0 != flipped) {
+				deregister(ppbe, level, portPos);
+				actualBe = ChainConveyorRegistry.CHAIN_CONVEYOR.getBlockEntity(level, clbe.getBlockPos()
+					.offset(connection));
+				if (actualBe == null)
+					return;
+				clbe.prepareStats();
+				ConnectionStats stats = clbe.connectionStats.get(connection);
+				if (stats != null)
+					chainPos = stats.chainLength() - chainPos;
+				connection = connection.multiply(-1);
+				flipped = !flipped;
+				relativePos = actualBe.getBlockPos()
+					.subtract(portPos);
+				ppbe.notifyUpdate();
+			}
+
+			if (connection != null && !actualBe.connections.contains(connection))
+				return;
+			String portFilter = ppbe.getFilterString();
+			if (portFilter == null)
+				return;
+			actualBe.routingTable.receivePortInfo(portFilter, connection == null ? BlockPos.ZERO : connection);
+			Map<BlockPos, ConnectedPort> portMap = connection == null ? actualBe.loopPorts : actualBe.travelPorts;
+			portMap.put(relativePos.multiply(-1), new ConnectedPort(chainPos, connection, portFilter));
+		}
+
 		@Override
-		public void deregister(PackagePortBlockEntity ppbe, LevelAccessor level, BlockPos portPos) {}
+		public void deregister(PackagePortBlockEntity ppbe, LevelAccessor level, BlockPos portPos) {
+			if (!(be(level, portPos) instanceof ChainConveyorBlockEntity clbe))
+				return;
+			clbe.loopPorts.remove(relativePos.multiply(-1));
+			clbe.travelPorts.remove(relativePos.multiply(-1));
+			String portFilter = ppbe.getFilterString();
+			if (portFilter == null)
+				return;
+			clbe.routingTable.entriesByDistance.removeIf(e -> e.endOfRoute() && e.port()
+				.equals(portFilter));
+			clbe.routingTable.changed = true;
+		}
 
-		/** Needs the chain conveyor: Create asks it for the package position at {@link #chainPos}. */
 		@Override
 		public Vec3 getExactTargetLocation(PackagePortBlockEntity ppbe, LevelAccessor level, BlockPos portPos) {
-			return Vec3.atCenterOf(portPos.offset(relativePos));
+			if (!(be(level, portPos) instanceof ChainConveyorBlockEntity clbe))
+				return Vec3.ZERO;
+			return clbe.getPackagePosition(chainPos, connection);
 		}
 
 		@Override

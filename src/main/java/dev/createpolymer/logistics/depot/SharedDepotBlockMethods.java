@@ -5,6 +5,8 @@ import dev.createpolymer.foundation.item.ItemHelper;
 import dev.createpolymer.foundation.item.handler.ItemStackHandler;
 import dev.createpolymer.kinetics.belt.behaviour.DirectBeltInputBehaviour;
 import dev.createpolymer.kinetics.belt.transport.TransportedItemStack;
+import dev.createpolymer.logistics.box.PackageEntity;
+import dev.createpolymer.util.VecHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
@@ -21,6 +23,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 
 public class SharedDepotBlockMethods {
 
@@ -80,6 +83,10 @@ public class SharedDepotBlockMethods {
 		BlockPos pos = entityIn.blockPosition();
 		DirectBeltInputBehaviour inputBehaviour = BlockEntityBehaviour.get(worldIn, pos, DirectBeltInputBehaviour.TYPE);
 		if (inputBehaviour == null)
+			return;
+		Vec3 targetLocation = VecHelper.getCenterOf(pos)
+			.add(0, 5 / 16f, 0);
+		if (!PackageEntity.centerPackage(entityIn, targetLocation))
 			return;
 
 		ItemStack remainder = inputBehaviour.handleInsertion(asItem, Direction.DOWN, false);

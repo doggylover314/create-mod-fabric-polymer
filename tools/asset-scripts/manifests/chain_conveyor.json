@@ -1,0 +1,23 @@
+{
+  "items": [
+    "chain_conveyor"
+  ],
+  "blocks": [
+    "chain_conveyor"
+  ],
+  "display_models": [
+    "block/chain_conveyor/block",
+    "block/chain_conveyor/shaft",
+    "block/chain_conveyor/wheel",
+    "block/chain_conveyor/guard"
+  ],
+  "crafting": [
+    "kinetics/chain_conveyor"
+  ],
+  "lang_ids": [
+    "chain_conveyor"
+  ],
+  "lang_prefixes": [
+    "create.chain_conveyor."
+  ]
+}

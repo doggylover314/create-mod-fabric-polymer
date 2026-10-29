@@ -14,6 +14,7 @@ import dev.createpolymer.foundation.item.handler.ItemHandlerLookup;
 import dev.createpolymer.kinetics.base.KineticBlockEntity;
 import dev.createpolymer.kinetics.belt.behaviour.DirectBeltInputBehaviour;
 import dev.createpolymer.kinetics.belt.transport.TransportedItemStack;
+import dev.createpolymer.logistics.box.PackageEntity;
 import dev.createpolymer.logistics.funnel.AbstractFunnelBlock;
 import dev.createpolymer.logistics.funnel.FunnelBlock;
 import dev.createpolymer.registry.feature.EjectorRegistry;
@@ -159,6 +160,8 @@ public class EjectorBlockEntity extends KineticBlockEntity {
 			if (!entity.isAlive())
 				continue;
 			if (entity instanceof ItemEntity)
+				continue;
+			if (entity instanceof PackageEntity)
 				continue;
 			if (entity.getPistonPushReaction() == PushReaction.IGNORE_ENTITY)
 				continue;
@@ -366,7 +369,7 @@ public class EjectorBlockEntity extends KineticBlockEntity {
 			worldPosition.getX() + 1, worldPosition.getY() + 1 + STANDING_REACH, worldPosition.getZ() + 1);
 		for (Entity entity : level.getEntitiesOfClass(Entity.class, top)) {
 			// items are taken in by the cell they are in
-			if (entity instanceof ItemEntity && !entity.blockPosition().equals(worldPosition))
+			if ((entity instanceof ItemEntity || entity instanceof PackageEntity) && !entity.blockPosition().equals(worldPosition))
 				continue;
 			ejector.updateEntityAfterFallOn(level, entity);
 		}

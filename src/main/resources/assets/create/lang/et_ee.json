@@ -250,6 +250,7 @@
  "create.backtank.low": "Seljapaagi surve madal",
  "create.boiler.size": "Suurus",
  "create.boiler.water": "Vesi",
+ "create.chain_conveyor.valid_connection": "Saab ühendada ✔",
  "create.display_source.gauge_status": "Mõõdiku staatus",
  "create.display_source.kinetic_stress.display": "Kuvatud teave",
  "create.display_source.kinetic_stress.max": "Kogu mahtuvus",

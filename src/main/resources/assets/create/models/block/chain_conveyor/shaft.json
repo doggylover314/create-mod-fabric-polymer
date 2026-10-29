@@ -1,0 +1,247 @@
+{
+ "credit": "Converted from the OBJ model of Create for vanilla clients (create-polymer)",
+ "parent": "block/block",
+ "ambientocclusion": false,
+ "textures": {
+  "axis": "create:block/axis",
+  "axis_top": "create:block/axis_top",
+  "conveyor_casing": "create:block/conveyor_casing",
+  "conveyor_port": "create:block/conveyor_port",
+  "bullwheel": "create:block/bullwheel",
+  "particle": "create:block/andesite_casing"
+ },
+ "elements": [
+  {
+   "from": [
+    4.0,
+    0.0,
+    8.0
+   ],
+   "to": [
+    8.0,
+    16.0,
+    8.0
+   ],
+   "rotation": {
+    "origin": [
+     6.0,
+     8.0,
+     8.0
+    ],
+    "x": 0.0,
+    "y": -90.0,
+    "z": 0.0
+   },
+   "faces": {
+    "south": {
+     "uv": [
+      6.0,
+      0.0,
+      10.0,
+      16.0
+     ],
+     "texture": "#axis"
+    }
+   }
+  },
+  {
+   "from": [
+    6.0,
+    0.0,
+    6.0
+   ],
+   "to": [
+    10.0,
+    16.0,
+    6.0
+   ],
+   "rotation": {
+    "origin": [
+     8.0,
+     8.0,
+     6.0
+    ],
+    "x": -180.0,
+    "y": 0.0,
+    "z": 180.0
+   },
+   "faces": {
+    "south": {
+     "uv": [
+      6.0,
+      0.0,
+      10.0,
+      16.0
+     ],
+     "texture": "#axis"
+    }
+   }
+  },
+  {
+   "from": [
+    8.0,
+    0.0,
+    8.0
+   ],
+   "to": [
+    12.0,
+    16.0,
+    8.0
+   ],
+   "rotation": {
+    "origin": [
+     10.0,
+     8.0,
+     8.0
+    ],
+    "x": 0.0,
+    "y": 90.0,
+    "z": 0.0
+   },
+   "faces": {
+    "south": {
+     "uv": [
+      6.0,
+      0.0,
+      10.0,
+      16.0
+     ],
+     "texture": "#axis"
+    }
+   }
+  },
+  {
+   "from": [
+    6.0,
+    0.0,
+    10.0
+   ],
+   "to": [
+    10.0,
+    16.0,
+    10.0
+   ],
+   "rotation": {
+    "origin": [
+     8.0,
+     8.0,
+     10.0
+    ],
+    "x": 0.0,
+    "y": 0.0,
+    "z": 0.0
+   },
+   "faces": {
+    "south": {
+     "uv": [
+      6.0,
+      0.0,
+      10.0,
+      16.0
+     ],
+     "texture": "#axis"
+    }
+   }
+  },
+  {
+   "from": [
+    6.0,
+    14.0,
+    8.0
+   ],
+   "to": [
+    10.0,
+    18.0,
+    8.0
+   ],
+   "rotation": {
+    "origin": [
+     8.0,
+     16.0,
+     8.0
+    ],
+    "x": -90.0,
+    "y": 90.0,
+    "z": 0.0
+   },
+   "faces": {
+    "south": {
+     "uv": [
+      6.0,
+      6.0,
+      10.0,
+      10.0
+     ],
+     "texture": "#axis_top"
+    }
+   }
+  },
+  {
+   "from": [
+    6.0,
+    -2.0,
+    8.0
+   ],
+   "to": [
+    10.0,
+    2.0,
+    8.0
+   ],
+   "rotation": {
+    "origin": [
+     8.0,
+     0.0,
+     8.0
+    ],
+    "x": 90.0,
+    "y": 90.0,
+    "z": 0.0
+   },
+   "faces": {
+    "south": {
+     "uv": [
+      6.0,
+      6.0,
+      10.0,
+      10.0
+     ],
+     "texture": "#axis_top"
+    }
+   }
+  },
+  {
+   "from": [
+    -8.0,
+    -14.3,
+    8.0
+   ],
+   "to": [
+    24.0,
+    17.7,
+    8.0
+   ],
+   "rotation": {
+    "origin": [
+     8.0,
+     1.7,
+     8.0
+    ],
+    "x": 90.0,
+    "y": 0.0,
+    "z": 0.0
+   },
+   "faces": {
+    "south": {
+     "uv": [
+      0.0,
+      0.0,
+      16.0,
+      16.0
+     ],
+     "texture": "#bullwheel"
+    }
+   }
+  }
+ ],
+ "render_type": "minecraft:cutout"
+}

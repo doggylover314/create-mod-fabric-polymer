@@ -7,6 +7,7 @@ import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import dev.createpolymer.foundation.item.ItemHelper;
 import dev.createpolymer.item.IWrenchable;
 import dev.createpolymer.kinetics.belt.behaviour.DirectBeltInputBehaviour;
+import dev.createpolymer.logistics.box.PackageEntity;
 import dev.createpolymer.util.Iterate;
 import dev.createpolymer.visual.PolymerModelBlock;
 import net.minecraft.core.BlockPos;
@@ -29,6 +30,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
@@ -86,6 +88,8 @@ public abstract class AbstractChuteBlock extends Block implements IWrenchable, I
 		if (input == null)
 			return;
 		if (!input.canInsertFromSide(Direction.UP))
+			return;
+		if (!PackageEntity.centerPackage(entityIn, Vec3.atBottomCenterOf(pos.above())))
 			return;
 		ItemStack remainder = input.handleInsertion(stack, Direction.UP, false);
 		if (remainder.isEmpty()) {

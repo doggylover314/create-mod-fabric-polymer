@@ -13,6 +13,7 @@ import dev.createpolymer.foundation.item.handler.IItemHandler;
 import dev.createpolymer.foundation.item.handler.IItemHandlerModifiable;
 import dev.createpolymer.foundation.item.handler.ItemHandlerLookup;
 import dev.createpolymer.foundation.item.handler.ItemStackHandler;
+import dev.createpolymer.logistics.box.PackageEntity;
 import dev.createpolymer.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -289,6 +290,9 @@ public class ItemHelper {
 	public static ItemStack fromItemEntity(Entity entityIn) {
 		if (!entityIn.isAlive())
 			return ItemStack.EMPTY;
+		if (entityIn instanceof PackageEntity packageEntity) {
+			return packageEntity.getBox();
+		}
 		return entityIn instanceof ItemEntity itemEntity ? itemEntity.getItem() : ItemStack.EMPTY;
 	}
 

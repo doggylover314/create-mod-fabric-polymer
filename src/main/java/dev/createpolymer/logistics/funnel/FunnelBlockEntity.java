@@ -15,6 +15,7 @@ import dev.createpolymer.kinetics.belt.BeltBlockEntity;
 import dev.createpolymer.kinetics.belt.BeltHelper;
 import dev.createpolymer.kinetics.belt.behaviour.DirectBeltInputBehaviour;
 import dev.createpolymer.kinetics.belt.transport.TransportedItemStack;
+import dev.createpolymer.logistics.box.PackageEntity;
 import dev.createpolymer.logistics.funnel.BeltFunnelBlock.Shape;
 import dev.createpolymer.registry.feature.FunnelRegistry;
 import dev.createpolymer.registry.feature.RedstoneRegistry;
@@ -149,7 +150,7 @@ public class FunnelBlockEntity extends SmartBlockEntity implements Clearable {
 		// Only scan for blocking entities if there's something to extract
 		AABB area = getEntityOverflowScanningArea();
 		for (Entity entity : level.getEntities((Entity) null, area)) {
-			if (entity instanceof ItemEntity) {
+			if (entity instanceof ItemEntity || entity instanceof PackageEntity) {
 				lastObserved = new WeakReference<>(entity);
 				return;
 			}

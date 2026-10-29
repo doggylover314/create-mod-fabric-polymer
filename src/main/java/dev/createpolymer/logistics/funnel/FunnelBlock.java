@@ -1,7 +1,10 @@
 package dev.createpolymer.logistics.funnel;
 
 import dev.createpolymer.foundation.block.ProperWaterloggedBlock;
+import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
+import dev.createpolymer.foundation.blockEntity.behaviour.filtering.FilteringBehaviour;
 import dev.createpolymer.foundation.item.ItemHelper;
+import dev.createpolymer.logistics.box.PackageEntity;
 import dev.createpolymer.registry.ModItems;
 import dev.createpolymer.util.VecHelper;
 import net.minecraft.core.BlockPos;
@@ -116,6 +119,10 @@ public abstract class FunnelBlock extends AbstractDirectionalFunnelBlock {
 		double projectedDiff = direction.getAxis()
 			.choose(diff.x, diff.y, diff.z);
 		if (projectedDiff < 0 == (direction.getAxisDirection() == AxisDirection.POSITIVE))
+			return;
+		float yOffset = direction == Direction.UP ? 0.25f : direction == Direction.DOWN ? -0.5f : -0.5f;
+		FilteringBehaviour filter = BlockEntityBehaviour.get(worldIn, pos, FilteringBehaviour.TYPE);
+		if (filter.test(stack) && !PackageEntity.centerPackage(entityIn, openPos.add(0, yOffset, 0)))
 			return;
 
 		ItemStack remainder = tryInsert(worldIn, pos, stack, false);
