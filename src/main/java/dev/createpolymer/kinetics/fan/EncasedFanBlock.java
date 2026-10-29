@@ -5,6 +5,7 @@ import org.jspecify.annotations.Nullable;
 import dev.createpolymer.foundation.block.IBE;
 import dev.createpolymer.kinetics.base.DirectionalKineticBlock;
 import dev.createpolymer.kinetics.base.KineticBlockEntity;
+import dev.createpolymer.logistics.chute.AbstractChuteBlock;
 import dev.createpolymer.registry.feature.FanRegistry;
 import dev.createpolymer.visual.BaseModel;
 import dev.createpolymer.visual.ModelItems;
@@ -52,7 +53,17 @@ public class EncasedFanBlock extends DirectionalKineticBlock implements IBE<Enca
 
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context) {
-		// Create also points the fan away from a chute it is placed against; chutes are not ported yet
+		Level world = context.getLevel();
+		BlockPos pos = context.getClickedPos();
+		Direction face = context.getClickedFace();
+
+		BlockState placedOn = world.getBlockState(pos.relative(face.getOpposite()));
+		BlockState placedOnOpposite = world.getBlockState(pos.relative(face));
+		if (AbstractChuteBlock.isChute(placedOn))
+			return defaultBlockState().setValue(FACING, face.getOpposite());
+		if (AbstractChuteBlock.isChute(placedOnOpposite))
+			return defaultBlockState().setValue(FACING, face);
+
 		Direction preferredFacing = getPreferredFacing(context);
 		if (preferredFacing == null)
 			preferredFacing = context.getNearestLookingDirection();

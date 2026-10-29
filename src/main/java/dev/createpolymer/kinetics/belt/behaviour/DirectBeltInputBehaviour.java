@@ -2,6 +2,8 @@ package dev.createpolymer.kinetics.belt.behaviour;
 
 import java.util.function.Supplier;
 
+import org.jetbrains.annotations.Nullable;
+
 import dev.createpolymer.foundation.blockEntity.SmartBlockEntity;
 import dev.createpolymer.foundation.blockEntity.behaviour.BehaviourType;
 import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
@@ -9,8 +11,16 @@ import dev.createpolymer.foundation.item.handler.IItemHandler;
 import dev.createpolymer.foundation.item.handler.ItemHandlerHelper;
 import dev.createpolymer.foundation.item.handler.ItemHandlerLookup;
 import dev.createpolymer.kinetics.belt.transport.TransportedItemStack;
+import dev.createpolymer.logistics.funnel.BeltFunnelBlock;
+import dev.createpolymer.logistics.funnel.BeltFunnelBlock.Shape;
+import dev.createpolymer.logistics.funnel.FunnelBlock;
+import dev.createpolymer.logistics.funnel.FunnelBlockEntity;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * Behaviour for BlockEntities to which belts can transfer items directly in a
@@ -100,6 +110,29 @@ public class DirectBeltInputBehaviour extends BlockEntityBehaviour {
 	@FunctionalInterface
 	public interface AvailabilityPredicate {
 		public boolean test(Direction side);
+	}
+
+	@Nullable
+	public ItemStack tryExportingToBeltFunnel(ItemStack stack, @Nullable Direction side, boolean simulate) {
+		BlockPos funnelPos = blockEntity.getBlockPos()
+			.above();
+		Level world = getWorld();
+		BlockState funnelState = world.getBlockState(funnelPos);
+		if (!(funnelState.getBlock() instanceof BeltFunnelBlock))
+			return null;
+		if (funnelState.getValue(BeltFunnelBlock.SHAPE) != Shape.PULLING)
+			return null;
+		if (side != null && FunnelBlock.getFunnelFacing(funnelState) != side)
+			return null;
+		BlockEntity be = world.getBlockEntity(funnelPos);
+		if (!(be instanceof FunnelBlockEntity))
+			return null;
+		if (funnelState.getValue(BeltFunnelBlock.POWERED))
+			return stack;
+		ItemStack insert = FunnelBlock.tryInsert(world, funnelPos, stack, simulate);
+		if (insert.getCount() != stack.getCount() && !simulate)
+			((FunnelBlockEntity) be).flap(true);
+		return insert;
 	}
 
 	public boolean canSupportBeltFunnels() {

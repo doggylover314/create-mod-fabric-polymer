@@ -3,9 +3,11 @@ package dev.createpolymer.kinetics.fan;
 import org.jetbrains.annotations.Nullable;
 
 import dev.createpolymer.kinetics.base.KineticBlockEntity;
+import dev.createpolymer.logistics.chute.ChuteBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -73,8 +75,18 @@ public class EncasedFanBlockEntity extends KineticBlockEntity implements IAirCur
 		updateChute();
 	}
 
-	/** Create makes a chute in front of the fan push or pull items; chutes are not ported yet. */
 	public void updateChute() {
+		Direction direction = getBlockState().getValue(EncasedFanBlock.FACING);
+		if (!direction.getAxis()
+			.isVertical())
+			return;
+		BlockEntity poweredChute = level.getBlockEntity(worldPosition.relative(direction));
+		if (!(poweredChute instanceof ChuteBlockEntity chuteBE))
+			return;
+		if (direction == Direction.DOWN)
+			chuteBE.updatePull();
+		else
+			chuteBE.updatePush(1);
 	}
 
 	public void blockInFrontChanged() {

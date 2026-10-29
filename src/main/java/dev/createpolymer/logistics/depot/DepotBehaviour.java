@@ -21,6 +21,7 @@ import dev.createpolymer.kinetics.belt.behaviour.DirectBeltInputBehaviour;
 import dev.createpolymer.kinetics.belt.behaviour.TransportedItemStackHandlerBehaviour;
 import dev.createpolymer.kinetics.belt.behaviour.TransportedItemStackHandlerBehaviour.TransportedResult;
 import dev.createpolymer.kinetics.belt.transport.TransportedItemStack;
+import dev.createpolymer.logistics.funnel.AbstractFunnelBlock;
 import dev.createpolymer.util.VecHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -29,6 +30,7 @@ import net.minecraft.world.Containers;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
@@ -113,6 +115,8 @@ public class DepotBehaviour extends BlockEntityBehaviour implements Clearable {
 
 		if (world.isClientSide())
 			return;
+		if (handleBeltFunnelOutput())
+			return;
 
 		BeltProcessingBehaviour processingBehaviour =
 			BlockEntityBehaviour.get(world, pos.above(2), BeltProcessingBehaviour.TYPE);
@@ -146,6 +150,44 @@ public class DepotBehaviour extends BlockEntityBehaviour implements Clearable {
 			heldItem.beltPosition += diff / 4f;
 		}
 		return diff < 1 / 16f;
+	}
+
+	private boolean handleBeltFunnelOutput() {
+		BlockState funnel = getWorld().getBlockState(getPos().above());
+		Direction funnelFacing = AbstractFunnelBlock.getFunnelFacing(funnel);
+		if (funnelFacing == null || !canFunnelsPullFrom.test(funnelFacing.getOpposite()))
+			return false;
+
+		for (int slot = 0; slot < processingOutputBuffer.getSlots(); slot++) {
+			ItemStack previousItem = processingOutputBuffer.getStackInSlot(slot);
+			if (previousItem.isEmpty())
+				continue;
+			ItemStack afterInsert = blockEntity.getBehaviour(DirectBeltInputBehaviour.TYPE)
+				.tryExportingToBeltFunnel(previousItem, null, false);
+			if (afterInsert == null)
+				return false;
+			if (previousItem.getCount() != afterInsert.getCount()) {
+				processingOutputBuffer.setStackInSlot(slot, afterInsert);
+				blockEntity.notifyUpdate();
+				return true;
+			}
+		}
+
+		ItemStack previousItem = heldItem.stack;
+		ItemStack afterInsert = blockEntity.getBehaviour(DirectBeltInputBehaviour.TYPE)
+			.tryExportingToBeltFunnel(previousItem, null, false);
+		if (afterInsert == null)
+			return false;
+		if (previousItem.getCount() != afterInsert.getCount()) {
+			if (afterInsert.isEmpty())
+				heldItem = null;
+			else
+				heldItem.stack = afterInsert;
+			blockEntity.notifyUpdate();
+			return true;
+		}
+
+		return false;
 	}
 
 	@Override

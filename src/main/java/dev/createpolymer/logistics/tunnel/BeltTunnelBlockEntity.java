@@ -13,6 +13,7 @@ import dev.createpolymer.foundation.blockEntity.SmartBlockEntity;
 import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import dev.createpolymer.foundation.item.handler.ItemHandlerLookup;
 import dev.createpolymer.kinetics.belt.BeltBlock;
+import dev.createpolymer.logistics.funnel.BeltFunnelBlock;
 import dev.createpolymer.logistics.tunnel.BeltTunnelBlock.Shape;
 import dev.createpolymer.registry.feature.BeltRegistry;
 import dev.createpolymer.util.Iterate;
@@ -117,7 +118,10 @@ public class BeltTunnelBlockEntity extends SmartBlockEntity {
 			BlockState nextState = level.getBlockState(worldPosition.relative(direction));
 			if (nextState.getBlock() instanceof BeltTunnelBlock)
 				continue;
-			// Replaced when funnels are ported: an extended belt funnel facing the tunnel occludes the flap too
+			if (nextState.getBlock() instanceof BeltFunnelBlock)
+				if (nextState.getValue(BeltFunnelBlock.SHAPE) == BeltFunnelBlock.Shape.EXTENDED
+					&& nextState.getValue(BeltFunnelBlock.HORIZONTAL_FACING) == direction.getOpposite())
+					continue;
 
 			flaps.put(direction, createChasingFlap());
 		}

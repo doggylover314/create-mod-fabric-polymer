@@ -15,7 +15,7 @@ import dev.createpolymer.foundation.item.handler.IItemHandler;
 import dev.createpolymer.foundation.item.handler.ItemHandlerHelper;
 import dev.createpolymer.foundation.item.handler.ItemHandlerLookup;
 import dev.createpolymer.item.IWrenchable;
-import dev.createpolymer.logistics.chute.ProperWaterloggedBlock;
+import dev.createpolymer.foundation.block.ProperWaterloggedBlock;
 import dev.createpolymer.registry.ModItems;
 import dev.createpolymer.registry.feature.MiscRegistry;
 import dev.createpolymer.util.Lang;

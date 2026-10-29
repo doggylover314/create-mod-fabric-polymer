@@ -10,6 +10,8 @@ import org.jetbrains.annotations.Nullable;
 
 import dev.createpolymer.CreatePolymer;
 import dev.createpolymer.foundation.item.ItemHelper;
+import dev.createpolymer.processing.burner.BlazeBurnerBlock;
+import dev.createpolymer.processing.burner.LitBlazeBurnerBlock;
 import dev.createpolymer.processing.recipe.RecipeApplier;
 import dev.createpolymer.registry.feature.FanRegistry;
 import dev.createpolymer.util.VecHelper;
@@ -161,8 +163,11 @@ public class AllFanProcessingTypes {
 				return true;
 			}
 			BlockState blockState = level.getBlockState(pos);
-			// Blaze burners (heat level at least FADING) are not ported yet
-			return blockState.is(FAN_PROCESSING_CATALYSTS_BLASTING_BLOCKS);
+			if (blockState.is(FAN_PROCESSING_CATALYSTS_BLASTING_BLOCKS)) {
+				return !blockState.hasProperty(BlazeBurnerBlock.HEAT_LEVEL)
+					|| blockState.getValue(BlazeBurnerBlock.HEAT_LEVEL).isAtLeast(BlazeBurnerBlock.HeatLevel.FADING);
+			}
+			return false;
 		}
 
 		@Override
@@ -249,8 +254,11 @@ public class AllFanProcessingTypes {
 			}
 			BlockState blockState = level.getBlockState(pos);
 			if (blockState.is(FAN_PROCESSING_CATALYSTS_HAUNTING_BLOCKS)) {
-				// Lit blaze burners with a soul flame are not ported yet
-				return isLitCampfire(blockState);
+				if (!isLitCampfire(blockState)) {
+					return false;
+				}
+				return !blockState.hasProperty(LitBlazeBurnerBlock.FLAME_TYPE)
+					|| blockState.getValue(LitBlazeBurnerBlock.FLAME_TYPE) == LitBlazeBurnerBlock.FlameType.SOUL;
 			}
 			return false;
 		}
@@ -355,8 +363,15 @@ public class AllFanProcessingTypes {
 			}
 			BlockState blockState = level.getBlockState(pos);
 			if (blockState.is(FAN_PROCESSING_CATALYSTS_SMOKING_BLOCKS)) {
-				// Blaze burners (smouldering, regular flame) are not ported yet
-				return isLitCampfire(blockState);
+				if (!isLitCampfire(blockState)) {
+					return false;
+				}
+				if (blockState.hasProperty(LitBlazeBurnerBlock.FLAME_TYPE)
+					&& blockState.getValue(LitBlazeBurnerBlock.FLAME_TYPE) != LitBlazeBurnerBlock.FlameType.REGULAR) {
+					return false;
+				}
+				return !blockState.hasProperty(BlazeBurnerBlock.HEAT_LEVEL)
+					|| blockState.getValue(BlazeBurnerBlock.HEAT_LEVEL) == BlazeBurnerBlock.HeatLevel.SMOULDERING;
 			}
 			return false;
 		}

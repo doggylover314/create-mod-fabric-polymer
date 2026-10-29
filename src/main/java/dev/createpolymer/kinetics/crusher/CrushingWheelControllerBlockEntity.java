@@ -8,7 +8,9 @@ import java.util.UUID;
 import org.jspecify.annotations.Nullable;
 
 import dev.createpolymer.foundation.blockEntity.SmartBlockEntity;
+import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import dev.createpolymer.foundation.item.handler.ItemHandlerLookup;
+import dev.createpolymer.kinetics.belt.behaviour.DirectBeltInputBehaviour;
 import dev.createpolymer.processing.recipe.ProcessingInventory;
 import dev.createpolymer.processing.recipe.ProcessingRecipe;
 import dev.createpolymer.registry.feature.CrushingRegistry;
@@ -45,8 +47,7 @@ import net.minecraft.world.phys.Vec3;
 /**
  * Ported from Create's CrushingWheelControllerBlockEntity (MIT, The Create Team).
  * <p>
- * Not ported: the DirectBeltInputBehaviour (belts are not part of this port yet), so the controller only hands its
- * results out as item entities, and the client-only ambience sound.
+ * Not ported: the client-only ambience sound.
  */
 public class CrushingWheelControllerBlockEntity extends SmartBlockEntity implements Clearable {
 	/** Create keeps this block position in the item entity's persistent data; here it is a scoreboard tag. */
@@ -73,6 +74,19 @@ public class CrushingWheelControllerBlockEntity extends SmartBlockEntity impleme
 
 	public static void registerCapabilities() {
 		ItemHandlerLookup.registerBlockEntity(CrushingRegistry.CRUSHING_WHEEL_CONTROLLER_BLOCK_ENTITY, (be, side) -> be.inventory);
+	}
+
+	@Override
+	public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
+		behaviours.add(new DirectBeltInputBehaviour(this).onlyInsertWhen(this::supportsDirectBeltInput));
+	}
+
+	private boolean supportsDirectBeltInput(Direction side) {
+		BlockState blockState = getBlockState();
+		if (blockState == null)
+			return false;
+		Direction direction = blockState.getValue(CrushingWheelControllerBlock.FACING);
+		return direction == Direction.DOWN || direction == side;
 	}
 
 	/** Marks an item that was just ejected from the crusher at pos so that it is not pulled back in. */
@@ -142,6 +156,35 @@ public class CrushingWheelControllerBlockEntity extends SmartBlockEntity impleme
 				return;
 			}
 			inventory.remainingTime = 0;
+
+			// Output Items
+			if (facing != Direction.UP) {
+				BlockPos nextPos = worldPosition.below()
+					.relative(facing, facing.getAxis() == Axis.Y ? 0 : 1);
+
+				DirectBeltInputBehaviour behaviour =
+					BlockEntityBehaviour.get(level, nextPos, DirectBeltInputBehaviour.TYPE);
+				if (behaviour != null) {
+					boolean changed = false;
+					if (!behaviour.canInsertFromSide(facing))
+						return;
+					for (int slot = 0; slot < inventory.getSlots(); slot++) {
+						ItemStack stack = inventory.getStackInSlot(slot);
+						if (stack.isEmpty())
+							continue;
+						ItemStack remainder = behaviour.handleInsertion(stack, facing, false);
+						if (ItemStack.matches(remainder, stack))
+							continue;
+						inventory.setStackInSlot(slot, remainder);
+						changed = true;
+					}
+					if (changed) {
+						setChanged();
+						sendData();
+					}
+					return;
+				}
+			}
 
 			// Eject Items
 			for (int slot = 0; slot < inventory.getSlots(); slot++) {

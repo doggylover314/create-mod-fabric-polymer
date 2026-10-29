@@ -18,6 +18,11 @@ import dev.createpolymer.foundation.item.handler.ItemHandlerLookup;
 import dev.createpolymer.kinetics.belt.behaviour.DirectBeltInputBehaviour;
 import dev.createpolymer.kinetics.belt.behaviour.TransportedItemStackHandlerBehaviour;
 import dev.createpolymer.kinetics.belt.behaviour.TransportedItemStackHandlerBehaviour.TransportedResult;
+import dev.createpolymer.kinetics.fan.AirCurrent;
+import dev.createpolymer.kinetics.fan.EncasedFanBlock;
+import dev.createpolymer.kinetics.fan.EncasedFanBlockEntity;
+import dev.createpolymer.logistics.funnel.FunnelBlock;
+import dev.createpolymer.registry.feature.FanRegistry;
 import dev.createpolymer.registry.feature.ChuteRegistry;
 import dev.createpolymer.util.Iterate;
 import dev.createpolymer.util.LerpedFloat;
@@ -194,7 +199,8 @@ public class ChuteBlockEntity extends SmartBlockEntity implements Clearable { //
 			if (AbstractChuteBlock.isChute(level.getBlockState(worldPosition.below())))
 				maxPullDistance = 0;
 			float flowLimit = maxPullDistance;
-			// fan: if (flowLimit > 0) flowLimit = AirCurrent.getFlowLimit(level, worldPosition, maxPullDistance, Direction.DOWN);
+			if (flowLimit > 0)
+				flowLimit = AirCurrent.getFlowLimit(level, worldPosition, maxPullDistance, Direction.DOWN);
 
 			for (int i = 1; i <= flowLimit + 1; i++) {
 				TransportedItemStackHandlerBehaviour behaviour =
@@ -335,7 +341,8 @@ public class ChuteBlockEntity extends SmartBlockEntity implements Clearable { //
 			.isHorizontal())
 			return false;
 
-		// funnel: if (FunnelBlock.getFunnelFacing(level.getBlockState(worldPosition.below())) == Direction.DOWN) return false;
+		if (FunnelBlock.getFunnelFacing(level.getBlockState(worldPosition.below())) == Direction.DOWN)
+			return false;
 		if (Block.canSupportRigidBlock(level, worldPosition.below()))
 			return false;
 
@@ -395,7 +402,8 @@ public class ChuteBlockEntity extends SmartBlockEntity implements Clearable { //
 			return true;
 		}
 
-		// funnel: if (FunnelBlock.getFunnelFacing(level.getBlockState(worldPosition.above())) == Direction.UP) return false;
+		if (FunnelBlock.getFunnelFacing(level.getBlockState(worldPosition.above())) == Direction.UP)
+			return false;
 		if (hasBlockSolidSide(stateAbove, worldPosition.above(), Direction.DOWN))
 			return false;
 		if (!inputChutes.isEmpty())
@@ -549,7 +557,14 @@ public class ChuteBlockEntity extends SmartBlockEntity implements Clearable { //
 	}
 
 	protected float calculatePull() {
-		// fan: an encased fan above facing down pulls with its speed (EncasedFanBlock / EncasedFanBlockEntity)
+		BlockState blockStateAbove = level.getBlockState(worldPosition.above());
+		if (blockStateAbove.is(FanRegistry.ENCASED_FAN)
+			&& blockStateAbove.getValue(EncasedFanBlock.FACING) == Direction.DOWN) {
+			BlockEntity be = level.getBlockEntity(worldPosition.above());
+			if (be instanceof EncasedFanBlockEntity fan && !be.isRemoved()) {
+				return fan.getSpeed();
+			}
+		}
 
 		float totalPull = 0;
 		for (Direction d : Iterate.directions) {
@@ -564,7 +579,14 @@ public class ChuteBlockEntity extends SmartBlockEntity implements Clearable { //
 	protected float calculatePush(int branchCount) {
 		if (level == null)
 			return 0;
-		// fan: an encased fan below facing up pushes with its speed (EncasedFanBlock / EncasedFanBlockEntity)
+		BlockState blockStateBelow = level.getBlockState(worldPosition.below());
+		if (blockStateBelow.is(FanRegistry.ENCASED_FAN)
+			&& blockStateBelow.getValue(EncasedFanBlock.FACING) == Direction.UP) {
+			BlockEntity be = level.getBlockEntity(worldPosition.below());
+			if (be instanceof EncasedFanBlockEntity fan && !be.isRemoved()) {
+				return fan.getSpeed();
+			}
+		}
 
 		ChuteBlockEntity targetChute = getTargetChute(getBlockState());
 		if (targetChute == null)

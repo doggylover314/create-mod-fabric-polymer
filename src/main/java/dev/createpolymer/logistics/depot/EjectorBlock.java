@@ -8,7 +8,7 @@ import org.joml.Matrix4f;
 import dev.createpolymer.foundation.block.IBE;
 import dev.createpolymer.foundation.item.ItemHelper;
 import dev.createpolymer.kinetics.base.HorizontalKineticBlock;
-import dev.createpolymer.logistics.chute.ProperWaterloggedBlock;
+import dev.createpolymer.foundation.block.ProperWaterloggedBlock;
 import dev.createpolymer.logistics.depot.EjectorBlockEntity.State;
 import dev.createpolymer.registry.ModItems;
 import dev.createpolymer.registry.feature.EjectorRegistry;

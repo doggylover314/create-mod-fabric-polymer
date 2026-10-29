@@ -6,7 +6,7 @@ import org.jspecify.annotations.Nullable;
 import org.joml.Matrix4f;
 
 import dev.createpolymer.foundation.block.IBE;
-import dev.createpolymer.logistics.chute.ProperWaterloggedBlock;
+import dev.createpolymer.foundation.block.ProperWaterloggedBlock;
 import dev.createpolymer.redstone.RedstoneClientStates;
 import dev.createpolymer.redstone.WrenchableDirectionalBlock;
 import dev.createpolymer.registry.feature.RedstoneRegistry;

@@ -4,6 +4,7 @@ import dev.createpolymer.foundation.blockEntity.SmartBlockEntity;
 import dev.createpolymer.foundation.blockEntity.behaviour.BehaviourType;
 import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import dev.createpolymer.kinetics.belt.transport.TransportedItemStack;
+import dev.createpolymer.logistics.funnel.AbstractFunnelBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
@@ -42,6 +43,8 @@ public class BeltProcessingBehaviour extends BlockEntityBehaviour {
 
 	public static boolean isBlocked(BlockGetter world, BlockPos processingSpace) {
 		BlockState blockState = world.getBlockState(processingSpace.above());
+		if (AbstractFunnelBlock.isFunnel(blockState))
+			return false;
 		return !blockState.getCollisionShape(world, processingSpace.above())
 			.isEmpty();
 	}

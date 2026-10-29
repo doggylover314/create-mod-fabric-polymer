@@ -23,10 +23,12 @@ import dev.createpolymer.kinetics.belt.BeltBlockEntity.CasingType;
 import dev.createpolymer.kinetics.belt.behaviour.TransportedItemStackHandlerBehaviour.TransportedResult;
 import dev.createpolymer.kinetics.belt.transport.BeltMovementHandler.TransportedEntityInfo;
 import dev.createpolymer.kinetics.belt.transport.BeltTunnelInteractionHandler;
+import dev.createpolymer.logistics.funnel.FunnelBlock;
 import dev.createpolymer.logistics.tunnel.BeltTunnelBlock;
 import dev.createpolymer.registry.ModBlocks;
 import dev.createpolymer.registry.ModItems;
 import dev.createpolymer.registry.feature.BeltRegistry;
+import dev.createpolymer.registry.feature.CrushingRegistry;
 import dev.createpolymer.util.Iterate;
 import eu.pb4.polymer.blocks.api.BlockModelType;
 import eu.pb4.polymer.blocks.api.PolymerBlockResourceUtils;
@@ -514,8 +516,10 @@ public class BeltBlock extends HorizontalKineticBlock
 			return false;
 		if (bounds.minY > 0)
 			return false;
-		// Replaced when crushing wheels are ported: the crushing wheel controller does not cover a belt
-		// Replaced when funnels are ported: a funnel that does not face up does not cover a belt
+		if (blockState.is(CrushingRegistry.CRUSHING_WHEEL_CONTROLLER))
+			return false;
+		if (FunnelBlock.isFunnel(blockState) && FunnelBlock.getFunnelFacing(blockState) != Direction.UP)
+			return false;
 		if (blockState.getBlock() instanceof BeltTunnelBlock)
 			return false;
 		return true;

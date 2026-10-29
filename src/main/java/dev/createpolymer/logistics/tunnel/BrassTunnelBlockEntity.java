@@ -21,6 +21,8 @@ import dev.createpolymer.foundation.item.handler.ItemHandlerLookup;
 import dev.createpolymer.kinetics.belt.BeltBlockEntity;
 import dev.createpolymer.kinetics.belt.BeltHelper;
 import dev.createpolymer.kinetics.belt.behaviour.DirectBeltInputBehaviour;
+import dev.createpolymer.logistics.funnel.BeltFunnelBlock;
+import dev.createpolymer.logistics.funnel.FunnelBlock;
 import dev.createpolymer.registry.feature.BeltRegistry;
 import dev.createpolymer.util.Couple;
 import dev.createpolymer.util.Iterate;
@@ -531,7 +533,11 @@ public class BrassTunnelBlockEntity extends BeltTunnelBlockEntity implements Cle
 				BlockPos offset = tunnelBE.worldPosition.below()
 					.relative(direction);
 
-				// Replaced when funnels are ported: a pulling belt funnel on that side is not an output
+				BlockState potentialFunnel = level.getBlockState(offset.above());
+				if (potentialFunnel.getBlock() instanceof BeltFunnelBlock
+					&& potentialFunnel.getValue(BeltFunnelBlock.SHAPE) == BeltFunnelBlock.Shape.PULLING
+					&& FunnelBlock.getFunnelFacing(potentialFunnel) == direction)
+					continue;
 
 				DirectBeltInputBehaviour inputBehaviour =
 					BlockEntityBehaviour.get(level, offset, DirectBeltInputBehaviour.TYPE);

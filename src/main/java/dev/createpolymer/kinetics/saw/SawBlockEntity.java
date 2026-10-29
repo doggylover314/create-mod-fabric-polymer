@@ -58,8 +58,8 @@ import net.minecraft.world.phys.Vec3;
 
 /**
  * Ported from Create's SawBlockEntity (MIT, The Create Team). Horizontal saws break the block in front of them
- * (and fell trees); upward saws cut the items they are given. Not ported: packages, sequenced assembly and belt
- * funnels (none of them exist in this port yet).
+ * (and fell trees); upward saws cut the items they are given. Not ported: packages and sequenced assembly (neither
+ * exists in this port yet).
  */
 public class SawBlockEntity extends BlockBreakingKineticBlockEntity implements Clearable {
 	private static final Object cuttingRecipesKey = new Object();
@@ -146,6 +146,23 @@ public class SawBlockEntity extends BlockBreakingKineticBlockEntity implements C
 		if (inventory.remainingTime > 0)
 			return;
 		inventory.remainingTime = 0;
+
+		for (int slot = 0; slot < inventory.getSlots(); slot++) {
+			ItemStack stack = inventory.getStackInSlot(slot);
+			if (stack.isEmpty())
+				continue;
+			ItemStack tryExportingToBeltFunnel = getBehaviour(DirectBeltInputBehaviour.TYPE)
+				.tryExportingToBeltFunnel(stack, itemMovementFacing.getOpposite(), false);
+			if (tryExportingToBeltFunnel != null) {
+				if (tryExportingToBeltFunnel.getCount() != stack.getCount()) {
+					inventory.setStackInSlot(slot, tryExportingToBeltFunnel);
+					notifyUpdate();
+					return;
+				}
+				if (!tryExportingToBeltFunnel.isEmpty())
+					return;
+			}
+		}
 
 		BlockPos nextPos = worldPosition.offset(BlockPos.containing(itemMovement));
 		DirectBeltInputBehaviour behaviour = BlockEntityBehaviour.get(level, nextPos, DirectBeltInputBehaviour.TYPE);

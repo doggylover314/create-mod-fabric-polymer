@@ -1,8 +1,8 @@
-package dev.createpolymer.logistics.chute;
+package dev.createpolymer.foundation.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
@@ -37,7 +37,7 @@ public interface ProperWaterloggedBlock extends SimpleWaterloggedBlock {
 		return withWater(ctx.getLevel(), placementState, ctx.getClickedPos());
 	}
 
-	static BlockState withWater(LevelAccessor level, BlockState placementState, BlockPos pos) {
+	static BlockState withWater(BlockGetter level, BlockState placementState, BlockPos pos) {
 		if (placementState == null)
 			return null;
 		FluidState ifluidstate = level.getFluidState(pos);

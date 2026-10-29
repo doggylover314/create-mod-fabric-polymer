@@ -13,6 +13,7 @@ import dev.createpolymer.item.IWrenchable;
 import dev.createpolymer.kinetics.belt.BeltBlock;
 import dev.createpolymer.kinetics.belt.BeltSlope;
 import dev.createpolymer.kinetics.belt.behaviour.DirectBeltInputBehaviour;
+import dev.createpolymer.logistics.funnel.BeltFunnelBlock;
 import dev.createpolymer.registry.feature.BeltRegistry;
 import dev.createpolymer.util.AngleHelper;
 import dev.createpolymer.util.Lang;
@@ -186,9 +187,12 @@ public class BeltTunnelBlock extends Block implements IBE<BeltTunnelBlockEntity>
 		BlockState blockState1 = reader.getBlockState(pos.relative(fw));
 		BlockState blockState2 = reader.getBlockState(pos.relative(fw.getOpposite()));
 
-		// Replaced when funnels are ported: an extended belt funnel facing the tunnel also allows a window
-		boolean funnel1 = false;
-		boolean funnel2 = false;
+		boolean funnel1 = blockState1.getBlock() instanceof BeltFunnelBlock
+			&& blockState1.getValue(BeltFunnelBlock.SHAPE) == BeltFunnelBlock.Shape.EXTENDED
+			&& blockState1.getValue(BeltFunnelBlock.HORIZONTAL_FACING) == fw.getOpposite();
+		boolean funnel2 = blockState2.getBlock() instanceof BeltFunnelBlock
+			&& blockState2.getValue(BeltFunnelBlock.SHAPE) == BeltFunnelBlock.Shape.EXTENDED
+			&& blockState2.getValue(BeltFunnelBlock.HORIZONTAL_FACING) == fw;
 
 		boolean valid1 = blockState1.getBlock() instanceof BeltTunnelBlock || funnel1;
 		boolean valid2 = blockState2.getBlock() instanceof BeltTunnelBlock || funnel2;

@@ -1,0 +1,32 @@
+{
+  "items": [
+    "andesite_funnel",
+    "brass_funnel"
+  ],
+  "blocks": [
+    "andesite_funnel",
+    "andesite_belt_funnel",
+    "brass_funnel",
+    "brass_belt_funnel"
+  ],
+  "display_models": [
+    "block/funnel/flap",
+    "block/belt_funnel/flap"
+  ],
+  "blockstates": [
+    "andesite_funnel",
+    "andesite_belt_funnel",
+    "brass_funnel",
+    "brass_belt_funnel"
+  ],
+  "crafting": [
+    "logistics/andesite_funnel",
+    "logistics/brass_funnel"
+  ],
+  "lang_ids": [
+    "andesite_funnel",
+    "andesite_belt_funnel",
+    "brass_funnel",
+    "brass_belt_funnel"
+  ]
+}

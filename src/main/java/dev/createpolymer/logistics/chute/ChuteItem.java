@@ -1,5 +1,6 @@
 package dev.createpolymer.logistics.chute;
 
+import dev.createpolymer.foundation.block.ProperWaterloggedBlock;
 import eu.pb4.polymer.core.api.item.PolymerBlockItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

@@ -6,6 +6,8 @@ import java.util.Map;
 import org.jspecify.annotations.Nullable;
 
 import dev.createpolymer.CreatePolymer;
+import dev.createpolymer.foundation.block.ProperWaterloggedBlock;
+import dev.createpolymer.logistics.funnel.FunnelBlock;
 import dev.createpolymer.registry.feature.ChuteRegistry;
 import dev.createpolymer.util.Iterate;
 import dev.createpolymer.util.Lang;
@@ -206,8 +208,8 @@ public class ChuteBlock extends AbstractChuteBlock implements ProperWaterloggedB
 			return state.setValue(SHAPE, Shape.INTERSECTION);
 		if (connections.get(Direction.EAST) && connections.get(Direction.WEST))
 			return state.setValue(SHAPE, Shape.INTERSECTION);
-		// funnel: Create also needs "above" not to be a FunnelBlock facing down here (ChuteBlock.updateChuteState)
-		if (amtConnections == 1 && connections.get(facing) && !(getChuteFacing(above) == Direction.DOWN))
+		if (amtConnections == 1 && connections.get(facing)
+			&& !(above.getBlock() instanceof FunnelBlock && FunnelBlock.getFunnelFacing(above) == Direction.DOWN))
 			return state.setValue(SHAPE, state.getValue(SHAPE) == Shape.ENCASED ? Shape.ENCASED : Shape.NORMAL);
 		return state.setValue(SHAPE, Shape.INTERSECTION);
 	}
