@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "P",
+    "P",
+    "S"
+  ],
+  "key": {
+    "P": "create:cardboard",
+    "S": "#c:rods/wooden"
+  },
+  "result": {
+    "id": "create:cardboard_sword",
+    "count": 1
+  }
+}

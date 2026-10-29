@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "create:gearbox"
+  ],
+  "result": {
+    "id": "create:vertical_gearbox",
+    "count": 1
+  }
+}

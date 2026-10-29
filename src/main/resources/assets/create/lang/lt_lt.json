@@ -6,5 +6,6 @@
  "block.create.copper_ladder": "Varinios Kopečios",
  "block.create.gearbox": "Pavarų Dėžė",
  "block.create.gearshift": "Pavarų svirtis",
- "block.create.large_cogwheel": "Didelis Dantratis"
+ "block.create.large_cogwheel": "Didelis Dantratis",
+ "item.create.vertical_gearbox": "Vertikali Pavarų Dėžė"
 }

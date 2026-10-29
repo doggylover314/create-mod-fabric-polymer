@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "I",
+    "P"
+  ],
+  "key": {
+    "I": "#c:storage_blocks/brass",
+    "P": "#c:plates/brass"
+  },
+  "result": {
+    "id": "create:peculiar_bell",
+    "count": 1
+  }
+}

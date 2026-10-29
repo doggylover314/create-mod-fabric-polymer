@@ -225,6 +225,7 @@
  "block.create.green_toolbox": "Roheline tööriistakast",
  "block.create.green_valve_handle": "Roheline ventiilikäepide",
  "block.create.hand_crank": "Vänt",
+ "block.create.haunted_bell": "Kummitatud kell",
  "block.create.horizontal_framed_glass": "Horisontaalne raamitud klaas",
  "block.create.horizontal_framed_glass_pane": "Horisontaalne raamitud klaaspaneel",
  "block.create.hose_pulley": "Vooliku rihmaratas",
@@ -249,6 +250,7 @@
  "block.create.netherite_backtank": "Netheriidist seljapaak",
  "block.create.nixie_tube": "Nixie toru",
  "block.create.packager": "Pakendaja",
+ "block.create.peculiar_bell": "Omapärane kell",
  "block.create.pink_nixie_tube": "Roosa Nixie toru",
  "block.create.pink_postbox": "Roosa postkast",
  "block.create.purple_nixie_tube": "Lilla Nixie toru",
@@ -338,6 +340,7 @@
  "item.create.potato_cannon": "Kartulikahur",
  "item.create.rose_quartz": "Roosakvarts",
  "item.create.sand_paper": "Liivapaber",
+ "item.create.sweet_roll": "Magus rull",
  "item.create.wheat_flour": "Nisujahu",
  "item.create.whisk": "Vispel"
 }

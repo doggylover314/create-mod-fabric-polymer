@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "create:rose_quartz",
+  "result": {
+    "id": "create:rose_quartz_block",
+    "count": 2
+  }
+}

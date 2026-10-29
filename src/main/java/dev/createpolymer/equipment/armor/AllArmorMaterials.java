@@ -7,6 +7,8 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.item.equipment.ArmorMaterials;
 import net.minecraft.world.item.equipment.EquipmentAsset;
@@ -19,6 +21,22 @@ import net.minecraft.world.item.equipment.EquipmentAssets;
 public class AllArmorMaterials {
 	public static final ResourceKey<EquipmentAsset> COPPER_DIVING_ASSET = asset("copper_diving");
 	public static final ResourceKey<EquipmentAsset> NETHERITE_DIVING_ASSET = asset("netherite_diving");
+	public static final ResourceKey<EquipmentAsset> CARDBOARD_ASSET = asset("cardboard");
+
+	/** The items that repair cardboard armor and the cardboard sword (Create's CARDBOARD ingredient). */
+	public static final TagKey<Item> CARDBOARD_REPAIR = TagKey.create(Registries.ITEM, CreatePolymer.id("repairs_cardboard_armor"));
+
+	// Create's cardboard: { 1, 1, 1, 1, 2 } for helmet, chestplate, leggings, boots, body; durability 4, enchantability 4
+	public static final ArmorMaterial CARDBOARD = new ArmorMaterial(
+		4,
+		ArmorMaterials.makeDefense(1, 1, 1, 1, 2),
+		4,
+		SoundEvents.ARMOR_EQUIP_LEATHER,
+		0.0F,
+		0.0F,
+		CARDBOARD_REPAIR,
+		CARDBOARD_ASSET
+	);
 
 	// Create's copper material: { 2, 4, 3, 1, 4 } for helmet, chestplate, leggings, boots, body
 	public static final ArmorMaterial COPPER = new ArmorMaterial(

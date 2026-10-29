@@ -23,6 +23,12 @@ def armor_texture(layer_file, kind, name):
 armor_texture('copper_diving_layer_1.png', 'humanoid', 'copper_diving')
 armor_texture('netherite_diving_layer_1.png', 'humanoid', 'netherite_diving')
 armor_texture('netherite_diving_layer_2.png', 'humanoid_leggings', 'netherite_diving')
+# Create's cardboard armour: the same texture for the body and the leggings layers
+armor_texture('cardboard_layer_1.png', 'humanoid', 'cardboard')
+armor_texture('cardboard_layer_2.png', 'humanoid_leggings', 'cardboard')
+dump(os.path.join(ASSETS, 'equipment/cardboard.json'),
+     {'layers': {'humanoid': [{'texture': 'create:cardboard'}],
+                 'humanoid_leggings': [{'texture': 'create:cardboard'}]}})
 dump(os.path.join(ASSETS, 'equipment/copper_diving.json'),
      {'layers': {'humanoid': [{'texture': 'create:copper_diving'}]}})
 dump(os.path.join(ASSETS, 'equipment/netherite_diving.json'),
