@@ -8,35 +8,37 @@ This is an unofficial port and is not affiliated with or endorsed by the Create 
 
 ## Status
 
-Ported and tested:
+Ported, with game tests:
 
-| Block / item | Notes |
+| Area | What is in |
 | --- | --- |
-| Shaft, Cogwheel, Large Cogwheel | Full rotation propagation, gear ratios, cog meshing |
-| Gearbox | One item; placement follows the clicked face (covers Create's vertical gearbox too) |
-| Hand Crank | 32 RPM, 8 su/RPM, costs hunger like Create |
-| Water Wheel (small) | Flow detection as in Create; model is a hand-made approximation (see below) |
-| Creative Motor | Right-click to raise speed, sneak + right-click to lower |
-| Millstone | Milling recipes; throw items on top or use a hopper; empty hand takes outputs |
-| Mechanical Press | Presses items lying under it; compacts in a basin (Create compacting + 2x2/3x3 crafting) |
-| Mechanical Mixer | Needs ≥ 30 RPM; mixing + shapeless crafting in a basin |
-| Basin | Throw items in; hoppers below pull results out |
-| Andesite Casing | Use andesite alloy on a stripped log/wood |
-| Encased Shaft / Cogwheel / Large Cogwheel | Use andesite casing on a shaft or cogwheel; wrench the end faces of encased cogs to add shafts |
-| Clutch, Gearshift | Redstone disconnects / reverses the output side |
-| Encased Chain Drive | Drives placed side by side link up and share rotation |
-| Speedometer, Stressometer | Dials on the side faces, comparator output |
-| Large Water Wheel | 5 blocks across, half speed and 4x capacity of the small wheel |
-| Depot | Holds a stack; a press above it processes the stack, hoppers below take the results |
-| Andesite Alloy, Iron/Golden/Copper Sheet, Wheat Flour, Whisk | Materials |
-| Wrench | Right-click rotates, sneak + right-click picks up |
-| Engineer's Goggles | Wear or hold, look at a kinetic block: RPM and stress show in the action bar |
+| Kinetics | Shafts, cogwheels, gearboxes, clutch, gearshift, sequenced gearshift, encased and chain drives, adjustable chain gearshift, rotation speed controller, hand crank, water wheels, creative motor, flywheel, turntable, cuckoo clock, speedometer and stressometer. Rotation propagation and the stress system are Create's code |
+| Processing | Millstone, mechanical press, mixer, basin (with side output when wrenched), blaze burner, crushing wheels, encased fan and nozzle, mechanical saw, mechanical drill, deployer, mechanical crafter, mechanical arm, sequenced assembly, andesite and brass casings |
+| Logistics | Belts and belt tunnels, chutes, funnels, depot, weighted ejector, item vault, item hatch, creative crate, filters |
+| Fluids | Pipes (including glass and encased), pumps, valves, smart pipes, hose pulley, fluid tanks and boilers, item drain, spout, filling and emptying recipes |
+| Redstone | Analog lever, redstone link, contact, content observer, stockpile switch, pulse repeater, extender and timer, powered latches, desk bell, nixie tube, rose quartz lamp |
+| Decoration | The stone palettes with their stairs, slabs and walls, glass, windows and panes, industrial and weathered iron, metal bars, ladders and scaffolding, cardboard blocks |
+| Materials | Zinc ore and its worldgen, brass, andesite alloy, sheets, nuggets, electron tubes and other recipe ingredients |
+| Tools | Wrench (rotate, pick up, set basin output), Engineer's Goggles (kinetic and block information in the action bar) |
+| Contraptions | In progress |
 
-The stress system (capacity, impact, overstressing) is Create's code, ported. Stress values match Create's defaults.
+Machines are used by clicking, hoppers, belts or dropped items. Filters and value settings use server-side
+chest-style menus.
 
-Not ported yet: belts, chutes, funnels, ejectors, fluids (pipes, tanks, recipes that use fluids), blaze burners
-(so heated recipes), brass and everything that needs it, sequenced/adjustable gearshifts, contraptions, trains,
-Ponder, JEI-style recipe viewing, and many more.
+Not ported: trains, schematics, Ponder, advancements, the config screen and recipe-viewer integration.
+
+## Limitations for vanilla clients
+
+Players run an unmodded client, so everything that needs client code is replaced or left out.
+
+- No connected textures: connected glass, framed glass and similar blocks show their single-block texture.
+- Stairs, walls and panes of the decoration palettes use the vanilla block shapes and models.
+- Moving contraptions are in progress. Players and entities on them are limited by what a server can do without a
+  client-side collision model.
+- Animated textures such as the blaze burner flames are made with animated resource-pack textures, and fluids in
+  tanks and basins are drawn with display entities. Models that Create loads as OBJ were converted to plain JSON
+  models; models that need NeoForge loaders are not available.
+- No Ponder, no goggle overlay: goggle information is shown in the action bar and cycles when it is long.
 
 ## How it works
 
@@ -66,12 +68,21 @@ Requires JDK 25.
 
 ```bash
 ./gradlew build          # jar in build/libs
-./gradlew runGametest    # 24 in-world tests (kinetics, transmission, gauges, machines, depot, water wheels)
+./gradlew runGametest    # in-world game tests
 ./gradlew runServer      # dev server in ./run
 ```
 
-Tools: `tools/asset-scripts` regenerates recipes/assets from a Create checkout; `tools/client-harness`
-drives an unmodded client to take screenshots.
+### Regenerating assets and data
+
+Recipes, loot tables, tags, models, textures and language files are generated from a Create checkout:
+
+```bash
+tools/asset-scripts/run_all.sh [CREATE_DIR]   # default /home/user/create-original
+```
+
+What gets copied is listed in `tools/asset-scripts/manifests/*.json` (items, blocks, models, blockstates, recipes,
+tags, language keys). To port another block, add its ids to a manifest and run the script again; see
+`tools/asset-scripts/README.md` for the manifest keys. The generated files are committed under `src/main/resources`.
 
 ## Licences
 

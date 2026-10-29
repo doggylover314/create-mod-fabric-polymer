@@ -7,7 +7,7 @@ import dev.createpolymer.fluids.FluidTransportBehaviour;
 import dev.createpolymer.fluids.pipes.FluidPipeBlock;
 import dev.createpolymer.fluids.pipes.PipeAttachments;
 import dev.createpolymer.fluids.pipes.PipeShapes;
-import dev.createpolymer.fluids.pipes.ProperWaterloggedBlock;
+import dev.createpolymer.foundation.block.ProperWaterloggedBlock;
 import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import dev.createpolymer.item.IWrenchable;
 import dev.createpolymer.kinetics.base.DirectionalKineticBlock;

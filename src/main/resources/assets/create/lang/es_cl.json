@@ -503,6 +503,8 @@
  "create.gui.filter.ignore_data.description": "Los objetos coinciden sin importar sus datos.",
  "create.gui.filter.respect_data": "Respetar Datos",
  "create.gui.filter.respect_data.description": "Los objetos solo coinciden si su durabilidad, encantamientos y otros atributos también coinciden.",
+ "create.gui.goggles.fluid_container": "Informacion del Contenedor de Fluidos:",
+ "create.gui.goggles.fluid_container.capacity": "Capacidad: ",
  "create.gui.sequenced_gearshift.instruction": "Instrucción",
  "create.gui.sequenced_gearshift.instruction.await": "Esperar",
  "create.gui.sequenced_gearshift.instruction.await.descriptive": "Esperar nuevo pulso de redstone",

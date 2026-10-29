@@ -5,9 +5,11 @@ import java.util.List;
 import java.util.Map;
 
 import dev.createpolymer.fluids.transfer.GenericItemEmptying;
+import dev.createpolymer.foundation.block.BlockHelper;
 import dev.createpolymer.foundation.blockEntity.SmartBlockEntity;
 import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import dev.createpolymer.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
+import dev.createpolymer.api.equipment.goggles.IHaveGoggleInformation;
 import dev.createpolymer.foundation.fluid.FluidHandlerLookup;
 import dev.createpolymer.foundation.fluid.FluidStack;
 import dev.createpolymer.foundation.fluid.IFluidHandler.FluidAction;
@@ -20,6 +22,7 @@ import dev.createpolymer.util.Pair;
 import dev.createpolymer.util.VecHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.Clearable;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
@@ -30,13 +33,11 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.tags.BlockTags;
 
 /**
- * Ported from Create's ItemDrainBlockEntity (MIT, The Create Team). The funnel export, advancements and goggle
- * tooltip are not ported.
+ * Ported from Create's ItemDrainBlockEntity (MIT, The Create Team). Advancements are not ported.
  */
-public class ItemDrainBlockEntity extends SmartBlockEntity implements Clearable {
+public class ItemDrainBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation, Clearable {
 
 	public static final int FILLING_TIME = 20;
 
@@ -176,11 +177,27 @@ public class ItemDrainBlockEntity extends SmartBlockEntity implements Clearable 
 
 			Direction side = heldItem.insertedFrom;
 
+			ItemStack tryExportingToBeltFunnel = getBehaviour(DirectBeltInputBehaviour.TYPE)
+				.tryExportingToBeltFunnel(heldItem.stack, side.getOpposite(), false);
+			if (tryExportingToBeltFunnel != null) {
+				if (tryExportingToBeltFunnel.getCount() != heldItem.stack.getCount()) {
+					if (tryExportingToBeltFunnel.isEmpty())
+						heldItem = null;
+					else
+						heldItem.stack = tryExportingToBeltFunnel;
+					notifyUpdate();
+					return;
+				}
+				if (!tryExportingToBeltFunnel.isEmpty())
+					return;
+			}
+
 			BlockPos nextPosition = worldPosition.relative(side);
 			DirectBeltInputBehaviour directBeltInputBehaviour =
 				BlockEntityBehaviour.get(level, nextPosition, DirectBeltInputBehaviour.TYPE);
 			if (directBeltInputBehaviour == null) {
-				if (!hasBlockSolidSide(level.getBlockState(nextPosition), nextPosition, side.getOpposite())) {
+				if (!BlockHelper.hasBlockSolidSide(level.getBlockState(nextPosition), level, nextPosition,
+					side.getOpposite())) {
 					ItemStack ejected = heldItem.stack;
 					Vec3 outPos = VecHelper.getCenterOf(worldPosition)
 						.add(Vec3.atLowerCornerOf(side.getUnitVec3i())
@@ -229,11 +246,6 @@ public class ItemDrainBlockEntity extends SmartBlockEntity implements Clearable 
 			sendData();
 		}
 
-	}
-
-	/** Create's BlockHelper.hasBlockSolidSide */
-	private boolean hasBlockSolidSide(BlockState state, BlockPos pos, Direction dir) {
-		return !state.is(BlockTags.LEAVES) && Block.isFaceFull(state.getCollisionShape(level, pos), dir);
 	}
 
 	protected boolean continueProcessing() {
@@ -312,6 +324,11 @@ public class ItemDrainBlockEntity extends SmartBlockEntity implements Clearable 
 			.orElse(null);
 		processingTicks = compound.getIntOr("ProcessingTicks", 0);
 		super.read(compound);
+	}
+
+	@Override
+	public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+		return containedFluidTooltip(tooltip, isPlayerSneaking, FluidHandlerLookup.get(level, worldPosition, null));
 	}
 
 }

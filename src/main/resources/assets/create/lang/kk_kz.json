@@ -440,6 +440,8 @@
  "create.generic.unit.seconds": "Секунд",
  "create.generic.unit.stress": "кб",
  "create.generic.unit.ticks": "Тик",
+ "create.gui.goggles.fluid_container": "Сұйықтық контейнері ақпараты:",
+ "create.gui.goggles.fluid_container.capacity": "Сыйымдылық: ",
  "create.gui.sequenced_gearshift.instruction.await.descriptive": "Жаңа редстоун сигналды күту",
  "create.tooltip.analogStrength": "Аналогтік күш: %1$s/15",
  "create.tooltip.capacityProvided.high": "Үлкен",

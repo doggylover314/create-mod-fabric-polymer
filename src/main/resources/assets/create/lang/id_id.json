@@ -499,6 +499,8 @@
  "create.generic.unit.seconds": "Detik",
  "create.generic.unit.stress": "su",
  "create.generic.unit.ticks": "Ketukan",
+ "create.gui.goggles.basin_contents": "Isi Baskom:",
+ "create.gui.goggles.fluid_container.capacity": "Kapasitas: ",
  "create.gui.sequenced_gearshift.instruction.delay": "Jeda",
  "create.gui.sequenced_gearshift.instruction.delay.duration": "Durasi",
  "create.gui.sequenced_gearshift.instruction.turn_distance": "Piston",

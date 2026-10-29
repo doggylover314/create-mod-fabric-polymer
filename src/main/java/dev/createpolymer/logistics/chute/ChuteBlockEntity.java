@@ -7,6 +7,7 @@ import java.util.function.Predicate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import dev.createpolymer.foundation.block.BlockHelper;
 import dev.createpolymer.foundation.blockEntity.SmartBlockEntity;
 import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import dev.createpolymer.foundation.blockEntity.behaviour.inventory.VersionedInventoryTrackerBehaviour;
@@ -29,7 +30,6 @@ import dev.createpolymer.util.LerpedFloat;
 import dev.createpolymer.util.VecHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Clearable;
 import net.minecraft.world.Containers;
@@ -404,7 +404,7 @@ public class ChuteBlockEntity extends SmartBlockEntity implements Clearable { //
 
 		if (FunnelBlock.getFunnelFacing(level.getBlockState(worldPosition.above())) == Direction.UP)
 			return false;
-		if (hasBlockSolidSide(stateAbove, worldPosition.above(), Direction.DOWN))
+		if (BlockHelper.hasBlockSolidSide(stateAbove, level, worldPosition.above(), Direction.DOWN))
 			return false;
 		if (!inputChutes.isEmpty())
 			return false;
@@ -419,12 +419,6 @@ public class ChuteBlockEntity extends SmartBlockEntity implements Clearable { //
 			setItem(ItemStack.EMPTY);
 		}
 		return true;
-	}
-
-	/** Create's BlockHelper.hasBlockSolidSide */
-	private boolean hasBlockSolidSide(BlockState state, BlockPos pos, Direction dir) {
-		return !state.is(BlockTags.LEAVES)
-			&& Block.isFaceFull(state.getCollisionShape(level, pos), dir);
 	}
 
 	protected boolean canAcceptItem(ItemStack stack) {

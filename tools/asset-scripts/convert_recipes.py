@@ -12,7 +12,14 @@ OURS = set(M['items']) | set(M['known_items']) | set(M['blocks'])
 OUR_TAGS = set(M['known_tags'])
 CRAFTING = M['crafting']
 
+# Create items that vanilla 26.3 has itself: the port does not register them.
+VANILLA_ITEMS = {'create:copper_nugget': 'minecraft:copper_nugget'}
+
+def map_id(i):
+    return VANILLA_ITEMS.get(i, i)
+
 def known_item(i):
+    i = map_id(i)
     ns, path = i.split(':')
     return ns == 'minecraft' or (ns == 'create' and path in OURS)
 
@@ -29,7 +36,7 @@ def ingredient(o):
     if 'type' in o or 'amount' in o or 'fluid' in o:
         return None
     if 'item' in o:
-        return o['item'] if known_item(o['item']) else None
+        return map_id(o['item']) if known_item(o['item']) else None
     if 'tag' in o:
         t = o['tag']
         if t.startswith('create:') or (t.startswith('c:') and 'zinc' in t) or ('brass' in t):
@@ -72,7 +79,7 @@ def result(o):
         return o
     if 'id' not in o or not known_item(o['id']) or 'fluid' in o:
         return None
-    return o
+    return dict(o, id=map_id(o['id']))
 
 written = 0
 def write(rel, data):
@@ -96,7 +103,7 @@ for name in CRAFTING:
             print('skip (ingredient)', name); continue
     else:
         print('skip (type)', name, d['type']); continue
-    out['result'] = {'id': d['result']['id'], 'count': d['result'].get('count', 1)}
+    out['result'] = {'id': map_id(d['result']['id']), 'count': d['result'].get('count', 1)}
     write('crafting/' + name + '.json', out)
 
 def processing(d):

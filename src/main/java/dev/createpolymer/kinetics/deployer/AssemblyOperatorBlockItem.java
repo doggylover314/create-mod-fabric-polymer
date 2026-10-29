@@ -1,7 +1,11 @@
 package dev.createpolymer.kinetics.deployer;
 
 import eu.pb4.polymer.core.api.item.PolymerBlockItem;
-import dev.createpolymer.logistics.depot.DepotBlock;
+import dev.createpolymer.kinetics.belt.BeltBlock;
+import dev.createpolymer.kinetics.belt.BeltSlope;
+import dev.createpolymer.registry.ModBlocks;
+import dev.createpolymer.registry.feature.BeltRegistry;
+import dev.createpolymer.registry.feature.EjectorRegistry;
 import dev.createpolymer.processing.basin.BasinBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -18,7 +22,7 @@ import net.minecraft.world.phys.Vec3;
 
 /**
  * Ported from Create's AssemblyOperatorBlockItem (MIT, The Create Team): placing a machine on top of a basin or depot
- * puts it two blocks above, facing down. Belts and weighted ejectors are not ported yet.
+ * puts it two blocks above, facing down. Create also accepts horizontal belts and weighted ejectors.
  */
 public class AssemblyOperatorBlockItem extends PolymerBlockItem {
 
@@ -54,7 +58,10 @@ public class AssemblyOperatorBlockItem extends PolymerBlockItem {
 	}
 
 	protected boolean operatesOn(LevelReader world, BlockPos pos, BlockState placedOnState) {
-		return BasinBlock.isBasin(world, pos) || placedOnState.getBlock() instanceof DepotBlock;
+		if (placedOnState.is(BeltRegistry.BELT))
+			return placedOnState.getValue(BeltBlock.SLOPE) == BeltSlope.HORIZONTAL;
+		return BasinBlock.isBasin(world, pos) || placedOnState.is(ModBlocks.DEPOT)
+			|| placedOnState.is(EjectorRegistry.WEIGHTED_EJECTOR);
 	}
 
 }

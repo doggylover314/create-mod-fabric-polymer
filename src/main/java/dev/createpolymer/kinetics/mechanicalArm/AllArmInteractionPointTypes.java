@@ -11,6 +11,9 @@ import dev.createpolymer.foundation.item.handler.IItemHandler;
 import dev.createpolymer.foundation.item.handler.ItemHandlerHelper;
 import dev.createpolymer.foundation.item.handler.ItemHandlerLookup;
 import dev.createpolymer.foundation.item.handler.StorageItemHandler;
+import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
+import dev.createpolymer.foundation.blockEntity.behaviour.filtering.FilteringBehaviour;
+import dev.createpolymer.foundation.blockEntity.behaviour.inventory.InvManipulationBehaviour;
 import dev.createpolymer.kinetics.base.KineticBlockEntity;
 import dev.createpolymer.kinetics.belt.BeltBlockEntity;
 import dev.createpolymer.kinetics.belt.BeltBlock;
@@ -22,11 +25,17 @@ import dev.createpolymer.kinetics.crafter.MechanicalCrafterBlockEntity;
 import dev.createpolymer.kinetics.deployer.DeployerBlock;
 import dev.createpolymer.kinetics.saw.SawBlock;
 import dev.createpolymer.logistics.chute.AbstractChuteBlock;
+import dev.createpolymer.logistics.funnel.AbstractFunnelBlock;
+import dev.createpolymer.logistics.funnel.BeltFunnelBlock;
+import dev.createpolymer.logistics.funnel.BeltFunnelBlock.Shape;
+import dev.createpolymer.logistics.funnel.FunnelBlock;
+import dev.createpolymer.logistics.funnel.FunnelBlockEntity;
 import dev.createpolymer.logistics.tunnel.BeltTunnelBlock;
 import dev.createpolymer.processing.basin.BasinBlock;
 import dev.createpolymer.processing.burner.BlazeBurnerBlock;
 import dev.createpolymer.processing.burner.BlazeBurnerBlock.TryInsertResult;
 import dev.createpolymer.registry.ModBlocks;
+import dev.createpolymer.util.VecHelper;
 import dev.createpolymer.registry.feature.BeltRegistry;
 import dev.createpolymer.registry.feature.BurnerRegistry;
 import dev.createpolymer.registry.feature.CrafterRegistry;
@@ -36,6 +45,7 @@ import dev.createpolymer.registry.feature.SawRegistry;
 import net.fabricmc.fabric.api.transfer.v1.item.ContainerStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Containers;
@@ -54,13 +64,14 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.CampfireBlockEntity;
 import net.minecraft.world.level.block.entity.JukeboxBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.Vec3;
 
 /**
  * Ported from Create's AllArmInteractionPointTypes (MIT, The Create Team).
  * <p>
- * Not ported yet because the blocks do not exist here: the funnel type, the packager type, and the weighted ejector
- * and track station that Create's depot type also accepts.
+ * Not ported yet: the packager type and the track station that Create's depot type also accepts (neither block
+ * exists here).
  */
 public class AllArmInteractionPointTypes {
 	private static boolean initialized;
@@ -73,6 +84,7 @@ public class AllArmInteractionPointTypes {
 	public static CrushingWheelsType CRUSHING_WHEELS;
 	public static DeployerType DEPLOYER;
 	public static DepotType DEPOT;
+	public static FunnelType FUNNEL;
 	public static MillstoneType MILLSTONE;
 	public static SawType SAW;
 	public static CampfireType CAMPFIRE;
@@ -95,6 +107,7 @@ public class AllArmInteractionPointTypes {
 		CRUSHING_WHEELS = register("crushing_wheels", new CrushingWheelsType());
 		DEPLOYER = register("deployer", new DeployerType());
 		DEPOT = register("depot", new DepotType());
+		FUNNEL = register("funnel", new FunnelType());
 		MILLSTONE = register("millstone", new MillstoneType());
 		SAW = register("saw", new SawType());
 
@@ -207,6 +220,21 @@ public class AllArmInteractionPointTypes {
 		@Override
 		public ArmInteractionPoint createPoint(Level level, BlockPos pos, BlockState state) {
 			return new DepotPoint(this, level, pos, state);
+		}
+	}
+
+	public static class FunnelType extends ArmInteractionPointType {
+		@Override
+		public boolean canCreatePoint(Level level, BlockPos pos, BlockState state) {
+			return state.getBlock() instanceof AbstractFunnelBlock
+				&& !(state.hasProperty(FunnelBlock.EXTRACTING) && state.getValue(FunnelBlock.EXTRACTING))
+				&& !(state.hasProperty(BeltFunnelBlock.SHAPE)
+				&& state.getValue(BeltFunnelBlock.SHAPE) == Shape.PUSHING);
+		}
+
+		@Override
+		public ArmInteractionPoint createPoint(Level level, BlockPos pos, BlockState state) {
+			return new FunnelPoint(this, level, pos, state);
 		}
 	}
 
@@ -476,6 +504,60 @@ public class AllArmInteractionPointTypes {
 		protected Vec3 getInteractionPositionVector() {
 			return Vec3.atLowerCornerOf(pos)
 				.add(.5f, 14 / 16f, .5f);
+		}
+	}
+
+	public static class FunnelPoint extends DepositOnlyArmInteractionPoint {
+		public FunnelPoint(ArmInteractionPointType type, Level level, BlockPos pos, BlockState state) {
+			super(type, level, pos, state);
+		}
+
+		@Override
+		protected Vec3 getInteractionPositionVector() {
+			Direction funnelFacing = FunnelBlock.getFunnelFacing(cachedState);
+			Vec3i normal = funnelFacing != null ? funnelFacing.getUnitVec3i() : Vec3i.ZERO;
+			return VecHelper.getCenterOf(pos)
+				.add(Vec3.atLowerCornerOf(normal)
+					.scale(-.15f));
+		}
+
+		@Override
+		protected Direction getInteractionDirection() {
+			Direction funnelFacing = FunnelBlock.getFunnelFacing(cachedState);
+			return funnelFacing != null ? funnelFacing.getOpposite() : Direction.UP;
+		}
+
+		@Override
+		public void updateCachedState() {
+			BlockState oldState = cachedState;
+			super.updateCachedState();
+			if (oldState != cachedState)
+				cachedAngles = null;
+		}
+
+		@Override
+		public ItemStack insert(ArmBlockEntity armBlockEntity, ItemStack stack, boolean simulate) {
+			FilteringBehaviour filtering = BlockEntityBehaviour.get(level, pos, FilteringBehaviour.TYPE);
+			InvManipulationBehaviour inserter = BlockEntityBehaviour.get(level, pos, InvManipulationBehaviour.TYPE);
+			if (cachedState.getOptionalValue(BlockStateProperties.POWERED)
+				.orElse(false))
+				return stack;
+			if (inserter == null)
+				return stack;
+			if (filtering != null && !filtering.test(stack))
+				return stack;
+			if (simulate)
+				inserter.simulate();
+			ItemStack insert = inserter.insert(stack);
+			if (!simulate && insert.getCount() != stack.getCount()) {
+				BlockEntity blockEntity = level.getBlockEntity(pos);
+				if (blockEntity instanceof FunnelBlockEntity funnelBlockEntity) {
+					funnelBlockEntity.onTransfer(stack);
+					if (funnelBlockEntity.hasFlap())
+						funnelBlockEntity.flap(true);
+				}
+			}
+			return insert;
 		}
 	}
 

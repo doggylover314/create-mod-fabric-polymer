@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 
+import dev.createpolymer.foundation.block.BlockHelper;
 import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import dev.createpolymer.util.Iterate;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
@@ -13,15 +14,11 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -58,14 +55,14 @@ public class EdgeInteractionHandler {
 	public static List<Direction> getConnectiveSides(Level world, BlockPos pos, Direction face,
 		EdgeInteractionBehaviour behaviour) {
 		List<Direction> sides = new ArrayList<>(6);
-		if (hasBlockSolidSide(world.getBlockState(pos.relative(face)), world, pos.relative(face), face.getOpposite()))
+		if (BlockHelper.hasBlockSolidSide(world.getBlockState(pos.relative(face)), world, pos.relative(face), face.getOpposite()))
 			return sides;
 
 		for (Direction direction : Iterate.directions) {
 			if (direction.getAxis() == face.getAxis())
 				continue;
 			BlockPos neighbourPos = pos.relative(direction);
-			if (hasBlockSolidSide(world.getBlockState(neighbourPos.relative(face)), world, neighbourPos.relative(face),
+			if (BlockHelper.hasBlockSolidSide(world.getBlockState(neighbourPos.relative(face)), world, neighbourPos.relative(face),
 				face.getOpposite()))
 				continue;
 			if (!behaviour.connectivityPredicate.test(world, pos, face, direction))
@@ -103,11 +100,6 @@ public class EdgeInteractionHandler {
 		bb = bb.move(x / 2d, y / 2d, z / 2d);
 		bb = bb.inflate(1 / 256f);
 		return bb;
-	}
-
-	private static boolean hasBlockSolidSide(BlockState state, BlockGetter blockGetter, BlockPos pos, Direction dir) {
-		return !state.is(BlockTags.LEAVES)
-			&& Block.isFaceFull(state.getCollisionShape(blockGetter, pos), dir);
 	}
 
 }

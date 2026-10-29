@@ -10,6 +10,7 @@ import java.util.function.Function;
 
 import org.jspecify.annotations.Nullable;
 
+import dev.createpolymer.foundation.block.BlockHelper;
 import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import dev.createpolymer.kinetics.belt.BeltBlock;
 import dev.createpolymer.kinetics.belt.BeltBlockEntity;
@@ -321,7 +322,7 @@ public class BeltInventory {
 		if (inputBehaviour != null)
 			return Ending.INSERT;
 
-		if (BeltHelper.hasBlockSolidSide(world.getBlockState(nextPosition), world, nextPosition,
+		if (BlockHelper.hasBlockSolidSide(world.getBlockState(nextPosition), world, nextPosition,
 			belt.getMovementFacing()
 				.getOpposite()))
 			return Ending.BLOCKED;

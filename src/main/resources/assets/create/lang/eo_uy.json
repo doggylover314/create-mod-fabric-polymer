@@ -490,6 +490,7 @@
  "create.generic.unit.ticks": "Taktoj",
  "create.gui.filter.allow_list": "Permeso-Listo",
  "create.gui.filter.deny_list": "Neo-Listo",
+ "create.gui.goggles.fluid_container.capacity": "Kapacito: ",
  "create.gui.sequenced_gearshift.instruction.await": "Atendi",
  "create.gui.sequenced_gearshift.instruction.delay": "Prokrasti",
  "create.gui.sequenced_gearshift.instruction.delay.duration": "Daŭro",

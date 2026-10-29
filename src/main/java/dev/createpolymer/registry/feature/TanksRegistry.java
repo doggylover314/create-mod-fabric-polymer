@@ -17,6 +17,7 @@ import dev.createpolymer.fluids.transfer.EmptyingRecipe;
 import dev.createpolymer.fluids.transfer.FillingRecipe;
 import dev.createpolymer.processing.basin.BasinBlockEntity;
 import dev.createpolymer.processing.recipe.ProcessingRecipe;
+import dev.createpolymer.kinetics.deployer.AssemblyOperatorBlockItem;
 import dev.createpolymer.registry.ModBlockEntities;
 import dev.createpolymer.registry.ModBlocks;
 import dev.createpolymer.registry.ModItems;
@@ -71,7 +72,8 @@ public final class TanksRegistry {
 	public static final Item CREATIVE_FLUID_TANK_ITEM = ModItems.register("creative_fluid_tank",
 		p -> new FluidTankItem(CREATIVE_FLUID_TANK, p), new Item.Properties().rarity(Rarity.EPIC).useBlockDescriptionPrefix());
 	public static final Item ITEM_DRAIN_ITEM = ModItems.block(ITEM_DRAIN);
-	public static final Item SPOUT_ITEM = ModItems.block(SPOUT);
+	public static final Item SPOUT_ITEM = ModItems.register("spout", p -> new AssemblyOperatorBlockItem(SPOUT, p),
+		new Item.Properties().useBlockDescriptionPrefix());
 
 	// Create's AllRecipeTypes.FILLING / EMPTYING
 	public static final RecipeType<FillingRecipe> FILLING = recipeType("filling");

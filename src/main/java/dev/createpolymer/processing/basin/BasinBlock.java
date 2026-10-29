@@ -11,7 +11,13 @@ import dev.createpolymer.foundation.blockEntity.behaviour.fluid.SmartFluidTankBe
 import dev.createpolymer.foundation.fluid.FluidHelper;
 import dev.createpolymer.foundation.fluid.FluidStack;
 import dev.createpolymer.foundation.fluid.IFluidHandler;
+import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
+import dev.createpolymer.item.IWrenchable;
+import dev.createpolymer.kinetics.belt.BeltBlockEntity;
+import dev.createpolymer.kinetics.belt.behaviour.DirectBeltInputBehaviour;
+import dev.createpolymer.logistics.funnel.FunnelBlock;
 import dev.createpolymer.registry.ModBlockEntities;
+import dev.createpolymer.visual.Part;
 import dev.createpolymer.util.ShapeUtil;
 import dev.createpolymer.visual.BaseModel;
 import dev.createpolymer.visual.ModelItems;
@@ -27,6 +33,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
@@ -39,6 +46,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
@@ -49,9 +59,11 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 /**
  * Ported from Create's BasinBlock (MIT, The Create Team).
- * Output direction (wrenching the basin) is not ported yet.
  */
-public class BasinBlock extends Block implements EntityBlock, PolymerBlock, BlockWithElementHolder {
+public class BasinBlock extends Block implements EntityBlock, PolymerBlock, BlockWithElementHolder, IWrenchable {
+
+	public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING_HOPPER;
+
 	public static final VoxelShape BLOCK_SHAPE = Shapes.or(
 		Shapes.join(ShapeUtil.box(0, 2, 0, 16, 16, 16), ShapeUtil.box(2, 2, 2, 14, 16, 14), BooleanOp.ONLY_FIRST),
 		ShapeUtil.box(2, 0, 2, 14, 2, 14));
@@ -62,10 +74,23 @@ public class BasinBlock extends Block implements EntityBlock, PolymerBlock, Bloc
 
 	public BasinBlock(Properties properties) {
 		super(properties);
+		registerDefaultState(defaultBlockState().setValue(FACING, Direction.DOWN));
+	}
+
+	@Override
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+		super.createBlockStateDefinition(builder.add(FACING));
 	}
 
 	public static boolean isBasin(LevelReader world, BlockPos pos) {
 		return world.getBlockEntity(pos) instanceof BasinBlockEntity;
+	}
+
+	@Override
+	public InteractionResult onWrenched(BlockState state, UseOnContext context) {
+		if (!context.getLevel().isClientSide() && context.getLevel().getBlockEntity(context.getClickedPos()) instanceof BasinBlockEntity be)
+			be.onWrenched(context.getClickedFace());
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override
@@ -155,6 +180,31 @@ public class BasinBlock extends Block implements EntityBlock, PolymerBlock, Bloc
 		return net.minecraft.util.Mth.floor(fullness * 14) + (fullness > 0 ? 1 : 0);
 	}
 
+	public static boolean canOutputTo(BlockGetter world, BlockPos basinPos, Direction direction) {
+		BlockPos neighbour = basinPos.relative(direction);
+		BlockPos output = neighbour.below();
+		BlockState blockState = world.getBlockState(neighbour);
+
+		if (FunnelBlock.isFunnel(blockState)) {
+			if (FunnelBlock.getFunnelFacing(blockState) == direction)
+				return false;
+		} else if (!blockState.getCollisionShape(world, neighbour)
+			.isEmpty()) {
+			return false;
+		} else {
+			BlockEntity blockEntity = world.getBlockEntity(output);
+			if (blockEntity instanceof BeltBlockEntity belt) {
+				return belt.getSpeed() == 0 || belt.getMovementFacing() != direction.getOpposite();
+			}
+		}
+
+		DirectBeltInputBehaviour directBeltInputBehaviour =
+			BlockEntityBehaviour.get(world, output, DirectBeltInputBehaviour.TYPE);
+		if (directBeltInputBehaviour != null)
+			return directBeltInputBehaviour.canInsertFromSide(direction);
+		return false;
+	}
+
 	@Override
 	protected boolean isPathfindable(BlockState state, PathComputationType pathComputationType) {
 		return false;
@@ -186,11 +236,19 @@ public class BasinBlock extends Block implements EntityBlock, PolymerBlock, Bloc
 	public static class Model extends BaseModel {
 		private final FluidBox[] fluids = new FluidBox[4];
 
+		private final Part block;
+
 		public Model(BlockState state) {
 			super(state);
-			addPart(ModelItems.block("basin/block")).apply(0);
+			block = addPart(ModelItems.block("basin/block"));
+			showVariant(block, "basin", state);
 			for (int i = 0; i < fluids.length; i++)
 				fluids[i] = new FluidBox(this);
+		}
+
+		@Override
+		protected void onStateChanged(BlockState state) {
+			showVariant(block, "basin", state);
 		}
 
 		@Override

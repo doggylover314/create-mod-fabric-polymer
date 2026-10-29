@@ -11,6 +11,7 @@ import java.util.Set;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jspecify.annotations.Nullable;
 
+import dev.createpolymer.foundation.block.BlockHelper;
 import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import dev.createpolymer.foundation.blockEntity.behaviour.filtering.FilteringBehaviour;
 import dev.createpolymer.foundation.blockEntity.behaviour.filtering.SidedFilteringBehaviour;
@@ -391,7 +392,7 @@ public class BrassTunnelBlockEntity extends BeltTunnelBlockEntity implements Cle
 
 		Direction movementFacing = below.getMovementFacing();
 		if (side == movementFacing)
-			if (!BeltHelper.hasBlockSolidSide(level.getBlockState(offset), level, offset, side.getOpposite())) {
+			if (!BlockHelper.hasBlockSolidSide(level.getBlockState(offset), level, offset, side.getOpposite())) {
 				BeltBlockEntity controllerBE = below.getControllerBE();
 				if (controllerBE == null)
 					return null;
@@ -543,7 +544,7 @@ public class BrassTunnelBlockEntity extends BeltTunnelBlockEntity implements Cle
 					BlockEntityBehaviour.get(level, offset, DirectBeltInputBehaviour.TYPE);
 				if (inputBehaviour == null) {
 					if (direction == movementFacing)
-						if (!BeltHelper.hasBlockSolidSide(level.getBlockState(offset), level, offset,
+						if (!BlockHelper.hasBlockSolidSide(level.getBlockState(offset), level, offset,
 							direction.getOpposite()))
 							validOutputs.add(Pair.of(tunnelBE, direction));
 					continue;

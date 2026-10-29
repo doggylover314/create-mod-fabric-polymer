@@ -1,0 +1,10 @@
+{
+  "blockstates": [
+    "basin"
+  ],
+  "lang_keys": [
+    "create.gui.goggles.basin_contents",
+    "create.gui.goggles.fluid_container",
+    "create.gui.goggles.fluid_container.capacity"
+  ]
+}

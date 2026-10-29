@@ -17,6 +17,7 @@ import dev.createpolymer.kinetics.belt.behaviour.DirectBeltInputBehaviour;
 import dev.createpolymer.kinetics.belt.transport.TransportedItemStack;
 import dev.createpolymer.logistics.funnel.BeltFunnelBlock.Shape;
 import dev.createpolymer.registry.feature.FunnelRegistry;
+import dev.createpolymer.registry.feature.RedstoneRegistry;
 import dev.createpolymer.util.BlockFace;
 import dev.createpolymer.util.LerpedFloat;
 import dev.createpolymer.util.LerpedFloat.Chaser;
@@ -358,8 +359,8 @@ public class FunnelBlockEntity extends SmartBlockEntity implements Clearable {
 		filtering.setFilter(ItemStack.EMPTY);
 	}
 
-	/** Create tells a content observer next to the funnel here; observers are not ported yet. */
 	public void onTransfer(ItemStack stack) {
+		RedstoneRegistry.SMART_OBSERVER.onFunnelTransfer(level, worldPosition, stack);
 	}
 
 	private LerpedFloat createChasingFlap() {

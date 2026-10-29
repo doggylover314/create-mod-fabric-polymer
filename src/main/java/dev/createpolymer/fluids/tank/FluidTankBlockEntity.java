@@ -7,6 +7,7 @@ import java.util.List;
 import org.jetbrains.annotations.Nullable;
 
 import dev.createpolymer.api.connectivity.ConnectivityHandler;
+import dev.createpolymer.api.equipment.goggles.IHaveGoggleInformation;
 import dev.createpolymer.fluids.tank.FluidTankBlock.Shape;
 import dev.createpolymer.foundation.blockEntity.IMultiBlockEntityContainer;
 import dev.createpolymer.foundation.blockEntity.SmartBlockEntity;
@@ -38,7 +39,7 @@ import net.minecraft.world.level.storage.ValueOutput;
  * is chased on the server for the display entities, and the luminosity of a tank is a block state property
  * ({@link FluidTankBlock#LUMINOSITY}) because vanilla blocks emit light by state only.
  */
-public class FluidTankBlockEntity extends SmartBlockEntity implements IMultiBlockEntityContainer.Fluid {
+public class FluidTankBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation, IMultiBlockEntityContainer.Fluid {
 
 	private static final int MAX_SIZE = 3;
 
@@ -375,12 +376,15 @@ public class FluidTankBlockEntity extends SmartBlockEntity implements IMultiBloc
 		return null;
 	}
 
-	/** The boiler lines of Create's goggle tooltip; false if this tank is not used as a boiler. */
+	@Override
 	public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
 		FluidTankBlockEntity controllerBE = getControllerBE();
 		if (controllerBE == null)
 			return false;
-		return controllerBE.boiler.addToGoggleTooltip(tooltip, isPlayerSneaking, controllerBE.getTotalTankSize());
+		if (controllerBE.boiler.addToGoggleTooltip(tooltip, isPlayerSneaking, controllerBE.getTotalTankSize()))
+			return true;
+		return containedFluidTooltip(tooltip, isPlayerSneaking,
+			FluidHandlerLookup.get(level, controllerBE.getBlockPos(), null));
 	}
 
 	@Override

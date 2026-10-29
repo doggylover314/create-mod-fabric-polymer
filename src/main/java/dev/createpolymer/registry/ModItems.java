@@ -7,6 +7,7 @@ import java.util.function.Function;
 import dev.createpolymer.CreatePolymer;
 import dev.createpolymer.item.AndesiteAlloyItem;
 import dev.createpolymer.item.GogglesItem;
+import dev.createpolymer.kinetics.deployer.AssemblyOperatorBlockItem;
 import dev.createpolymer.item.WrenchItem;
 import eu.pb4.polymer.core.api.item.PolymerBlockItem;
 import eu.pb4.polymer.core.api.item.PolymerCreativeModeTabUtils;
@@ -48,8 +49,11 @@ public final class ModItems {
 	public static final Item LARGE_WATER_WHEEL = block(ModBlocks.LARGE_WATER_WHEEL);
 	public static final Item CREATIVE_MOTOR = block(ModBlocks.CREATIVE_MOTOR, new Item.Properties().rarity(Rarity.EPIC));
 	public static final Item MILLSTONE = block(ModBlocks.MILLSTONE);
-	public static final Item MECHANICAL_PRESS = block(ModBlocks.MECHANICAL_PRESS);
-	public static final Item MECHANICAL_MIXER = block(ModBlocks.MECHANICAL_MIXER);
+	// Create registers these with AssemblyOperatorBlockItem
+	public static final Item MECHANICAL_PRESS = register("mechanical_press",
+		p -> new AssemblyOperatorBlockItem(ModBlocks.MECHANICAL_PRESS, p), new Item.Properties().useBlockDescriptionPrefix());
+	public static final Item MECHANICAL_MIXER = register("mechanical_mixer",
+		p -> new AssemblyOperatorBlockItem(ModBlocks.MECHANICAL_MIXER, p), new Item.Properties().useBlockDescriptionPrefix());
 	public static final Item BASIN = block(ModBlocks.BASIN);
 	public static final Item DEPOT = block(ModBlocks.DEPOT);
 	public static final Item ANDESITE_CASING = block(ModBlocks.ANDESITE_CASING);

@@ -1,0 +1,17 @@
+{
+  "type": "create:crushing",
+  "ingredients": [
+    "create:veridium"
+  ],
+  "results": [
+    {
+      "chance": 0.8,
+      "id": "create:crushed_raw_copper"
+    },
+    {
+      "chance": 0.8,
+      "id": "minecraft:copper_nugget"
+    }
+  ],
+  "processing_time": 250
+}

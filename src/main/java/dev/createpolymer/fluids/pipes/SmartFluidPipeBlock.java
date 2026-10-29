@@ -5,6 +5,7 @@ import org.jspecify.annotations.Nullable;
 import dev.createpolymer.fluids.FluidPropagator;
 import dev.createpolymer.fluids.FluidTransportBehaviour;
 import dev.createpolymer.foundation.block.IBE;
+import dev.createpolymer.foundation.block.ProperWaterloggedBlock;
 import dev.createpolymer.foundation.blockEntity.SmartBlockEntity;
 import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import dev.createpolymer.foundation.blockEntity.behaviour.filtering.FilterDisplay;

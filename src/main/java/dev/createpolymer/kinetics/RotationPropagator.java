@@ -26,7 +26,6 @@ import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * Ported from Create's RotationPropagator (MIT, The Create Team).
- * Chain drives and split shafts are not part of this port yet.
  */
 public final class RotationPropagator {
 
@@ -78,7 +77,7 @@ public final class RotationPropagator {
 		// Attached Encased Belts
 		if (fromBlock instanceof ChainDriveBlock && toBlock instanceof ChainDriveBlock) {
 			boolean connected = ChainDriveBlock.areBlocksConnected(stateFrom, stateTo, direction);
-			return connected ? 1 : 0;
+			return connected ? ChainDriveBlock.getRotationSpeedModifier(from, to) : 0;
 		}
 
 		// Large Gear <-> Large Gear

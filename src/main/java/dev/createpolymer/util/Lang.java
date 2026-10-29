@@ -1,5 +1,6 @@
 package dev.createpolymer.util;
 
+import java.text.NumberFormat;
 import java.util.Locale;
 
 public class Lang {
@@ -15,6 +16,16 @@ public class Lang {
 
 	public static LangBuilder builder(String namespace) {
 		return new LangBuilder(namespace);
+	}
+
+	/** Catnip's LangNumberFormat: at most two decimals, thousands separators. */
+	public static String formatNumber(double d) {
+		NumberFormat format = NumberFormat.getInstance(Locale.ROOT);
+		format.setMaximumFractionDigits(2);
+		format.setMinimumFractionDigits(0);
+		format.setGroupingUsed(true);
+		return format.format(d)
+			.replace('\u00A0', ' ');
 	}
 
 }

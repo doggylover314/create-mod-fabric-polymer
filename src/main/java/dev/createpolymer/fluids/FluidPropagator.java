@@ -15,6 +15,7 @@ import dev.createpolymer.fluids.pipes.FluidPipeBlock;
 import dev.createpolymer.fluids.pipes.VanillaFluidTargets;
 import dev.createpolymer.fluids.pump.PumpBlock;
 import dev.createpolymer.fluids.pump.PumpBlockEntity;
+import dev.createpolymer.foundation.block.BlockHelper;
 import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 
 import dev.createpolymer.foundation.fluid.FluidHandlerLookup;
@@ -167,7 +168,7 @@ public class FluidPropagator {
 			return false;
 		if (VanillaFluidTargets.canProvideFluidWithoutCapability(connectedState))
 			return true;
-		if (PipeHelper.hasBlockSolidSide(connectedState, reader, connectedPos, side.getOpposite())
+		if (BlockHelper.hasBlockSolidSide(connectedState, reader, connectedPos, side.getOpposite())
 			&& !connectedState.is(FAN_TRANSPARENT))
 			return false;
 		if (hasFluidCapability(reader, connectedPos, side.getOpposite()))

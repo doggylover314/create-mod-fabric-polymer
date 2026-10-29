@@ -14,6 +14,8 @@ import dev.createpolymer.foundation.item.handler.ItemHandlerLookup;
 import dev.createpolymer.kinetics.base.KineticBlockEntity;
 import dev.createpolymer.kinetics.belt.behaviour.DirectBeltInputBehaviour;
 import dev.createpolymer.kinetics.belt.transport.TransportedItemStack;
+import dev.createpolymer.logistics.funnel.AbstractFunnelBlock;
+import dev.createpolymer.logistics.funnel.FunnelBlock;
 import dev.createpolymer.registry.feature.EjectorRegistry;
 import dev.createpolymer.foundation.item.handler.ItemStackHandler;
 import dev.createpolymer.util.AngleHelper;
@@ -198,8 +200,42 @@ public class EjectorBlockEntity extends KineticBlockEntity {
 
 	protected void launchItems() {
 		ItemStack heldItemStack = depotBehaviour.getHeldItemStack();
+		Direction funnelFacing = getFacing().getOpposite();
 
-		// Create hands the items to a belt funnel on top of the ejector here; funnels are not ported
+		if (AbstractFunnelBlock.getFunnelFacing(level.getBlockState(worldPosition.above())) == funnelFacing) {
+			DirectBeltInputBehaviour directOutput = getBehaviour(DirectBeltInputBehaviour.TYPE);
+
+			if (depotBehaviour.heldItem != null) {
+				ItemStack remainder = directOutput.tryExportingToBeltFunnel(heldItemStack, funnelFacing, false);
+				if (remainder == null)
+					;
+				else if (remainder.isEmpty())
+					depotBehaviour.removeHeldItem();
+				else if (remainder.getCount() != heldItemStack.getCount())
+					depotBehaviour.heldItem.stack = remainder;
+			}
+
+			for (Iterator<TransportedItemStack> iterator = depotBehaviour.incoming.iterator(); iterator.hasNext();) {
+				TransportedItemStack transportedItemStack = iterator.next();
+				ItemStack stack = transportedItemStack.stack;
+				ItemStack remainder = directOutput.tryExportingToBeltFunnel(stack, funnelFacing, false);
+				if (remainder == null)
+					;
+				else if (remainder.isEmpty())
+					iterator.remove();
+				else if (!ItemStack.isSameItem(remainder, stack))
+					transportedItemStack.stack = remainder;
+			}
+
+			ItemStackHandler outputs = depotBehaviour.processingOutputBuffer;
+			for (int i = 0; i < outputs.getSlots(); i++) {
+				ItemStack remainder =
+					directOutput.tryExportingToBeltFunnel(outputs.getStackInSlot(i), funnelFacing, false);
+				if (remainder != null)
+					outputs.setStackInSlot(i, remainder);
+			}
+			return;
+		}
 
 		for (Direction d : Iterate.directions) {
 			BlockState blockState = level.getBlockState(worldPosition.relative(d));
@@ -346,7 +382,12 @@ public class EjectorBlockEntity extends KineticBlockEntity {
 		BlockHitResult rayTraceBlocks = level.clip(new ClipContext(source, target, Block.COLLIDER, Fluid.NONE, CollisionContext.empty()));
 		boolean miss = rayTraceBlocks.getType() == Type.MISS;
 
-		// Create lets items pass through extracting funnels here; funnels are not ported
+		if (!miss && rayTraceBlocks.getType() == Type.BLOCK) {
+			BlockState blockState = level.getBlockState(rayTraceBlocks.getBlockPos());
+			if (FunnelBlock.isFunnel(blockState) && blockState.hasProperty(FunnelBlock.EXTRACTING)
+				&& blockState.getValue(FunnelBlock.EXTRACTING))
+				miss = true;
+		}
 
 		if (miss) {
 			if (earlyTarget != null && earlyTargetTime < time + 1) {
@@ -387,9 +428,16 @@ public class EjectorBlockEntity extends KineticBlockEntity {
 		if (depotBehaviour.heldItem != null && depotBehaviour.heldItem.beltPosition < .49f)
 			return;
 
+		Direction funnelFacing = getFacing().getOpposite();
 		ItemStack held = depotBehaviour.getHeldItemStack();
-
-		// Create checks for a belt funnel on top of the ejector here; funnels are not ported
+		if (AbstractFunnelBlock.getFunnelFacing(level.getBlockState(worldPosition.above())) == funnelFacing) {
+			DirectBeltInputBehaviour directOutput = getBehaviour(DirectBeltInputBehaviour.TYPE);
+			if (depotBehaviour.heldItem != null) {
+				ItemStack tryFunnel = directOutput.tryExportingToBeltFunnel(held, funnelFacing, true);
+				if (tryFunnel == null || !tryFunnel.isEmpty())
+					return;
+			}
+		}
 
 		DirectBeltInputBehaviour targetOpenInv = getTargetOpenInv();
 

@@ -9,7 +9,7 @@ import dev.createpolymer.fluids.pipes.FluidPipeBlock;
 import dev.createpolymer.fluids.pipes.IAxisPipe;
 import dev.createpolymer.fluids.pipes.PipeAttachments;
 import dev.createpolymer.fluids.pipes.PipeShapes;
-import dev.createpolymer.fluids.pipes.ProperWaterloggedBlock;
+import dev.createpolymer.foundation.block.ProperWaterloggedBlock;
 import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import dev.createpolymer.kinetics.base.DirectionalAxisKineticBlock;
 import dev.createpolymer.kinetics.base.KineticBlockEntity;
@@ -40,7 +40,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -147,8 +146,7 @@ public class FluidValveBlock extends DirectionalAxisKineticBlock
 	@Override
 	protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess ticks, BlockPos pos,
 		Direction direction, BlockPos neighbourPos, BlockState neighbourState, RandomSource random) {
-		if (state.getValue(WATERLOGGED))
-			ticks.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+		updateWater(level, ticks, state, pos);
 		return state;
 	}
 

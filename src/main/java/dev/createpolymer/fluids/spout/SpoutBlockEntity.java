@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dev.createpolymer.api.behaviour.spouting.BlockSpoutingBehaviour;
+import dev.createpolymer.api.equipment.goggles.IHaveGoggleInformation;
 import dev.createpolymer.foundation.blockEntity.SmartBlockEntity;
 import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import dev.createpolymer.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
@@ -23,6 +24,7 @@ import dev.createpolymer.util.VecHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.network.chat.Component;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -39,7 +41,7 @@ import net.minecraft.world.phys.Vec3;
  * Ported from Create's SpoutBlockEntity (MIT, The Create Team). Sequenced assembly, advancements and the client
  * particles are left out; the splash is sent as vanilla particles.
  */
-public class SpoutBlockEntity extends SmartBlockEntity {
+public class SpoutBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation {
 
 	public static final int FILLING_TIME = 20;
 	protected BeltProcessingBehaviour beltProcessing;
@@ -198,6 +200,12 @@ public class SpoutBlockEntity extends SmartBlockEntity {
 		ParticleOptions particle = FluidHelper.isLava(fluid.getFluid()) ? ParticleTypes.LAVA
 			: FluidHelper.isWater(fluid.getFluid()) ? ParticleTypes.SPLASH : ParticleTypes.POOF;
 		serverLevel.sendParticles(particle, vec.x, vec.y, vec.z, SPLASH_PARTICLE_COUNT, .125, .125, .125, .05);
+	}
+
+	@Override
+	public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+		return containedFluidTooltip(tooltip, isPlayerSneaking,
+			FluidHandlerLookup.get(level, worldPosition, null));
 	}
 
 }
