@@ -56,6 +56,11 @@ public class ScrollValueBehaviour extends BlockEntityBehaviour implements ValueS
 	}
 
 	@Override
+	public boolean isSafeNBT() {
+		return true;
+	}
+
+	@Override
 	public void write(ValueOutput nbt) {
 		nbt.putInt("ScrollValue", value);
 		super.write(nbt);

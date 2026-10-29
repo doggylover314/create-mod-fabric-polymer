@@ -10,6 +10,7 @@ import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.jspecify.annotations.Nullable;
 
 import dev.createpolymer.CreatePolymer;
+import dev.createpolymer.api.schematic.requirement.SpecialBlockItemRequirement;
 import dev.createpolymer.foundation.block.IBE;
 import dev.createpolymer.foundation.fluid.FluidItemHandlers;
 import dev.createpolymer.foundation.fluid.IFluidHandler.FluidAction;
@@ -30,6 +31,8 @@ import dev.createpolymer.registry.ModBlocks;
 import dev.createpolymer.registry.ModItems;
 import dev.createpolymer.registry.feature.BeltRegistry;
 import dev.createpolymer.registry.feature.CrushingRegistry;
+import dev.createpolymer.schematics.requirement.ItemRequirement.ItemUseType;
+import dev.createpolymer.schematics.requirement.ItemRequirement;
 import dev.createpolymer.util.Iterate;
 import dev.createpolymer.util.VecHelper;
 import eu.pb4.polymer.blocks.api.BlockModelType;
@@ -95,7 +98,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class BeltBlock extends HorizontalKineticBlock
-	implements IBE<BeltBlockEntity>, IWrenchable, SimpleWaterloggedBlock, PolymerTexturedBlock {
+	implements SpecialBlockItemRequirement, IBE<BeltBlockEntity>, IWrenchable, SimpleWaterloggedBlock, PolymerTexturedBlock {
 
 	public static final Property<BeltSlope> SLOPE = EnumProperty.create("slope", BeltSlope.class);
 	public static final Property<BeltPart> PART = EnumProperty.create("part", BeltPart.class);
@@ -682,4 +685,15 @@ public class BeltBlock extends HorizontalKineticBlock
 		return new BeltVisual(state);
 	}
 
+	@Override
+	public ItemRequirement getRequiredItems(BlockState state, @Nullable BlockEntity be) {
+		List<ItemStack> required = new ArrayList<>();
+		if (state.getValue(PART) != BeltPart.MIDDLE)
+			required.add(new ItemStack(ModBlocks.SHAFT));
+		if (state.getValue(PART) == BeltPart.START)
+			required.add(new ItemStack(BeltRegistry.BELT_CONNECTOR));
+		if (required.isEmpty())
+			return ItemRequirement.NONE;
+		return new ItemRequirement(ItemUseType.CONSUME, required);
+	}
 }

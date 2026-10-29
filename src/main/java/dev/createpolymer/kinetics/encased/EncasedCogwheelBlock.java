@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import org.jspecify.annotations.Nullable;
 
+import dev.createpolymer.api.schematic.requirement.SpecialBlockItemRequirement;
 import dev.createpolymer.item.IWrenchable;
 import dev.createpolymer.kinetics.base.ICogWheel;
 import dev.createpolymer.kinetics.base.IRotate;
@@ -13,6 +14,7 @@ import dev.createpolymer.kinetics.simple.CogWheelBlock;
 import dev.createpolymer.registry.ModBlockEntities;
 import dev.createpolymer.registry.ModBlocks;
 import dev.createpolymer.registry.ModSounds;
+import dev.createpolymer.schematics.requirement.ItemRequirement;
 import dev.createpolymer.visual.BaseModel;
 import dev.createpolymer.visual.ModelItems;
 import dev.createpolymer.visual.Orientation;
@@ -40,7 +42,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
  * Ported from Create's EncasedCogwheelBlock (MIT, The Create Team).
  * Wrenching an end face toggles the shaft on that side; sneak-wrenching removes the casing.
  */
-public class EncasedCogwheelBlock extends RotatedPillarKineticBlock implements ICogWheel, IWrenchable, EncasedBlock {
+public class EncasedCogwheelBlock extends RotatedPillarKineticBlock implements SpecialBlockItemRequirement, ICogWheel, IWrenchable, EncasedBlock {
 	public static final BooleanProperty TOP_SHAFT = BooleanProperty.create("top_shaft");
 	public static final BooleanProperty BOTTOM_SHAFT = BooleanProperty.create("bottom_shaft");
 
@@ -211,5 +213,11 @@ public class EncasedCogwheelBlock extends RotatedPillarKineticBlock implements I
 				bottom.spin(time, kbe.getSpeed(), offset);
 			}
 		}
+	}
+
+	@Override
+	public ItemRequirement getRequiredItems(BlockState state, @Nullable BlockEntity be) {
+		return ItemRequirement
+			.of(isLarge ? ModBlocks.LARGE_COGWHEEL.defaultBlockState() : ModBlocks.COGWHEEL.defaultBlockState(), be);
 	}
 }

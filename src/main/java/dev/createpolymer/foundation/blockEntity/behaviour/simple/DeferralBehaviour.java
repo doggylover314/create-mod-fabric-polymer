@@ -21,6 +21,11 @@ public class DeferralBehaviour extends BlockEntityBehaviour {
 	}
 
 	@Override
+	public boolean isSafeNBT() {
+		return true;
+	}
+
+	@Override
 	public void write(ValueOutput nbt) {
 		nbt.putBoolean("NeedsUpdate", needsUpdate);
 		super.write(nbt);

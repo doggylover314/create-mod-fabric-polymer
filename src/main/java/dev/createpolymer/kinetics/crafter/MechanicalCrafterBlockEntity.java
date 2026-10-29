@@ -172,6 +172,15 @@ public class MechanicalCrafterBlockEntity extends KineticBlockEntity {
 	}
 
 	@Override
+	public void writeSafe(ValueOutput compound) {
+		super.writeSafe(compound);
+		if (input == null)
+			return;
+
+		input.write(compound.child("ConnectedInput"));
+	}
+
+	@Override
 	protected void write(ValueOutput compound) {
 		inventory.serialize(compound.child("Inventory"));
 		input.write(compound.child("ConnectedInput"));

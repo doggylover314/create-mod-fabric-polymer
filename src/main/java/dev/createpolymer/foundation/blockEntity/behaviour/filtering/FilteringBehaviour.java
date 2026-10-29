@@ -18,6 +18,7 @@ import dev.createpolymer.foundation.item.handler.InvWrapper;
 import dev.createpolymer.logistics.filter.FilterItem;
 import dev.createpolymer.logistics.filter.FilterItemStack;
 import dev.createpolymer.registry.ModItems;
+import dev.createpolymer.schematics.requirement.ItemRequirement;
 import dev.createpolymer.util.Iterate;
 import dev.createpolymer.util.Lang;
 import dev.createpolymer.util.VecHelper;
@@ -79,6 +80,11 @@ public class FilteringBehaviour extends BlockEntityBehaviour implements ValueSet
 		recipeFilter = false;
 		fluidFilter = false;
 		upTo = true;
+	}
+
+	@Override
+	public boolean isSafeNBT() {
+		return true;
 	}
 
 	@Override
@@ -184,6 +190,14 @@ public class FilteringBehaviour extends BlockEntityBehaviour implements ValueSet
 			world.addFreshEntity(new ItemEntity(world, pos.x, pos.y, pos.z, getFilter().copy()));
 		}
 		super.destroy();
+	}
+
+	@Override
+	public ItemRequirement getRequiredItems() {
+		if (filter.isFilterItem())
+			return new ItemRequirement(ItemRequirement.ItemUseType.CONSUME, getFilter());
+
+		return ItemRequirement.NONE;
 	}
 
 	public int getMaxStackSize() {

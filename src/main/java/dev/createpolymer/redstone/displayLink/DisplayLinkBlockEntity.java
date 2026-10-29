@@ -146,6 +146,12 @@ public class DisplayLinkBlockEntity extends LinkWithBulbBlockEntity {
 	}
 
 	@Override
+	public void writeSafe(ValueOutput output) {
+		super.writeSafe(output);
+		writeGatheredData(output);
+	}
+
+	@Override
 	protected void write(ValueOutput output) {
 		super.write(output);
 		writeGatheredData(output);

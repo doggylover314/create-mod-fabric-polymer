@@ -3,6 +3,7 @@ package dev.createpolymer.foundation.blockEntity.behaviour;
 import java.util.ConcurrentModificationException;
 
 import dev.createpolymer.foundation.blockEntity.SmartBlockEntity;
+import dev.createpolymer.schematics.requirement.ItemRequirement;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -37,6 +38,21 @@ public abstract class BlockEntityBehaviour {
 	}
 
 	public void write(ValueOutput output) {
+	}
+
+	/**
+	 * Called when isSafeNBT == true. Defaults to write()
+	 */
+	public void writeSafe(ValueOutput output) {
+		write(output);
+	}
+
+	public boolean isSafeNBT() {
+		return false;
+	}
+
+	public ItemRequirement getRequiredItems() {
+		return ItemRequirement.NONE;
 	}
 
 	public void onBlockChanged(BlockState oldState) {

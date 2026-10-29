@@ -60,6 +60,12 @@ public class BeltTunnelBlockEntity extends SmartBlockEntity {
 	}
 
 	@Override
+	public void writeSafe(ValueOutput compound) {
+		writeFlapsAndSides(compound);
+		super.writeSafe(compound);
+	}
+
+	@Override
 	protected void write(ValueOutput compound) {
 		writeFlapsAndSides(compound);
 		super.write(compound);

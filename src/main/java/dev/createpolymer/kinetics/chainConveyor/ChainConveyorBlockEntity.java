@@ -634,6 +634,13 @@ public class ChainConveyorBlockEntity extends KineticBlockEntity implements Clea
 	}
 
 	@Override
+	public void writeSafe(ValueOutput output) {
+		super.writeSafe(output);
+		ValueOutput.TypedOutputList<BlockPos> connectionList = output.list("Connections", BlockPos.CODEC);
+		connections.forEach(connectionList::add);
+	}
+
+	@Override
 	protected void write(ValueOutput output) {
 		super.write(output);
 

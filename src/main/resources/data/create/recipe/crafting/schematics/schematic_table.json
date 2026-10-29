@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "WWW",
+    " S ",
+    " S "
+  ],
+  "key": {
+    "S": "minecraft:smooth_stone",
+    "W": "#minecraft:wooden_slabs"
+  },
+  "result": {
+    "id": "create:schematic_table",
+    "count": 1
+  }
+}

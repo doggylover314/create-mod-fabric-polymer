@@ -32,7 +32,7 @@ import net.minecraft.world.level.block.Blocks;
 
 /**
  * The server config, config/create.json. It holds Create's server settings under the names Create gives them
- * (sections kinetics, logistics, fluids, equipment, trains and recipes), plus a stress section that overrides the
+ * (sections kinetics, logistics, fluids, equipment, trains, recipes and schematics), plus a stress section that overrides the
  * stress impact and capacity of individual blocks.
  *
  * The values live in the static fields the features already read; {@link ConfigMappings} lists which key sets which

@@ -9,9 +9,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
+import dev.createpolymer.api.schematic.requirement.SpecialBlockItemRequirement;
 import dev.createpolymer.foundation.block.IBE;
 import dev.createpolymer.redstone.RedstoneWrenchable;
 import dev.createpolymer.registry.feature.RedstoneRegistry;
+import dev.createpolymer.schematics.requirement.ItemRequirement.ItemUseType;
+import dev.createpolymer.schematics.requirement.ItemRequirement;
 import dev.createpolymer.util.Iterate;
 import dev.createpolymer.util.VoxelShaper;
 import dev.createpolymer.visual.BaseModel;
@@ -60,7 +63,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class NixieTubeBlock extends DoubleFaceAttachedBlock
-	implements IBE<NixieTubeBlockEntity>, RedstoneWrenchable, SimpleWaterloggedBlock, PolymerModelBlock {
+	implements SpecialBlockItemRequirement, IBE<NixieTubeBlockEntity>, RedstoneWrenchable, SimpleWaterloggedBlock, PolymerModelBlock {
 
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
@@ -458,4 +461,8 @@ public class NixieTubeBlock extends DoubleFaceAttachedBlock
 		}
 	}
 
+	@Override
+	public ItemRequirement getRequiredItems(BlockState state, @Nullable BlockEntity be) {
+		return new ItemRequirement(ItemUseType.CONSUME, RedstoneRegistry.ORANGE_NIXIE_TUBE.asItem());
+	}
 }

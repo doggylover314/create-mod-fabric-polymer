@@ -527,6 +527,13 @@ public class EjectorBlockEntity extends KineticBlockEntity {
 	}
 
 	@Override
+	public void writeSafe(ValueOutput compound) {
+		super.writeSafe(compound);
+		compound.putInt("HorizontalDistance", launcher.getHorizontalDistance());
+		compound.putInt("VerticalDistance", launcher.getVerticalDistance());
+	}
+
+	@Override
 	protected void write(ValueOutput compound) {
 		super.write(compound);
 		compound.putInt("HorizontalDistance", launcher.getHorizontalDistance());

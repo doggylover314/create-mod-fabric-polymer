@@ -493,6 +493,13 @@ public class ArmBlockEntity extends KineticBlockEntity implements Clearable {
 	}
 
 	@Override
+	public void writeSafe(ValueOutput compound) {
+		super.writeSafe(compound);
+
+		writeInteractionPoints(compound);
+	}
+
+	@Override
 	protected void write(ValueOutput compound) {
 		super.write(compound);
 

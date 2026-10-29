@@ -1,5 +1,6 @@
 package dev.createpolymer.kinetics.deployer;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -9,8 +10,17 @@ import dev.createpolymer.api.behaviour.movement.MovementBehaviour;
 import dev.createpolymer.contraptions.AbstractContraptionEntity;
 import dev.createpolymer.contraptions.OrientedContraptionEntity;
 import dev.createpolymer.contraptions.behaviour.MovementContext;
+import dev.createpolymer.foundation.block.BlockHelper;
+import dev.createpolymer.foundation.item.ItemHelper.ExtractionCountMode;
+import dev.createpolymer.foundation.item.ItemHelper;
+import dev.createpolymer.foundation.item.handler.IItemHandler;
 import dev.createpolymer.kinetics.deployer.DeployerBlockEntity.Mode;
 import dev.createpolymer.logistics.filter.FilterItemStack;
+import dev.createpolymer.registry.feature.BeltRegistry;
+import dev.createpolymer.registry.feature.SchematicsRegistry;
+import dev.createpolymer.schematics.SchematicInstances;
+import dev.createpolymer.schematics.SchematicLevel;
+import dev.createpolymer.schematics.requirement.ItemRequirement;
 import dev.createpolymer.util.NBTHelper;
 import dev.createpolymer.util.VecHelper;
 import net.minecraft.core.BlockPos;
@@ -24,14 +34,15 @@ import net.minecraft.world.ItemStackWithSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 /**
- * Ported from Create's DeployerMovementBehaviour (MIT, The Create Team). The schematic printer mode and the track
- * placement advancement belong to schematics and trains, which are not ported.
+ * Ported from Create's DeployerMovementBehaviour (MIT, The Create Team). The track placement advancement is not
+ * ported. With a schematic as its filter the deployer prints it block by block, from the items of the contraption.
  */
 public class DeployerMovementBehaviour implements MovementBehaviour {
 
@@ -61,6 +72,14 @@ public class DeployerMovementBehaviour implements MovementBehaviour {
 	}
 
 	public void activate(MovementContext context, BlockPos pos, DeployerFakePlayer player, Mode mode) {
+		Level world = context.world;
+
+		FilterItemStack filter = context.getFilterFromBE();
+		if (filter.item().is(SchematicsRegistry.SCHEMATIC)) {
+			activateAsSchematicPrinter(context, pos, player, world, filter.item());
+			return;
+		}
+
 		Vec3 facingVec = Vec3.atLowerCornerOf(context.state.getValue(DeployerBlock.FACING)
 			.getUnitVec3i());
 		facingVec = context.rotation.apply(facingVec);
@@ -78,6 +97,49 @@ public class DeployerMovementBehaviour implements MovementBehaviour {
 		player.setXRot(xRot);
 
 		DeployerHandler.activate(player, vec, pos, facingVec, mode);
+	}
+
+	protected void activateAsSchematicPrinter(MovementContext context, BlockPos pos, DeployerFakePlayer player,
+		Level level, ItemStack filter) {
+		if (!filter.has(SchematicsRegistry.SCHEMATIC_ANCHOR))
+			return;
+		if (!level.getBlockState(pos)
+			.canBeReplaced())
+			return;
+
+		if (!filter.getOrDefault(SchematicsRegistry.SCHEMATIC_DEPLOYED, false))
+			return;
+		SchematicLevel schematicWorld = SchematicInstances.get(level, filter);
+		if (schematicWorld == null)
+			return;
+		if (!schematicWorld.getBounds()
+			.isInside(pos.subtract(schematicWorld.anchor)))
+			return;
+		BlockState blockState = schematicWorld.getBlockState(pos);
+		ItemRequirement requirement = ItemRequirement.of(blockState, schematicWorld.getBlockEntity(pos));
+		if (requirement.isInvalid() || requirement.isEmpty())
+			return;
+		if (blockState.is(BeltRegistry.BELT))
+			return;
+
+		List<ItemRequirement.StackRequirement> requiredItems = requirement.getRequiredItems();
+		ItemStack contextStack = requiredItems.isEmpty() ? ItemStack.EMPTY : requiredItems.get(0).stack;
+
+		if (!context.contraption.hasUniversalCreativeCrate) {
+			IItemHandler itemHandler = context.contraption.getStorage().getAllItems();
+			for (ItemRequirement.StackRequirement required : requiredItems) {
+				ItemStack stack = ItemHelper.extract(itemHandler, required::matches, ExtractionCountMode.EXACTLY,
+					required.stack.getCount(), true);
+				if (stack.isEmpty())
+					return;
+			}
+			for (ItemRequirement.StackRequirement required : requiredItems)
+				contextStack = ItemHelper.extract(itemHandler, required::matches, ExtractionCountMode.EXACTLY,
+					required.stack.getCount(), false);
+		}
+
+		CompoundTag data = BlockHelper.prepareBlockEntityData(level, blockState, schematicWorld.getBlockEntity(pos));
+		BlockHelper.placeSchematicBlock(level, blockState, pos, contextStack, data);
 	}
 
 	@Override
@@ -149,6 +211,8 @@ public class DeployerMovementBehaviour implements MovementBehaviour {
 		if (player.getMainHandItem()
 			.isEmpty()) {
 			FilterItemStack filter = context.getFilterFromBE();
+			if (filter.item().is(SchematicsRegistry.SCHEMATIC))
+				return;
 			ItemStack held = dev.createpolymer.foundation.item.ItemHelper.extract(context.contraption.getStorage().getAllItems(),
 				stack -> filter.test(context.world, stack), 1, false);
 			player.setItemInHand(InteractionHand.MAIN_HAND, held);

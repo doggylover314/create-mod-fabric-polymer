@@ -4,11 +4,14 @@ import org.jspecify.annotations.Nullable;
 
 import com.mojang.serialization.Codec;
 
+import dev.createpolymer.api.schematic.requirement.SpecialBlockItemRequirement;
 import dev.createpolymer.foundation.block.IBE;
 import dev.createpolymer.item.IWrenchable;
 import dev.createpolymer.processing.basin.BasinBlockEntity;
 import dev.createpolymer.registry.ModItems;
 import dev.createpolymer.registry.feature.BurnerRegistry;
+import dev.createpolymer.schematics.requirement.ItemRequirement.ItemUseType;
+import dev.createpolymer.schematics.requirement.ItemRequirement;
 import dev.createpolymer.util.Lang;
 import dev.createpolymer.util.ShapeUtil;
 import dev.createpolymer.visual.PolymerModelBlock;
@@ -47,7 +50,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 /** Ported from Create's BlazeBurnerBlock (MIT, The Create Team). */
-public class BlazeBurnerBlock extends HorizontalDirectionalBlock implements IBE<BlazeBurnerBlockEntity>, IWrenchable, PolymerModelBlock {
+public class BlazeBurnerBlock extends HorizontalDirectionalBlock implements SpecialBlockItemRequirement, IBE<BlazeBurnerBlockEntity>, IWrenchable, PolymerModelBlock {
 
 	public static final EnumProperty<HeatLevel> HEAT_LEVEL = EnumProperty.create("blaze", HeatLevel.class);
 
@@ -294,4 +297,8 @@ public class BlazeBurnerBlock extends HorizontalDirectionalBlock implements IBE<
 		}
 	}
 
+	@Override
+	public ItemRequirement getRequiredItems(BlockState state, @Nullable BlockEntity blockEntity) {
+		return new ItemRequirement(ItemUseType.CONSUME, getLitOrUnlitStack(state));
+	}
 }

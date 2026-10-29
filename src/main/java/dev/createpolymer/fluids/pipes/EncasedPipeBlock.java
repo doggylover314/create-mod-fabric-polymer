@@ -14,12 +14,14 @@ import java.util.function.Supplier;
 import org.jspecify.annotations.Nullable;
 
 import dev.createpolymer.CreatePolymer;
+import dev.createpolymer.api.schematic.requirement.SpecialBlockItemRequirement;
 import dev.createpolymer.fluids.FluidPropagator;
 import dev.createpolymer.fluids.FluidTransportBehaviour;
 import dev.createpolymer.foundation.block.IBE;
 import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import dev.createpolymer.item.IWrenchable;
 import dev.createpolymer.registry.feature.PipesRegistry;
+import dev.createpolymer.schematics.requirement.ItemRequirement;
 import dev.createpolymer.util.Iterate;
 import dev.createpolymer.visual.BaseModel;
 import dev.createpolymer.visual.ModelItems;
@@ -57,7 +59,7 @@ import net.minecraft.world.ticks.TickPriority;
  * Create's EncasedPipeBlock. The casing is Create's copper casing; the block is looked up by name because that
  * block belongs to another feature.
  */
-public class EncasedPipeBlock extends Block implements IWrenchable, IBE<FluidPipeBlockEntity>, PolymerModelBlock {
+public class EncasedPipeBlock extends Block implements SpecialBlockItemRequirement, IWrenchable, IBE<FluidPipeBlockEntity>, PolymerModelBlock {
 	public static final Map<Direction, BooleanProperty> FACING_TO_PROPERTY_MAP = PipeBlock.PROPERTY_BY_DIRECTION;
 
 	private final Supplier<@Nullable Block> casing;
@@ -251,5 +253,10 @@ public class EncasedPipeBlock extends Block implements IWrenchable, IBE<FluidPip
 			dirty = false;
 			attachments.update(level, pos, state, BlockEntityBehaviour.get(be, FluidTransportBehaviour.TYPE));
 		}
+	}
+
+	@Override
+	public ItemRequirement getRequiredItems(BlockState state, @Nullable BlockEntity be) {
+		return ItemRequirement.of(PipesRegistry.FLUID_PIPE.defaultBlockState(), be);
 	}
 }

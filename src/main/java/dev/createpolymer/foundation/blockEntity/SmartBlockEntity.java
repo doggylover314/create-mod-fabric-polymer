@@ -6,8 +6,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import dev.createpolymer.api.schematic.nbt.PartialSafeNBT;
+import dev.createpolymer.api.schematic.requirement.SpecialBlockEntityItemRequirement;
 import dev.createpolymer.foundation.blockEntity.behaviour.BehaviourType;
 import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
+import dev.createpolymer.schematics.requirement.ItemRequirement;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
@@ -24,7 +27,7 @@ import net.minecraft.world.level.storage.ValueOutput;
  * There is no client copy of these block entities (Polymer keeps them server-side), so {@link #sendData()} only
  * bumps a counter that the display-entity models can watch.
  */
-public abstract class SmartBlockEntity extends BlockEntity {
+public abstract class SmartBlockEntity extends BlockEntity implements PartialSafeNBT, SpecialBlockEntityItemRequirement {
 	private final Map<BehaviourType<?>, BlockEntityBehaviour> behaviours = new Reference2ObjectArrayMap<>();
 	private boolean initialized = false;
 	private boolean firstNbtRead = true;
@@ -78,6 +81,24 @@ public abstract class SmartBlockEntity extends BlockEntity {
 	/** Hook only these in subclasses. Call super to save behaviours. */
 	protected void write(ValueOutput output) {
 		forEachBehaviour(tb -> tb.write(output));
+	}
+
+	/**
+	 * What a schematic may copy of this block entity: the behaviours that are safe. Subclasses add their own settings.
+	 */
+	@Override
+	public void writeSafe(ValueOutput output) {
+		forEachBehaviour(tb -> {
+			if (tb.isSafeNBT())
+				tb.writeSafe(output);
+		});
+	}
+
+	@Override
+	public ItemRequirement getRequiredItems(BlockState state) {
+		return behaviours.values()
+			.stream()
+			.reduce(ItemRequirement.NONE, (r, b) -> r.union(b.getRequiredItems()), ItemRequirement::union);
 	}
 
 	/** Hook only these in subclasses. Call super to load behaviours. */

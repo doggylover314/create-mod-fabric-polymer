@@ -1,5 +1,7 @@
 {
   "values": [
+    "create:schematicannon",
+    "create:schematic_table",
     "create:shaft",
     "create:cogwheel",
     "create:large_cogwheel",

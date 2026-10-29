@@ -2,11 +2,14 @@ package dev.createpolymer.logistics.funnel;
 
 import java.util.function.Supplier;
 
+import dev.createpolymer.api.schematic.requirement.SpecialBlockItemRequirement;
 import dev.createpolymer.foundation.block.ProperWaterloggedBlock;
 import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import dev.createpolymer.kinetics.belt.BeltBlock;
 import dev.createpolymer.kinetics.belt.BeltSlope;
 import dev.createpolymer.kinetics.belt.behaviour.DirectBeltInputBehaviour;
+import dev.createpolymer.schematics.requirement.ItemRequirement.ItemUseType;
+import dev.createpolymer.schematics.requirement.ItemRequirement;
 import dev.createpolymer.util.Lang;
 import dev.createpolymer.util.VoxelShaper;
 import net.minecraft.core.BlockPos;
@@ -24,14 +27,16 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jspecify.annotations.Nullable;
 
-public class BeltFunnelBlock extends AbstractHorizontalFunnelBlock {
+public class BeltFunnelBlock extends AbstractHorizontalFunnelBlock implements SpecialBlockItemRequirement {
 
 	private Supplier<? extends FunnelBlock> parent;
 
@@ -194,4 +199,8 @@ public class BeltFunnelBlock extends AbstractHorizontalFunnelBlock {
 			.particleState();
 	}
 
+	@Override
+	public ItemRequirement getRequiredItems(BlockState state, @Nullable BlockEntity be) {
+		return new ItemRequirement(ItemUseType.CONSUME, parent.get().asItem());
+	}
 }

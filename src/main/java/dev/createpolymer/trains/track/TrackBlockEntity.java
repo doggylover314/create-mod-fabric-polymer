@@ -9,11 +9,16 @@ import java.util.Optional;
 import com.mojang.serialization.Codec;
 import java.util.Set;
 
+import dev.createpolymer.api.contraption.transformable.TransformableBlockEntity;
+import dev.createpolymer.contraptions.StructureTransform;
 import dev.createpolymer.foundation.block.ProperWaterloggedBlock;
+import dev.createpolymer.foundation.blockEntity.IMergeableBE;
 import dev.createpolymer.foundation.blockEntity.SmartBlockEntity;
 import dev.createpolymer.registry.feature.TrackRegistry;
+import dev.createpolymer.trains.graph.TrackNodeLocation;
 import dev.createpolymer.util.Pair;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
@@ -31,7 +36,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
-public class TrackBlockEntity extends SmartBlockEntity {
+public class TrackBlockEntity extends SmartBlockEntity implements TransformableBlockEntity, IMergeableBE {
 
 	Map<BlockPos, BezierConnection> connections;
 	boolean cancelDrops;
@@ -155,9 +160,15 @@ public class TrackBlockEntity extends SmartBlockEntity {
 	}
 
 	@Override
+	public void writeSafe(ValueOutput output) {
+		super.writeSafe(output);
+		writeTurns(output, true);
+	}
+
+	@Override
 	protected void write(ValueOutput output) {
 		super.write(output);
-		writeTurns(output);
+		writeTurns(output, false);
 		if (isTilted())
 			output.putDouble("Smoothing", tilt.smoothingAngle.get());
 		if (boundLocation == null)
@@ -168,10 +179,10 @@ public class TrackBlockEntity extends SmartBlockEntity {
 			.toString());
 	}
 
-	private void writeTurns(ValueOutput output) {
+	private void writeTurns(ValueOutput output, boolean restored) {
 		List<CompoundTag> list = connections.values()
 			.stream()
-			.map(bc -> bc.write(worldPosition))
+			.map(bc -> (restored ? tilt.restoreToOriginalCurve(bc.clone()) : bc).write(worldPosition))
 			.toList();
 		output.store("Connections", CompoundTag.CODEC.listOf(), list);
 	}
@@ -195,11 +206,66 @@ public class TrackBlockEntity extends SmartBlockEntity {
 				Identifier.parse(input.getStringOr("BoundDimension", "minecraft:overworld"))), bound.get());
 	}
 
+	@Override
+	public void accept(BlockEntity other) {
+		if (other instanceof TrackBlockEntity track)
+			connections.putAll(track.connections);
+		validateConnections();
+		level.scheduleTick(worldPosition, getBlockState().getBlock(), 1);
+	}
+
 	public boolean hasInteractableConnections() {
 		for (BezierConnection connection : connections.values())
 			if (connection.isPrimary())
 				return true;
 		return false;
+	}
+
+	@Override
+	public void transform(BlockEntity be, StructureTransform transform) {
+		Map<BlockPos, BezierConnection> restoredConnections = new HashMap<>();
+		for (Entry<BlockPos, BezierConnection> entry : connections.entrySet())
+			restoredConnections.put(entry.getKey(),
+				tilt.restoreToOriginalCurve(tilt.restoreToOriginalCurve(entry.getValue()
+					.secondary())
+					.secondary()));
+		connections = restoredConnections;
+		tilt.smoothingAngle = Optional.empty();
+
+		if (transform.rotationAxis != Axis.Y)
+			return;
+
+		Map<BlockPos, BezierConnection> transformedConnections = new HashMap<>();
+		for (Entry<BlockPos, BezierConnection> entry : connections.entrySet()) {
+			BezierConnection newConnection = entry.getValue();
+			newConnection.normals.replace(transform::applyWithoutOffsetUncentered);
+			newConnection.axes.replace(transform::applyWithoutOffsetUncentered);
+
+			BlockPos diff = newConnection.bePositions.getSecond()
+				.subtract(newConnection.bePositions.getFirst());
+			newConnection.bePositions
+				.setSecond(BlockPos.containing(Vec3.atCenterOf(newConnection.bePositions.getFirst())
+					.add(transform.applyWithoutOffsetUncentered(Vec3.atLowerCornerOf(diff)))));
+
+			Vec3 beVec = Vec3.atLowerCornerOf(worldPosition);
+			Vec3 teCenterVec = beVec.add(0.5, 0.5, 0.5);
+			Vec3 start = newConnection.starts.getFirst();
+			Vec3 startToBE = start.subtract(teCenterVec);
+			Vec3 endToStart = newConnection.starts.getSecond()
+				.subtract(start);
+			startToBE = transform.applyWithoutOffsetUncentered(startToBE)
+				.add(teCenterVec);
+			endToStart = transform.applyWithoutOffsetUncentered(endToStart)
+				.add(startToBE);
+
+			newConnection.starts.setFirst(new TrackNodeLocation(startToBE).getLocation());
+			newConnection.starts.setSecond(new TrackNodeLocation(endToStart).getLocation());
+
+			BlockPos newTarget = newConnection.getKey();
+			transformedConnections.put(newTarget, newConnection);
+		}
+
+		connections = transformedConnections;
 	}
 
 	@Override

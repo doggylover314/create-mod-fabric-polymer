@@ -2,11 +2,13 @@ package dev.createpolymer.fluids.pipes;
 
 import org.jspecify.annotations.Nullable;
 
+import dev.createpolymer.api.schematic.requirement.SpecialBlockItemRequirement;
 import dev.createpolymer.decoration.bracket.BracketDisplay;
 import dev.createpolymer.fluids.FluidTransportBehaviour;
 import dev.createpolymer.foundation.block.IBE;
 import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import dev.createpolymer.registry.feature.PipesRegistry;
+import dev.createpolymer.schematics.requirement.ItemRequirement;
 import dev.createpolymer.visual.BaseModel;
 import dev.createpolymer.visual.ModelItems;
 import dev.createpolymer.visual.PolymerModelBlock;
@@ -30,7 +32,7 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 
-public class GlassFluidPipeBlock extends AxisPipeBlock implements IBE<StraightPipeBlockEntity>, SimpleWaterloggedBlock, PolymerModelBlock {
+public class GlassFluidPipeBlock extends AxisPipeBlock implements SpecialBlockItemRequirement, IBE<StraightPipeBlockEntity>, SimpleWaterloggedBlock, PolymerModelBlock {
 
 	public static final BooleanProperty ALT = BooleanProperty.create("alt");
 
@@ -130,5 +132,10 @@ public class GlassFluidPipeBlock extends AxisPipeBlock implements IBE<StraightPi
 			bracket.update(be);
 			attachments.update(level, pos, state, BlockEntityBehaviour.get(be, FluidTransportBehaviour.TYPE));
 		}
+	}
+
+	@Override
+	public ItemRequirement getRequiredItems(BlockState state, @Nullable BlockEntity be) {
+		return ItemRequirement.of(PipesRegistry.FLUID_PIPE.defaultBlockState(), be);
 	}
 }

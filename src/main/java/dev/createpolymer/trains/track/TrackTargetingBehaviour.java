@@ -62,6 +62,11 @@ public class TrackTargetingBehaviour<T extends TrackEdgePoint> extends BlockEnti
 	}
 
 	@Override
+	public boolean isSafeNBT() {
+		return true;
+	}
+
+	@Override
 	public void write(ValueOutput nbt) {
 		nbt.store("Id", UUIDUtil.CODEC, id);
 		nbt.store("TargetTrack", BlockPos.CODEC, targetTrack);

@@ -11,12 +11,15 @@ import org.jetbrains.annotations.Nullable;
 
 import com.google.common.collect.ImmutableList;
 
+import dev.createpolymer.api.schematic.requirement.SpecialBlockItemRequirement;
 import dev.createpolymer.contraptions.render.ContraptionDisplay;
 import dev.createpolymer.foundation.block.IBE;
 import dev.createpolymer.foundation.block.ProperWaterloggedBlock;
 import dev.createpolymer.item.IWrenchable;
 import dev.createpolymer.kinetics.base.KineticBlockEntity;
 import dev.createpolymer.registry.ModItems;
+import dev.createpolymer.registry.feature.TrainsRegistry;
+import dev.createpolymer.schematics.requirement.ItemRequirement;
 import dev.createpolymer.trains.TrackNbt;
 import dev.createpolymer.trains.entity.Carriage;
 import dev.createpolymer.trains.entity.CarriageBogey;
@@ -61,7 +64,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.item.context.UseOnContext;
 
 public abstract class AbstractBogeyBlock<T extends AbstractBogeyBlockEntity> extends Block
-	implements IBE<T>, ProperWaterloggedBlock, IWrenchable, PolymerModelBlock, ContraptionDisplay {
+	implements SpecialBlockItemRequirement, IBE<T>, ProperWaterloggedBlock, IWrenchable, PolymerModelBlock, ContraptionDisplay {
 	public static final EnumProperty<Direction.Axis> AXIS = BlockStateProperties.HORIZONTAL_AXIS;
 	static final List<Identifier> BOGEYS = new ArrayList<>();
 	public BogeySizes.BogeySize size;
@@ -421,5 +424,10 @@ public abstract class AbstractBogeyBlock<T extends AbstractBogeyBlockEntity> ext
 				.translate(0, -1.5f - 1 / 128f, 0);
 			visual.update(new CompoundTag(), 0, base, 0);
 		}
+	}
+
+	@Override
+	public ItemRequirement getRequiredItems(BlockState state, @Nullable BlockEntity te) {
+		return new ItemRequirement(ItemRequirement.ItemUseType.CONSUME, new ItemStack(TrainsRegistry.RAILWAY_CASING));
 	}
 }

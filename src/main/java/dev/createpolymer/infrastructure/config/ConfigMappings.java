@@ -39,11 +39,12 @@ import dev.createpolymer.registry.feature.FactoryGaugeRegistry;
 import dev.createpolymer.registry.feature.MinecartRegistry;
 import dev.createpolymer.registry.feature.PackagesRegistry;
 import dev.createpolymer.registry.feature.SawRegistry;
+import dev.createpolymer.registry.feature.SchematicsRegistry;
 import dev.createpolymer.trains.TrainConfig;
 
 /**
  * Every setting of create.json, in file order. Sections and keys are Create's (CKinetics, CLogistics, CFluids,
- * CEquipment, CTrains, CRecipes), with Create's defaults and ranges. Each entry reads and writes the static field the
+ * CEquipment, CTrains, CRecipes, CSchematics), with Create's defaults and ranges. Each entry reads and writes the static field the
  * feature code uses, so that code does not need to know about the file.
  *
  * To expose another setting, add one line here.
@@ -55,6 +56,7 @@ public final class ConfigMappings {
 	public static final String EQUIPMENT = "equipment";
 	public static final String TRAINS = "trains";
 	public static final String RECIPES = "recipes";
+	public static final String SCHEMATICS = "schematics";
 
 	public static final List<ConfigOption<?>> OPTIONS;
 
@@ -214,6 +216,22 @@ public final class ConfigMappings {
 			v -> RecipeGridHandler.maxFireworkIngredientsInCrafter = v);
 		b(RECIPES, "allowStonecuttingOnSaw", true, () -> SawRegistry.allowStonecuttingOnSaw,
 			v -> SawRegistry.allowStonecuttingOnSaw = v);
+
+		// schematics
+		b(SCHEMATICS, "creativePrintIncludesAir", false, () -> SchematicsRegistry.creativePrintIncludesAir,
+			v -> SchematicsRegistry.creativePrintIncludesAir = v);
+		i(SCHEMATICS, "maxSchematics", 10, 1, () -> SchematicsRegistry.maxSchematics,
+			v -> SchematicsRegistry.maxSchematics = v);
+		i(SCHEMATICS, "maxTotalSchematicSize", 256, 16, () -> SchematicsRegistry.maxTotalSchematicSize,
+			v -> SchematicsRegistry.maxTotalSchematicSize = v);
+		i(SCHEMATICS, "maxSchematicPacketSize", 1024, 256, 32767, () -> SchematicsRegistry.maxSchematicPacketSize,
+			v -> SchematicsRegistry.maxSchematicPacketSize = v);
+		i(SCHEMATICS, "schematicIdleTimeout", 600, 100, () -> SchematicsRegistry.schematicIdleTimeout,
+			v -> SchematicsRegistry.schematicIdleTimeout = v);
+		i(SCHEMATICS, "schematicannonDelay", 10, 1, () -> SchematicsRegistry.schematicannonDelay,
+			v -> SchematicsRegistry.schematicannonDelay = v);
+		i(SCHEMATICS, "schematicannonShotsPerGunpowder", 400, 1, () -> SchematicsRegistry.schematicannonShotsPerGunpowder,
+			v -> SchematicsRegistry.schematicannonShotsPerGunpowder = v);
 
 		OPTIONS = Collections.unmodifiableList(list);
 	}

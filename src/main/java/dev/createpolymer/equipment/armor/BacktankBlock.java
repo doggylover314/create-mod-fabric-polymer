@@ -6,10 +6,13 @@ import java.util.Optional;
 import org.joml.Matrix4f;
 import org.jspecify.annotations.Nullable;
 
+import dev.createpolymer.api.schematic.requirement.SpecialBlockItemRequirement;
 import dev.createpolymer.foundation.block.IBE;
 import dev.createpolymer.kinetics.base.HorizontalKineticBlock;
 import dev.createpolymer.kinetics.base.KineticBlockEntity;
 import dev.createpolymer.registry.feature.EquipmentRegistry;
+import dev.createpolymer.schematics.requirement.ItemRequirement.ItemUseType;
+import dev.createpolymer.schematics.requirement.ItemRequirement;
 import dev.createpolymer.util.AngleHelper;
 import dev.createpolymer.util.ShapeUtil;
 import dev.createpolymer.visual.BaseModel;
@@ -62,7 +65,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  * Ported from Create's BacktankBlock (MIT, The Create Team). Right-clicking the placed backtank with an empty chest
  * slot puts it on, with its air and enchantments.
  */
-public class BacktankBlock extends HorizontalKineticBlock implements IBE<BacktankBlockEntity>, SimpleWaterloggedBlock {
+public class BacktankBlock extends HorizontalKineticBlock implements SpecialBlockItemRequirement, IBE<BacktankBlockEntity>, SimpleWaterloggedBlock {
 
 	/** Create's AllShapes.BACKTANK */
 	public static final VoxelShape SHAPE = Shapes.or(ShapeUtil.box(3, 0, 3, 13, 12, 13), ShapeUtil.box(5, 0, 5, 11, 16, 11));
@@ -295,5 +298,13 @@ public class BacktankBlock extends HorizontalKineticBlock implements IBE<Backtan
 				setCogs(((time + interval) * speed / 4f) % 360f, interval);
 			}
 		}
+	}
+
+	@Override
+	public ItemRequirement getRequiredItems(BlockState state, @Nullable BlockEntity blockEntity) {
+		Item item = asItem();
+		if (item instanceof BacktankItem.BacktankBlockItem placeable)
+			item = placeable.getActualItem();
+		return new ItemRequirement(ItemUseType.CONSUME, item);
 	}
 }

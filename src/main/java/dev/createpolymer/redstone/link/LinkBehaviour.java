@@ -131,6 +131,11 @@ public class LinkBehaviour extends BlockEntityBehaviour implements IRedstoneLink
 	}
 
 	@Override
+	public boolean isSafeNBT() {
+		return true;
+	}
+
+	@Override
 	public void write(ValueOutput nbt) {
 		super.write(nbt);
 		nbt.store("FrequencyFirst", ItemStack.OPTIONAL_CODEC, frequencyFirst.getStack());

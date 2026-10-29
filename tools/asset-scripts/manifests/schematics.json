@@ -1,0 +1,40 @@
+{
+  "items": [
+    "empty_schematic",
+    "schematic",
+    "schematic_and_quill",
+    "schematicannon",
+    "schematic_table"
+  ],
+  "blocks": [
+    "schematicannon",
+    "schematic_table"
+  ],
+  "display_models": [
+    "block/schematicannon/block",
+    "block/schematicannon/connector",
+    "block/schematicannon/pipe"
+  ],
+  "blockstates": [
+    "schematic_table"
+  ],
+  "crafting": [
+    "schematics/empty_schematic",
+    "schematics/schematic_and_quill",
+    "schematics/schematic_table",
+    "schematics/schematicannon"
+  ],
+  "lang_ids": [
+    "empty_schematic",
+    "schematic",
+    "schematic_and_quill",
+    "schematicannon",
+    "schematic_table"
+  ],
+  "lang_prefixes": [
+    "create.schematic",
+    "create.gui.schematic",
+    "create.materialChecklist",
+    "create.subtitle.schematicannon"
+  ]
+}

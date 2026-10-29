@@ -8,6 +8,7 @@ import dev.createpolymer.contraptions.StructureTransform;
 import dev.createpolymer.foundation.blockEntity.SmartBlockEntity;
 import dev.createpolymer.foundation.blockEntity.behaviour.BehaviourType;
 import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
+import dev.createpolymer.schematics.requirement.ItemRequirement;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -105,6 +106,19 @@ public class BracketedBlockEntityBehaviour extends BlockEntityBehaviour {
 
 	public boolean canHaveBracket() {
 		return pred.test(blockEntity.getBlockState());
+	}
+
+	@Override
+	public ItemRequirement getRequiredItems() {
+		if (!isBracketPresent()) {
+			return ItemRequirement.NONE;
+		}
+		return ItemRequirement.of(bracket, null);
+	}
+
+	@Override
+	public boolean isSafeNBT() {
+		return true;
 	}
 
 	@Override

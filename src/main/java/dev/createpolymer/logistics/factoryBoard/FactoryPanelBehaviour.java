@@ -42,6 +42,7 @@ import dev.createpolymer.logistics.stockTicker.PackageOrderWithCrafts;
 import dev.createpolymer.registry.ModItems;
 import dev.createpolymer.registry.feature.FactoryGaugeRegistry;
 import dev.createpolymer.registry.feature.PackagesRegistry;
+import dev.createpolymer.schematics.requirement.ItemRequirement;
 import dev.createpolymer.util.Lang;
 import dev.createpolymer.util.LerpedFloat;
 import dev.createpolymer.util.LerpedFloat.Chaser;
@@ -829,6 +830,12 @@ public class FactoryPanelBehaviour extends FilteringBehaviour {
 			return 20 * 30;
 
 		return promiseClearingInterval * 20 * 60;
+	}
+
+	@Override
+	public ItemRequirement getRequiredItems() {
+		return isActive() ? new ItemRequirement(ItemRequirement.ItemUseType.CONSUME, FactoryGaugeRegistry.FACTORY_GAUGE.asItem())
+			: ItemRequirement.NONE;
 	}
 
 	/**

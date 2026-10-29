@@ -8,12 +8,16 @@ import java.util.Map;
 import org.jspecify.annotations.Nullable;
 
 import dev.createpolymer.api.contraption.train.PortalTrackProvider;
+import dev.createpolymer.api.schematic.requirement.SpecialBlockItemRequirement;
 import dev.createpolymer.foundation.block.IBE;
 import dev.createpolymer.foundation.block.ProperWaterloggedBlock;
 import dev.createpolymer.item.IWrenchable;
 import dev.createpolymer.redstone.RedstoneClientStates;
+import dev.createpolymer.registry.feature.DoorsRegistry;
 import dev.createpolymer.registry.feature.TrackRegistry;
 import dev.createpolymer.registry.feature.TrainsRegistry;
+import dev.createpolymer.schematics.requirement.ItemRequirement.ItemUseType;
+import dev.createpolymer.schematics.requirement.ItemRequirement;
 import dev.createpolymer.trains.station.StationBlockEntity;
 import dev.createpolymer.trains.TrackNbt;
 import dev.createpolymer.trains.graph.TrackNodeLocation;
@@ -65,9 +69,11 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 
 public class TrackBlock extends Block
-	implements IBE<TrackBlockEntity>, IWrenchable, ITrackBlock, ProperWaterloggedBlock, PolymerModelBlock {
+	implements SpecialBlockItemRequirement, IBE<TrackBlockEntity>, IWrenchable, ITrackBlock, ProperWaterloggedBlock, PolymerModelBlock {
 
 	public static final EnumProperty<TrackShape> SHAPE = EnumProperty.create("shape", TrackShape.class);
 	public static final BooleanProperty HAS_BE = BooleanProperty.create("turn");
@@ -629,4 +635,44 @@ public class TrackBlock extends Block
 		return new TrackModel(state);
 	}
 
+	@Override
+	public ItemRequirement getRequiredItems(BlockState state, @Nullable BlockEntity be) {
+		int sameTypeTrackAmount = 1;
+		Object2IntMap<TrackMaterial> otherTrackAmounts = new Object2IntArrayMap<>();
+		int girderAmount = 0;
+
+		if (be instanceof TrackBlockEntity track) {
+			for (BezierConnection bezierConnection : track.getConnections()
+				.values()) {
+				if (!bezierConnection.isPrimary())
+					continue;
+				TrackMaterial material = bezierConnection.getMaterial();
+				if (material == getMaterial()) {
+					sameTypeTrackAmount += bezierConnection.getTrackItemCost();
+				} else {
+					otherTrackAmounts.put(material, otherTrackAmounts.getOrDefault(material, 0) + 1);
+				}
+				girderAmount += bezierConnection.getGirderItemCost();
+			}
+		}
+
+		List<ItemStack> stacks = new ArrayList<>();
+		while (sameTypeTrackAmount > 0) {
+			stacks.add(new ItemStack(state.getBlock(), Math.min(sameTypeTrackAmount, 64)));
+			sameTypeTrackAmount -= 64;
+		}
+		for (TrackMaterial material : otherTrackAmounts.keySet()) {
+			int amt = otherTrackAmounts.getOrDefault(material, 0);
+			while (amt > 0) {
+				stacks.add(material.asStack(Math.min(amt, 64)));
+				amt -= 64;
+			}
+		}
+		while (girderAmount > 0) {
+			stacks.add(new ItemStack(DoorsRegistry.METAL_GIRDER, Math.min(girderAmount, 64)));
+			girderAmount -= 64;
+		}
+
+		return new ItemRequirement(ItemUseType.CONSUME, stacks);
+	}
 }

@@ -83,11 +83,21 @@ public class ThresholdSwitchBlockEntity extends SmartBlockEntity implements Clea
 		super.read(compound);
 	}
 
-	@Override
-	public void write(ValueOutput compound) {
+	protected void writeCommon(ValueOutput compound) {
 		compound.putInt("OnAboveAmount", onWhenAbove);
 		compound.putInt("OffBelowAmount", offWhenBelow);
 		compound.putBoolean("Inverted", inverted);
+	}
+
+	@Override
+	public void writeSafe(ValueOutput compound) {
+		writeCommon(compound);
+		super.writeSafe(compound);
+	}
+
+	@Override
+	public void write(ValueOutput compound) {
+		writeCommon(compound);
 		compound.putInt("CurrentAmount", currentLevel);
 		compound.putInt("CurrentMinAmount", currentMinLevel);
 		compound.putInt("CurrentMaxAmount", currentMaxLevel);

@@ -424,6 +424,15 @@ public class FluidTankBlockEntity extends SmartBlockEntity implements IHaveGoggl
 	}
 
 	@Override
+	public void writeSafe(ValueOutput compound) {
+		if (isController()) {
+			compound.putBoolean("Window", window);
+			compound.putInt("Size", width);
+			compound.putInt("Height", height);
+		}
+	}
+
+	@Override
 	public void write(ValueOutput compound) {
 		if (updateConnectivity)
 			compound.putBoolean("Uninitialized", true);

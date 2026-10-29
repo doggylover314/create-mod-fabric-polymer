@@ -6,12 +6,15 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import dev.createpolymer.api.schematic.requirement.SpecialBlockItemRequirement;
 import dev.createpolymer.contraptions.minecart.MinecartPassingBlock;
 import dev.createpolymer.contraptions.render.ContraptionDisplay;
 import dev.createpolymer.foundation.block.IBE;
 import dev.createpolymer.item.IWrenchable;
 import dev.createpolymer.redstone.rail.ControllerRailBlock;
 import dev.createpolymer.registry.feature.MinecartRegistry;
+import dev.createpolymer.schematics.requirement.ItemRequirement.ItemUseType;
+import dev.createpolymer.schematics.requirement.ItemRequirement;
 import dev.createpolymer.util.VoxelShaper;
 import dev.createpolymer.util.ShapeUtil;
 import dev.createpolymer.visual.BaseModel;
@@ -71,7 +74,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  * client, with Create's assembler casing drawn around it by a display entity.
  */
 public class CartAssemblerBlock extends BaseRailBlock
-	implements IBE<CartAssemblerBlockEntity>, IWrenchable, MinecartPassingBlock, PolymerModelBlock {
+	implements SpecialBlockItemRequirement, IBE<CartAssemblerBlockEntity>, IWrenchable, MinecartPassingBlock, PolymerModelBlock {
 
 	/** Create's AllShapes.CART_ASSEMBLER and CART_ASSEMBLER_PLAYER_COLLISION. */
 	private static final VoxelShaper CART_ASSEMBLER = VoxelShaper.forHorizontalAxis(
@@ -442,5 +445,13 @@ public class CartAssemblerBlock extends BaseRailBlock
 		@Override
 		protected void update(ServerLevel level, BlockPos pos, @Nullable BlockEntity be, long time) {
 		}
+	}
+
+	@Override
+	public ItemRequirement getRequiredItems(BlockState state, @Nullable BlockEntity be) {
+		ArrayList<ItemStack> requiredItems = new ArrayList<>();
+		requiredItems.add(new ItemStack(getRailItem(state)));
+		requiredItems.add(new ItemStack(asItem()));
+		return new ItemRequirement(ItemUseType.CONSUME, requiredItems);
 	}
 }

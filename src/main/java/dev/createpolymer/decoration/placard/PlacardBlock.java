@@ -1,11 +1,13 @@
 package dev.createpolymer.decoration.placard;
 
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 
 import org.joml.Matrix4f;
 import org.jspecify.annotations.Nullable;
 
+import dev.createpolymer.api.schematic.requirement.SpecialBlockItemRequirement;
 import dev.createpolymer.decoration.girder.GirderShapes;
 import dev.createpolymer.foundation.block.IBE;
 import dev.createpolymer.foundation.block.ProperWaterloggedBlock;
@@ -13,6 +15,8 @@ import dev.createpolymer.item.IWrenchable;
 import dev.createpolymer.logistics.filter.FilterItem;
 import dev.createpolymer.logistics.filter.FilterItemStack;
 import dev.createpolymer.registry.feature.DoorsRegistry;
+import dev.createpolymer.schematics.requirement.ItemRequirement.ItemUseType;
+import dev.createpolymer.schematics.requirement.ItemRequirement;
 import dev.createpolymer.util.AngleHelper;
 import dev.createpolymer.visual.BaseModel;
 import dev.createpolymer.visual.ModelItems;
@@ -56,7 +60,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class PlacardBlock extends FaceAttachedHorizontalDirectionalBlock
-	implements ProperWaterloggedBlock, IBE<PlacardBlockEntity>, IWrenchable, PolymerModelBlock {
+	implements SpecialBlockItemRequirement, ProperWaterloggedBlock, IBE<PlacardBlockEntity>, IWrenchable, PolymerModelBlock {
 
 	public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 
@@ -322,4 +326,18 @@ public class PlacardBlock extends FaceAttachedHorizontalDirectionalBlock
 		}
 	}
 
+	@Override
+	public ItemRequirement getRequiredItems(BlockState state, @Nullable BlockEntity be) {
+		ItemStack placardStack = new ItemStack(DoorsRegistry.PLACARD);
+		if (be instanceof PlacardBlockEntity pbe) {
+			ItemStack heldItem = pbe.getHeldItem();
+			if (!heldItem.isEmpty()) {
+				return new ItemRequirement(List.of(
+					new ItemRequirement.StackRequirement(placardStack, ItemUseType.CONSUME),
+					new ItemRequirement.StrictNbtStackRequirement(heldItem, ItemUseType.CONSUME)
+				));
+			}
+		}
+		return new ItemRequirement(ItemUseType.CONSUME, placardStack);
+	}
 }

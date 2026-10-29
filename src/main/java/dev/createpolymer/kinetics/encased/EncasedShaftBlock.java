@@ -4,11 +4,13 @@ import java.util.function.Supplier;
 
 import org.jspecify.annotations.Nullable;
 
+import dev.createpolymer.api.schematic.requirement.SpecialBlockItemRequirement;
 import dev.createpolymer.item.IWrenchable;
 import dev.createpolymer.kinetics.base.KineticBlockEntity;
 import dev.createpolymer.kinetics.base.RotatedPillarKineticBlock;
 import dev.createpolymer.registry.ModBlockEntities;
 import dev.createpolymer.registry.ModBlocks;
+import dev.createpolymer.schematics.requirement.ItemRequirement;
 import dev.createpolymer.visual.BaseModel;
 import dev.createpolymer.visual.ModelItems;
 import dev.createpolymer.visual.Orientation;
@@ -33,7 +35,7 @@ import net.minecraft.world.level.block.state.BlockState;
  * Ported from Create's EncasedShaftBlock / AbstractEncasedShaftBlock (MIT, The Create Team).
  * Made by using a casing on a shaft; sneak-wrenching takes the casing off again.
  */
-public class EncasedShaftBlock extends RotatedPillarKineticBlock implements IWrenchable, EncasedBlock {
+public class EncasedShaftBlock extends RotatedPillarKineticBlock implements SpecialBlockItemRequirement, IWrenchable, EncasedBlock {
 	private final Supplier<Block> casing;
 	private final String blockstateFile;
 	private final @Nullable Supplier<BlockEntityType<? extends KineticBlockEntity>> blockEntityType;
@@ -129,5 +131,10 @@ public class EncasedShaftBlock extends RotatedPillarKineticBlock implements IWre
 				shaft.spin(time, kbe.getSpeed(), Orientation.cogOffset(false, axis, pos.getX(), pos.getY(), pos.getZ()));
 			}
 		}
+	}
+
+	@Override
+	public ItemRequirement getRequiredItems(BlockState state, @Nullable BlockEntity be) {
+		return ItemRequirement.of(ModBlocks.SHAFT.defaultBlockState(), be);
 	}
 }

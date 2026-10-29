@@ -8,6 +8,7 @@ import java.util.List;
 import org.joml.Quaternionf;
 import org.jspecify.annotations.Nullable;
 
+import dev.createpolymer.api.schematic.requirement.SpecialBlockItemRequirement;
 import dev.createpolymer.contraptions.render.ContraptionDisplay;
 import dev.createpolymer.foundation.block.IBE;
 import dev.createpolymer.item.IWrenchable;
@@ -16,6 +17,7 @@ import dev.createpolymer.kinetics.base.KineticBlockEntity;
 import dev.createpolymer.registry.ModBlocks;
 import dev.createpolymer.registry.ModSounds;
 import dev.createpolymer.registry.feature.DoorsRegistry;
+import dev.createpolymer.schematics.requirement.ItemRequirement;
 import dev.createpolymer.visual.BaseModel;
 import dev.createpolymer.visual.ModelItems;
 import dev.createpolymer.visual.Orientation;
@@ -52,7 +54,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class GirderEncasedShaftBlock extends HorizontalAxisKineticBlock
-	implements IBE<KineticBlockEntity>, SimpleWaterloggedBlock, IWrenchable, ContraptionDisplay {
+	implements SpecialBlockItemRequirement, IBE<KineticBlockEntity>, SimpleWaterloggedBlock, IWrenchable, ContraptionDisplay {
 
 	public static final BooleanProperty TOP = GirderBlock.TOP;
 	public static final BooleanProperty BOTTOM = GirderBlock.BOTTOM;
@@ -224,4 +226,9 @@ public class GirderEncasedShaftBlock extends HorizontalAxisKineticBlock
 		}
 	}
 
+	@Override
+	public ItemRequirement getRequiredItems(BlockState state, @Nullable BlockEntity be) {
+		return ItemRequirement.of(ModBlocks.SHAFT.defaultBlockState(), be)
+			.union(ItemRequirement.of(DoorsRegistry.METAL_GIRDER.defaultBlockState(), be));
+	}
 }

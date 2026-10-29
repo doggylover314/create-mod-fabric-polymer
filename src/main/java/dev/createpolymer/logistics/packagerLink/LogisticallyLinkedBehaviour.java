@@ -219,6 +219,16 @@ public class LogisticallyLinkedBehaviour extends BlockEntityBehaviour {
 	}
 
 	@Override
+	public boolean isSafeNBT() {
+		return true;
+	}
+
+	@Override
+	public void writeSafe(ValueOutput output) {
+		output.store("Freq", UUIDUtil.CODEC, freqId);
+	}
+
+	@Override
 	public void write(ValueOutput output) {
 		super.write(output);
 		output.store("Freq", UUIDUtil.CODEC, freqId);

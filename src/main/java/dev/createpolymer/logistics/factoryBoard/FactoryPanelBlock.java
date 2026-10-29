@@ -7,12 +7,14 @@ import org.jspecify.annotations.Nullable;
 
 import com.mojang.serialization.Codec;
 
+import dev.createpolymer.api.schematic.requirement.SpecialBlockItemRequirement;
 import dev.createpolymer.foundation.block.IBE;
 import dev.createpolymer.foundation.block.ProperWaterloggedBlock;
 import dev.createpolymer.item.IWrenchable;
 import dev.createpolymer.logistics.packagerLink.LogisticallyLinkedBlockItem;
 import dev.createpolymer.registry.ModSounds;
 import dev.createpolymer.registry.feature.FactoryGaugeRegistry;
+import dev.createpolymer.schematics.requirement.ItemRequirement;
 import dev.createpolymer.util.AngleHelper;
 import dev.createpolymer.util.Lang;
 import dev.createpolymer.util.ShapeUtil;
@@ -45,6 +47,7 @@ import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FaceAttachedHorizontalDirectionalBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
@@ -67,7 +70,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  * panels is cancelled through Fabric's break event instead of NeoForge's onDestroyedByPlayer.
  */
 public class FactoryPanelBlock extends FaceAttachedHorizontalDirectionalBlock
-	implements ProperWaterloggedBlock, IBE<FactoryPanelBlockEntity>, IWrenchable, PolymerModelBlock {
+	implements SpecialBlockItemRequirement, ProperWaterloggedBlock, IBE<FactoryPanelBlockEntity>, IWrenchable, PolymerModelBlock {
 
 	public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 
@@ -458,4 +461,8 @@ public class FactoryPanelBlock extends FaceAttachedHorizontalDirectionalBlock
 		return new FactoryPanelModel(state);
 	}
 
+	@Override
+	public ItemRequirement getRequiredItems(BlockState state, @Nullable BlockEntity blockEntity) {
+		return ItemRequirement.NONE;
+	}
 }

@@ -116,6 +116,7 @@ public class CreatePolymer implements ModInitializer {
 		dev.createpolymer.registry.feature.DoorsRegistry.init();
 		dev.createpolymer.registry.feature.ToolsRegistry.init();
 		dev.createpolymer.registry.feature.WandsRegistry.init();
+		dev.createpolymer.registry.feature.SchematicsRegistry.init();
 
 		// Resource pack: Create's models/textures/lang from this jar, served by polymer-autohost.
 		enableAutoHostByDefault();

@@ -87,6 +87,14 @@ public class RedstoneRequesterBlockEntity extends StockCheckingBlockEntity {
 	}
 
 	@Override
+	public void writeSafe(ValueOutput output) {
+		super.writeSafe(output);
+		output.putBoolean("AllowPartial", allowPartialRequests);
+		output.putString("EncodedAddress", encodedTargetAdress);
+		output.store("EncodedRequest", PackageOrderWithCrafts.CODEC, encodedRequest);
+	}
+
+	@Override
 	protected void write(ValueOutput output) {
 		super.write(output);
 		output.putBoolean("Powered", redstonePowered);

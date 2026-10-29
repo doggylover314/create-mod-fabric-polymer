@@ -393,6 +393,12 @@ public class DeployerBlockEntity extends KineticBlockEntity implements Clearable
 	}
 
 	@Override
+	public void writeSafe(ValueOutput compound) {
+		NBTHelper.writeEnum(compound, "Mode", mode);
+		super.writeSafe(compound);
+	}
+
+	@Override
 	public void write(ValueOutput compound) {
 		NBTHelper.writeEnum(compound, "Mode", mode);
 		NBTHelper.writeEnum(compound, "State", state);

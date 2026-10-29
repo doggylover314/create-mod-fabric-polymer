@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
+import dev.createpolymer.api.schematic.requirement.SpecialBlockItemRequirement;
 import dev.createpolymer.contraptions.elevator.ElevatorColumn.ColumnCoords;
 import dev.createpolymer.contraptions.render.ContraptionDisplay;
 import dev.createpolymer.foundation.block.IBE;
@@ -14,6 +15,7 @@ import dev.createpolymer.redstone.diodes.BrassDiodeBlock;
 import dev.createpolymer.registry.ModItems;
 import dev.createpolymer.registry.feature.PulleyRegistry;
 import dev.createpolymer.registry.feature.RedstoneRegistry;
+import dev.createpolymer.schematics.requirement.ItemRequirement;
 import dev.createpolymer.visual.BaseModel;
 import dev.createpolymer.visual.BlockstateModels;
 import dev.createpolymer.visual.ModelItems;
@@ -55,7 +57,7 @@ import net.minecraft.world.phys.BlockHitResult;
  * selection of the contraption controls.
  */
 public class ElevatorContactBlock extends WrenchableDirectionalBlock
-	implements IBE<ElevatorContactBlockEntity>, PolymerModelBlock, ContraptionDisplay {
+	implements SpecialBlockItemRequirement, IBE<ElevatorContactBlockEntity>, PolymerModelBlock, ContraptionDisplay {
 
 	public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 	public static final BooleanProperty CALLING = BooleanProperty.create("calling");
@@ -296,5 +298,10 @@ public class ElevatorContactBlock extends WrenchableDirectionalBlock
 		@Override
 		protected void update(ServerLevel level, BlockPos pos, @Nullable BlockEntity be, long time) {
 		}
+	}
+
+	@Override
+	public ItemRequirement getRequiredItems(BlockState state, @Nullable BlockEntity be) {
+		return ItemRequirement.of(RedstoneRegistry.REDSTONE_CONTACT.defaultBlockState(), be);
 	}
 }

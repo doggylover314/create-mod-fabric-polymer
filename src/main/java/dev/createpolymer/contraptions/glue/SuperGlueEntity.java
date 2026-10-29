@@ -1,5 +1,6 @@
 package dev.createpolymer.contraptions.glue;
 
+import dev.createpolymer.api.schematic.requirement.SpecialEntityItemRequirement;
 import dev.createpolymer.contraptions.bearing.BearingBlock;
 import dev.createpolymer.contraptions.chassis.AbstractChassisBlock;
 import dev.createpolymer.contraptions.chassis.StickerBlock;
@@ -16,6 +17,8 @@ import org.jetbrains.annotations.NotNull;
 import dev.createpolymer.api.contraption.BlockMovementChecks;
 import dev.createpolymer.contraptions.piston.MechanicalPistonBlock;
 import dev.createpolymer.registry.feature.ContraptionRegistry;
+import dev.createpolymer.schematics.requirement.ItemRequirement.ItemUseType;
+import dev.createpolymer.schematics.requirement.ItemRequirement;
 import dev.createpolymer.util.Iterate;
 import dev.createpolymer.util.VecHelper;
 import eu.pb4.polymer.core.api.entity.PolymerEntity;
@@ -53,7 +56,7 @@ import net.minecraft.world.phys.Vec3;
  * A glued area. Players cannot see it: it is a server-only entity that vanilla clients are never told about (a
  * marker); the selection shows its outline with particles.
  */
-public class SuperGlueEntity extends Entity implements PolymerEntity {
+public class SuperGlueEntity extends Entity implements SpecialEntityItemRequirement, PolymerEntity {
 
 	public static AABB span(BlockPos startPos, BlockPos endPos) {
 		return new AABB(Vec3.atLowerCornerOf(startPos), Vec3.atLowerCornerOf(endPos)).expandTowards(1, 1, 1);
@@ -317,5 +320,10 @@ public class SuperGlueEntity extends Entity implements PolymerEntity {
 				break;
 			}
 		}
+	}
+
+	@Override
+	public ItemRequirement getRequiredItems() {
+		return new ItemRequirement(ItemUseType.DAMAGE, ContraptionRegistry.SUPER_GLUE_ITEM);
 	}
 }

@@ -10,6 +10,7 @@ import java.util.function.Predicate;
 import dev.createpolymer.foundation.blockEntity.SmartBlockEntity;
 import dev.createpolymer.foundation.blockEntity.behaviour.ValueBoxTransform;
 import dev.createpolymer.foundation.blockEntity.behaviour.ValueBoxTransform.Sided;
+import dev.createpolymer.schematics.requirement.ItemRequirement;
 import dev.createpolymer.util.Iterate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -118,6 +119,13 @@ public class SidedFilteringBehaviour extends FilteringBehaviour {
 		sidedFilters.values()
 			.forEach(FilteringBehaviour::destroy);
 		super.destroy();
+	}
+
+	@Override
+	public ItemRequirement getRequiredItems() {
+		return sidedFilters.values()
+			.stream()
+			.reduce(ItemRequirement.NONE, (a, b) -> a.union(b.getRequiredItems()), (a, b) -> a.union(b));
 	}
 
 	public void removeFilter(Direction side) {

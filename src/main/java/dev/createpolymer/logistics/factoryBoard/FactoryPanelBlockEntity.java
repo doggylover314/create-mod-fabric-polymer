@@ -184,8 +184,11 @@ public class FactoryPanelBlockEntity extends SmartBlockEntity {
 		return lastShape;
 	}
 
-	/** Create's SmartBlockEntity.writeSafe for gauges: every panel's settings, none of the connections. */
-	public void writeSafe(ValueOutput tag) {
+	/**
+	 * Every panel's settings, none of the connections. Not named writeSafe: Create's gauges do not take part in
+	 * schematics (the panel behaviour is not safe NBT), and SmartBlockEntity.writeSafe is what schematics copy.
+	 */
+	public void writePanelsSafe(ValueOutput tag) {
 		tag.putBoolean("Restocker", restocker);
 		for (FactoryPanelBehaviour panelBehaviour : panels.values())
 			panelBehaviour.writeSafe(tag);
