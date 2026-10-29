@@ -62,20 +62,20 @@ public final class ModItems {
 	public static final Item COPPER_SHEET = simple("copper_sheet");
 	public static final Item WHEAT_FLOUR = simple("wheat_flour");
 
-	private static Item simple(String name) {
+	public static Item simple(String name) {
 		return register(name, p -> new SimplePolymerItem(p, Items.TRIAL_KEY, true), new Item.Properties());
 	}
 
-	private static Item block(Block block) {
+	public static Item block(Block block) {
 		return block(block, new Item.Properties());
 	}
 
-	private static Item block(Block block, Item.Properties props) {
+	public static Item block(Block block, Item.Properties props) {
 		String name = BuiltInRegistries.BLOCK.getKey(block).getPath();
 		return register(name, p -> new PolymerBlockItem(block, p, Items.TRIAL_KEY, true), props.useBlockDescriptionPrefix());
 	}
 
-	private static <T extends Item> T register(String name, Function<Item.Properties, T> factory, Item.Properties props) {
+	public static <T extends Item> T register(String name, Function<Item.Properties, T> factory, Item.Properties props) {
 		ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, CreatePolymer.id(name));
 		T item = Registry.register(BuiltInRegistries.ITEM, key, factory.apply(props.setId(key)));
 		TAB_ORDER.add(item);

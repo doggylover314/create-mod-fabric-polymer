@@ -41,11 +41,11 @@ public final class ModBlocks {
 	public static final List<Block> ALL = new ArrayList<>();
 
 	// Create's SharedProperties.stone / wooden
-	private static BlockBehaviour.Properties stone() {
+	public static BlockBehaviour.Properties stone() {
 		return BlockBehaviour.Properties.of().strength(1.5f, 6f).sound(SoundType.STONE).noOcclusion();
 	}
 
-	private static BlockBehaviour.Properties wooden() {
+	public static BlockBehaviour.Properties wooden() {
 		return BlockBehaviour.Properties.of().strength(2f, 3f).sound(SoundType.WOOD).noOcclusion();
 	}
 
@@ -101,7 +101,7 @@ public final class ModBlocks {
 	public static final DepotBlock DEPOT = register("depot", DepotBlock::new,
 		stone().mapColor(MapColor.COLOR_GRAY).sound(SoundType.NETHERITE_BLOCK));
 
-	private static <T extends Block> T register(String name, Function<BlockBehaviour.Properties, T> factory, BlockBehaviour.Properties props) {
+	public static <T extends Block> T register(String name, Function<BlockBehaviour.Properties, T> factory, BlockBehaviour.Properties props) {
 		ResourceKey<Block> key = ResourceKey.create(Registries.BLOCK, CreatePolymer.id(name));
 		T block = Registry.register(BuiltInRegistries.BLOCK, key, factory.apply(props.setId(key)));
 		ALL.add(block);

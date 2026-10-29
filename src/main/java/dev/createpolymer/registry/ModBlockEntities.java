@@ -59,7 +59,7 @@ public final class ModBlockEntities {
 
 	public static final BlockEntityType<DepotBlockEntity> DEPOT = register("depot", DepotBlockEntity::new, ModBlocks.DEPOT);
 
-	private static <T extends BlockEntity> BlockEntityType<T> register(String name, BlockEntityType.BlockEntitySupplier<T> factory, Block... blocks) {
+	public static <T extends BlockEntity> BlockEntityType<T> register(String name, BlockEntityType.BlockEntitySupplier<T> factory, Block... blocks) {
 		BlockEntityType<T> type = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, CreatePolymer.id(name),
 			new BlockEntityType<>(factory, Set.of(blocks)));
 		// Keep these block entities server-side; players never receive them.
