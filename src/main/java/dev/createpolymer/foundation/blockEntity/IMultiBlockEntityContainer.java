@@ -2,6 +2,9 @@ package dev.createpolymer.foundation.blockEntity;
 
 import org.jetbrains.annotations.Nullable;
 
+import dev.createpolymer.foundation.fluid.FluidStack;
+import dev.createpolymer.foundation.fluid.IFluidTank;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -59,10 +62,6 @@ public interface IMultiBlockEntityContainer {
 		default boolean hasInventory() { return false; }
 	}
 
-	/**
-	 * Create's tank interface also has getTank(int) returning an IFluidTank and getFluid(int) returning a FluidStack.
-	 * Those two are left out until the fluid types exist here; ConnectivityHandler marks the places that use them.
-	 */
 	public interface Fluid extends IMultiBlockEntityContainer {
 		// done here rather than through the Capability to allow greater flexibility
 		default boolean hasTank() { return false; }
@@ -70,5 +69,9 @@ public interface IMultiBlockEntityContainer {
 		default int getTankSize(int tank) {	return 0; }
 
 		default void setTankSize(int tank, int blocks) {}
+
+		default IFluidTank getTank(int tank) { return null; }
+
+		default FluidStack getFluid(int tank) {	return FluidStack.EMPTY; }
 	}
 }

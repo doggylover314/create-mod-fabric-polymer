@@ -7,7 +7,8 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
 /**
- * Ported from Create's BasinRecipe / MixingRecipe / CompactingRecipe (MIT, The Create Team).
+ * Ported from Create's BasinRecipe / MixingRecipe / CompactingRecipe (MIT, The Create Team); takes up to two fluid
+ * ingredients and two fluid results.
  * Matching is done by {@link dev.createpolymer.processing.basin.BasinRecipeLogic}, not by {@link #matches}.
  */
 public class BasinRecipe extends ProcessingRecipe<RecipeInput> {
@@ -34,6 +35,16 @@ public class BasinRecipe extends ProcessingRecipe<RecipeInput> {
 	@Override
 	protected int getMaxOutputCount() {
 		return 4;
+	}
+
+	@Override
+	protected int getMaxFluidInputCount() {
+		return 2;
+	}
+
+	@Override
+	protected int getMaxFluidOutputCount() {
+		return 2;
 	}
 
 	@Override

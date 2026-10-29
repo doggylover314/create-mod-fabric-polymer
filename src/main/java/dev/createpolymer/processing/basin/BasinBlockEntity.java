@@ -1,14 +1,23 @@
 package dev.createpolymer.processing.basin;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import org.jspecify.annotations.Nullable;
 
 import dev.createpolymer.foundation.blockEntity.SmartBlockEntity;
+import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
+import dev.createpolymer.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
+import dev.createpolymer.foundation.fluid.CombinedTankWrapper;
+import dev.createpolymer.foundation.fluid.FluidHandlerLookup;
+import dev.createpolymer.foundation.fluid.FluidStack;
+import dev.createpolymer.foundation.fluid.IFluidHandler;
+import dev.createpolymer.foundation.fluid.IFluidHandler.FluidAction;
 import dev.createpolymer.processing.burner.BlazeBurnerBlock;
 import dev.createpolymer.processing.burner.BlazeBurnerBlock.HeatLevel;
 import dev.createpolymer.registry.ModBlockEntities;
+import dev.createpolymer.util.Couple;
 import dev.createpolymer.util.ItemSlots;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -27,10 +36,11 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 
 /**
- * Ported from Create's BasinBlockEntity (MIT, The Create Team), items only.
- * Fluids, the filter slot and side outputs are not ported yet; results
+ * Ported from Create's BasinBlockEntity (MIT, The Create Team).
+ * The filter slot and side outputs are not ported yet; results
  * go into the basin's own output slots, which hoppers below can pull from.
  * Container slots 0-8 are inputs and 9-17 are outputs.
+ * Fluids are as in Create: two input tanks and two output tanks of 1000 mB, exposed as one fluid handler.
  */
 public class BasinBlockEntity extends SmartBlockEntity implements WorldlyContainer {
 
@@ -39,11 +49,36 @@ public class BasinBlockEntity extends SmartBlockEntity implements WorldlyContain
 	private boolean contentsChanged = true;
 	private @Nullable HeatLevel cachedHeatLevel;
 
+	// assigned in addBehaviours, which runs before this class's fields are initialised
+	public SmartFluidTankBehaviour inputTank;
+	protected SmartFluidTankBehaviour outputTank;
+	private Couple<SmartFluidTankBehaviour> tanks;
+	protected IFluidHandler fluidCapability;
+
 	private static final int[] INPUT_SLOTS = { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
 	private static final int[] OUTPUT_SLOTS = { 9, 10, 11, 12, 13, 14, 15, 16, 17 };
 
 	public BasinBlockEntity(BlockPos pos, BlockState state) {
 		super(ModBlockEntities.BASIN, pos, state);
+		tanks = Couple.create(inputTank, outputTank);
+	}
+
+	public static void registerCapabilities() {
+		FluidHandlerLookup.registerBlockEntity(ModBlockEntities.BASIN, (be, side) -> be.fluidCapability);
+	}
+
+	@Override
+	public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
+		super.addBehaviours(behaviours);
+		inputTank = new SmartFluidTankBehaviour(SmartFluidTankBehaviour.INPUT, this, 2, 1000, true)
+			.whenFluidUpdates(() -> contentsChanged = true);
+		outputTank = new SmartFluidTankBehaviour(SmartFluidTankBehaviour.OUTPUT, this, 2, 1000, true)
+			.whenFluidUpdates(() -> contentsChanged = true)
+			.forbidInsertion();
+		behaviours.add(inputTank);
+		behaviours.add(outputTank);
+
+		fluidCapability = new CombinedTankWrapper(outputTank.getCapability(), inputTank.getCapability());
 	}
 
 	private void onInputChanged() {
@@ -136,7 +171,7 @@ public class BasinBlockEntity extends SmartBlockEntity implements WorldlyContain
 	}
 
 	public boolean isEmpty() {
-		return inputInventory.isEmpty() && outputInventory.isEmpty();
+		return inputInventory.isEmpty() && outputInventory.isEmpty() && inputTank.isEmpty() && outputTank.isEmpty();
 	}
 
 	public boolean canContinueProcessing() {
@@ -145,11 +180,72 @@ public class BasinBlockEntity extends SmartBlockEntity implements WorldlyContain
 
 	/** Puts recipe results into the output slots. All or nothing. */
 	public boolean acceptOutputs(List<ItemStack> outputItems, boolean simulate) {
+		return acceptOutputs(outputItems, Collections.emptyList(), simulate);
+	}
+
+	/** Puts recipe results into the output slots and output tanks. Items and fluids each all or nothing. */
+	public boolean acceptOutputs(List<ItemStack> outputItems, List<FluidStack> outputFluids, boolean simulate) {
+		outputTank.allowInsertion();
+		boolean accepted = acceptOutputsInner(outputItems, outputFluids, simulate);
+		outputTank.forbidInsertion();
+		return accepted;
+	}
+
+	private boolean acceptOutputsInner(List<ItemStack> outputItems, List<FluidStack> outputFluids, boolean simulate) {
 		ItemSlots target = simulate ? outputInventory.copy() : outputInventory;
 		for (ItemStack itemStack : outputItems)
 			if (!target.insertStacked(itemStack.copy(), false).isEmpty())
 				return false;
+		if (outputFluids.isEmpty())
+			return true;
+		return acceptFluidOutputsIntoBasin(outputFluids, simulate, outputTank.getCapability());
+	}
+
+	private boolean acceptFluidOutputsIntoBasin(List<FluidStack> outputFluids, boolean simulate,
+												IFluidHandler targetTank) {
+		for (FluidStack fluidStack : outputFluids) {
+			FluidAction action = simulate ? FluidAction.SIMULATE : FluidAction.EXECUTE;
+			int fill = targetTank instanceof SmartFluidTankBehaviour.InternalFluidHandler
+				? ((SmartFluidTankBehaviour.InternalFluidHandler) targetTank).forceFill(fluidStack.copy(), action)
+				: targetTank.fill(fluidStack.copy(), action);
+			if (fill != fluidStack.getAmount())
+				return false;
+		}
 		return true;
+	}
+
+	public Couple<SmartFluidTankBehaviour> getTanks() {
+		return tanks;
+	}
+
+	public float getTotalFluidUnits(float partialTicks) {
+		int renderedFluids = 0;
+		float totalUnits = 0;
+
+		for (SmartFluidTankBehaviour behaviour : getTanks()) {
+			if (behaviour == null)
+				continue;
+			for (SmartFluidTankBehaviour.TankSegment tankSegment : behaviour.getTanks()) {
+				if (tankSegment.getRenderedFluid()
+					.isEmpty())
+					continue;
+				float units = tankSegment.getTotalUnits(partialTicks);
+				if (units < 1)
+					continue;
+				totalUnits += units;
+				renderedFluids++;
+			}
+		}
+
+		if (renderedFluids == 0)
+			return 0;
+		if (totalUnits < 1)
+			return 0;
+		return totalUnits;
+	}
+
+	public IFluidHandler getFluidCapability() {
+		return fluidCapability;
 	}
 
 	public void takeContents(Player player) {

@@ -38,8 +38,39 @@ def ingredient(o):
         return '#' + t
     return None
 
+# Fluids this port has (Create's potion, tea, honey and chocolate are virtual fluids registered by the mod).
+# There is no milk fluid, so recipes that need the c:milk tag are left out.
+KNOWN_FLUIDS = {'minecraft:water', 'minecraft:lava', 'create:potion', 'create:tea', 'create:honey', 'create:chocolate'}
+KNOWN_FLUID_TAGS = {'c:honey', 'c:chocolate', 'c:tea'}
+
+def fluid_ingredient(o):
+    """NeoForge SizedFluidIngredient JSON -> {"fluid"|"tag", "amount", "components"?}. None if unsupported."""
+    t = o.get('type')
+    out = {}
+    if t == 'neoforge:single' and o.get('fluid') in KNOWN_FLUIDS:
+        out['fluid'] = o['fluid']
+    elif t == 'neoforge:tag' and o.get('tag') in KNOWN_FLUID_TAGS:
+        out['tag'] = o['tag']
+    elif t == 'neoforge:components' and o.get('fluids') in KNOWN_FLUIDS:
+        out['fluid'] = o['fluids']
+        out['components'] = o['components']
+    else:
+        return None
+    out['amount'] = o['amount']
+    return out
+
+def ingredient_or_fluid(o):
+    if isinstance(o, dict) and str(o.get('type', '')).startswith('neoforge:') and 'amount' in o:
+        return fluid_ingredient(o)
+    return ingredient(o)
+
 def result(o):
-    if 'id' not in o or not known_item(o['id']) or 'amount' in o or 'fluid' in o:
+    if 'amount' in o:
+        # fluid result: {"id": fluid, "amount": n}
+        if o.get('id') not in KNOWN_FLUIDS:
+            return None
+        return o
+    if 'id' not in o or not known_item(o['id']) or 'fluid' in o:
         return None
     return o
 
@@ -72,7 +103,7 @@ def processing(d):
     """One processing recipe (also a sequenced assembly step) in the new format, or None if it uses unported things."""
     if 'neoforge:conditions' in d:
         return None
-    ings = [ingredient(i) for i in d['ingredients']]
+    ings = [ingredient_or_fluid(i) for i in d['ingredients']]
     res = [result(r) for r in d['results']]
     if not ings or any(i is None for i in ings) or any(r is None for r in res):
         return None

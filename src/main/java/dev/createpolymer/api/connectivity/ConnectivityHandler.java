@@ -11,7 +11,11 @@ import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
 
+import dev.createpolymer.fluids.tank.CreativeFluidTankBlockEntity;
 import dev.createpolymer.foundation.blockEntity.IMultiBlockEntityContainer;
+import dev.createpolymer.foundation.fluid.FluidStack;
+import dev.createpolymer.foundation.fluid.IFluidHandler;
+import dev.createpolymer.foundation.fluid.IFluidTank;
 import dev.createpolymer.util.Iterate;
 import dev.createpolymer.util.Pair;
 import net.minecraft.core.BlockPos;
@@ -147,7 +151,13 @@ public class ConnectivityHandler {
 			return 0;
 		BlockPos origin = be.getBlockPos();
 
-		// optional fluid handling: the tank and its fluid are read here once fluids exist (see getTank/getFluid)
+		// optional fluid handling
+		IFluidTank beTank = null;
+		FluidStack fluid = FluidStack.EMPTY;
+		if (be instanceof IMultiBlockEntityContainer.Fluid ifluid && ifluid.hasTank()) {
+			beTank = ifluid.getTank(0);
+			fluid = beTank.getFluid();
+		}
 		Direction.Axis axis = be.getMainConnectionAxis();
 
 		Search:
@@ -200,7 +210,11 @@ public class ConnectivityHandler {
 								break Search;
 						}
 					}
-					// optional fluid handling: stop the search at a tank that holds a different fluid
+					if (controller instanceof IMultiBlockEntityContainer.Fluid ifluidCon && ifluidCon.hasTank()) {
+						FluidStack otherFluid = ifluidCon.getFluid(0);
+						if (!fluid.isEmpty() && !otherFluid.isEmpty() && !FluidStack.isSameFluidSameComponents(fluid, otherFluid))
+							break Search;
+					}
 				}
 			}
 			amount += width * width;
@@ -228,7 +242,23 @@ public class ConnectivityHandler {
 
 					extraData = be.modifyExtraData(extraData);
 
-					// optional fluid handling: pour the part's fluid into the controller's tank and empty the part's tank
+					if (part instanceof IMultiBlockEntityContainer.Fluid ifluidPart && ifluidPart.hasTank()) {
+						IFluidTank tankAt = ifluidPart.getTank(0);
+						FluidStack fluidAt = tankAt.getFluid();
+						if (!fluidAt.isEmpty()) {
+							// making this generic would be a rather large mess, unfortunately
+							if (beTank != null && fluid.isEmpty()
+								&& beTank instanceof CreativeFluidTankBlockEntity.CreativeSmartFluidTank) {
+								((CreativeFluidTankBlockEntity.CreativeSmartFluidTank) beTank)
+									.setContainedFluid(fluidAt);
+							}
+							if (be instanceof IMultiBlockEntityContainer.Fluid ifluidBE && ifluidBE.hasTank()
+								&& beTank != null) {
+								beTank.fill(fluidAt, IFluidHandler.FluidAction.EXECUTE);
+							}
+						}
+						tankAt.drain(tankAt.getCapacity(), IFluidHandler.FluidAction.EXECUTE);
+					}
 
 					splitMultiAndInvalidate(part, cache, false);
 					part.setController(origin);
@@ -268,8 +298,14 @@ public class ConnectivityHandler {
 		List<T> frontier = new ArrayList<>();
 		Direction.Axis axis = be.getMainConnectionAxis();
 
-		// fluid handling, if present: the fluid to distribute over the parts is taken from the controller's tank here
+		// fluid handling, if present
+		FluidStack toDistribute = FluidStack.EMPTY;
+		int maxCapacity = 0;
 		if (be instanceof IMultiBlockEntityContainer.Fluid ifluidBE && ifluidBE.hasTank()) {
+			toDistribute = ifluidBE.getFluid(0);
+			maxCapacity = ifluidBE.getTankSize(0);
+			if (!toDistribute.isEmpty() && !be.isRemoved())
+				toDistribute.shrink(maxCapacity);
 			ifluidBE.setTankSize(0, 1);
 		}
 
@@ -294,7 +330,22 @@ public class ConnectivityHandler {
 					partAt.setExtraData((controllerBE == null ? null : controllerBE.getExtraData()));
 					partAt.removeController(true);
 
-					// fluid handling, if present: hand each part its share of the controller's fluid
+					if (!toDistribute.isEmpty() && partAt != be) {
+						FluidStack copy = toDistribute.copy();
+						IFluidTank tank =
+							(partAt instanceof IMultiBlockEntityContainer.Fluid ifluidPart ? ifluidPart.getTank(0) : null);
+						// making this generic would be a rather large mess, unfortunately
+						if (tank instanceof CreativeFluidTankBlockEntity.CreativeSmartFluidTank creativeTank) {
+							if (creativeTank.isEmpty())
+								creativeTank.setContainedFluid(toDistribute);
+						} else {
+							int split = Math.min(maxCapacity, toDistribute.getAmount());
+							copy.setAmount(split);
+							toDistribute.shrink(split);
+							if (tank != null)
+								tank.fill(copy, IFluidHandler.FluidAction.EXECUTE);
+						}
+					}
 
 					if (tryReconnect) {
 						frontier.add(partAt);

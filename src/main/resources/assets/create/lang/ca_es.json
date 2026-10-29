@@ -22,6 +22,12 @@
  "block.create.large_cogwheel": "Engranatge gran",
  "block.create.large_water_wheel": "Roda hidràulica gran",
  "block.create.water_wheel": "Roda hidràulica",
+ "create.boiler.size": "Mida",
+ "create.boiler.size_dots": "....... ",
+ "create.boiler.status": "Estat de la caldera: %1$s",
+ "create.boiler.status_short": "Caldera: %1$s",
+ "create.boiler.water": "Aigua",
+ "create.boiler.water_dots": "... ",
  "create.gui.sequenced_gearshift.instruction.turn_distance": "Pistó",
  "create.gui.sequenced_gearshift.speed": "Velocitat, direcció"
 }

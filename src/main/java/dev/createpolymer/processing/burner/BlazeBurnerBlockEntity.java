@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.jspecify.annotations.Nullable;
 
+import dev.createpolymer.fluids.tank.FluidTankBlock;
 import dev.createpolymer.foundation.blockEntity.SmartBlockEntity;
 import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import dev.createpolymer.processing.basin.BasinBlock;
@@ -293,7 +294,8 @@ public class BlazeBurnerBlockEntity extends SmartBlockEntity {
 	public boolean isValidBlockAbove() {
 		if (isVirtual())
 			return false;
-		return BasinBlock.isBasin(level, worldPosition.above());
+		BlockState blockState = level.getBlockState(worldPosition.above());
+		return BasinBlock.isBasin(level, worldPosition.above()) || blockState.getBlock() instanceof FluidTankBlock;
 	}
 
 	protected void playSound() {

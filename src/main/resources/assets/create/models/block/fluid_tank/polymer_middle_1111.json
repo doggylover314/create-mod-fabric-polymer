@@ -1,0 +1,1 @@
+{"credit":"Connected-texture tiles of a fluid tank block baked into one model (create-polymer)","parent":"block/block","textures":{"1":"create:block/fluid_tank_connected","particle":"create:block/fluid_tank","0":"create:block/fluid_tank_top_connected","4":"create:block/fluid_tank_inner_connected"},"elements":[]}

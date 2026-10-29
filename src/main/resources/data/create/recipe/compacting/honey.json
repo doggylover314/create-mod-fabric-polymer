@@ -1,0 +1,14 @@
+{
+  "type": "create:compacting",
+  "ingredients": [
+    {
+      "tag": "c:honey",
+      "amount": 1000
+    }
+  ],
+  "results": [
+    {
+      "id": "minecraft:honey_block"
+    }
+  ]
+}

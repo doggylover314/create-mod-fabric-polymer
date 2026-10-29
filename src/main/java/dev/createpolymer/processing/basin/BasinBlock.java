@@ -2,7 +2,15 @@ package dev.createpolymer.processing.basin;
 
 import org.jspecify.annotations.Nullable;
 
+import dev.createpolymer.fluids.FluidBox;
+import dev.createpolymer.fluids.transfer.GenericItemEmptying;
+import dev.createpolymer.fluids.transfer.GenericItemFilling;
 import dev.createpolymer.foundation.blockEntity.SmartBlockEntity;
+import dev.createpolymer.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
+import dev.createpolymer.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour.TankSegment;
+import dev.createpolymer.foundation.fluid.FluidHelper;
+import dev.createpolymer.foundation.fluid.FluidStack;
+import dev.createpolymer.foundation.fluid.IFluidHandler;
 import dev.createpolymer.registry.ModBlockEntities;
 import dev.createpolymer.util.ShapeUtil;
 import dev.createpolymer.visual.BaseModel;
@@ -14,7 +22,11 @@ import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
@@ -37,7 +49,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 /**
  * Ported from Create's BasinBlock (MIT, The Create Team).
- * Output direction (wrenching the basin) and fluids are not ported yet.
+ * Output direction (wrenching the basin) is not ported yet.
  */
 public class BasinBlock extends Block implements EntityBlock, PolymerBlock, BlockWithElementHolder {
 	public static final VoxelShape BLOCK_SHAPE = Shapes.or(
@@ -71,6 +83,30 @@ public class BasinBlock extends Block implements EntityBlock, PolymerBlock, Bloc
 	@Override
 	protected boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
 		return !(world.getBlockEntity(pos.above()) instanceof BasinOperatingBlockEntity);
+	}
+
+	@Override
+	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player,
+										  InteractionHand hand, BlockHitResult hitResult) {
+		if (stack.isEmpty() || !(level.getBlockEntity(pos) instanceof BasinBlockEntity be))
+			return InteractionResult.TRY_WITH_EMPTY_HAND;
+
+		if (FluidHelper.tryEmptyItemIntoBE(level, player, hand, stack, be))
+			return InteractionResult.SUCCESS;
+		if (FluidHelper.tryFillItemFromBE(level, player, hand, stack, be))
+			return InteractionResult.SUCCESS;
+
+		if (GenericItemEmptying.canItemBeEmptied(level, stack) || GenericItemFilling.canItemBeFilled(level, stack))
+			return InteractionResult.SUCCESS;
+		if (stack.getItem().equals(Items.SPONGE)) {
+			IFluidHandler fluidHandler = be.getFluidCapability();
+			if (fluidHandler != null) {
+				FluidStack drained = fluidHandler.drain(Integer.MAX_VALUE, IFluidHandler.FluidAction.EXECUTE);
+				if (!drained.isEmpty())
+					return InteractionResult.SUCCESS;
+			}
+		}
+		return InteractionResult.TRY_WITH_EMPTY_HAND;
 	}
 
 	@Override
@@ -137,18 +173,70 @@ public class BasinBlock extends Block implements EntityBlock, PolymerBlock, Bloc
 	}
 
 	@Override
+	public boolean tickElementHolder(ServerLevel world, BlockPos pos, BlockState initialBlockState) {
+		return true;
+	}
+
+	@Override
 	public @Nullable ElementHolder createElementHolder(ServerLevel world, BlockPos pos, BlockState initialBlockState) {
 		return new Model(initialBlockState);
 	}
 
+	/** The basin, and the fluids in it (Create's BasinRenderer.renderFluids): a box for each tank that holds some. */
 	public static class Model extends BaseModel {
+		private final FluidBox[] fluids = new FluidBox[4];
+
 		public Model(BlockState state) {
 			super(state);
 			addPart(ModelItems.block("basin/block")).apply(0);
+			for (int i = 0; i < fluids.length; i++)
+				fluids[i] = new FluidBox(this);
 		}
 
 		@Override
 		protected void update(ServerLevel level, BlockPos pos, @Nullable BlockEntity be, long time) {
+			if (be instanceof BasinBlockEntity basin)
+				updateFluids(basin);
+		}
+
+		private void updateFluids(BasinBlockEntity basin) {
+			int box = 0;
+			float totalUnits = basin.getTotalFluidUnits(1);
+			if (totalUnits >= 1) {
+				float fluidLevel = Mth.clamp(totalUnits / 2000, 0, 1);
+
+				fluidLevel = 1 - ((1 - fluidLevel) * (1 - fluidLevel));
+
+				float xMin = 2 / 16f;
+				float xMax = 2 / 16f;
+				final float yMin = 2 / 16f;
+				final float yMax = yMin + 12 / 16f * fluidLevel;
+				final float zMin = 2 / 16f;
+				final float zMax = 14 / 16f;
+
+				for (SmartFluidTankBehaviour behaviour : basin.getTanks()) {
+					if (behaviour == null)
+						continue;
+					for (TankSegment tankSegment : behaviour.getTanks()) {
+						FluidStack renderedFluid = tankSegment.getRenderedFluid();
+						if (renderedFluid.isEmpty())
+							continue;
+						float units = tankSegment.getTotalUnits(1);
+						if (units < 1)
+							continue;
+
+						float partial = Mth.clamp(units / totalUnits, 0, 1);
+						xMax += partial * 12 / 16f;
+						// block-centred coordinates
+						fluids[box++].show(renderedFluid, xMin - .5f, yMin - .5f, zMin - .5f, xMax - .5f, yMax - .5f,
+							zMax - .5f);
+
+						xMin = xMax;
+					}
+				}
+			}
+			for (; box < fluids.length; box++)
+				fluids[box].hide();
 		}
 	}
 }
