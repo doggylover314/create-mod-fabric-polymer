@@ -1,0 +1,22 @@
+{
+  "items": [
+    "chute",
+    "smart_chute"
+  ],
+  "blocks": [
+    "chute",
+    "smart_chute"
+  ],
+  "blockstates": [
+    "chute",
+    "smart_chute"
+  ],
+  "crafting": [
+    "kinetics/chute",
+    "kinetics/smart_chute"
+  ],
+  "lang_ids": [
+    "chute",
+    "smart_chute"
+  ]
+}
