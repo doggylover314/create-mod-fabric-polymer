@@ -523,6 +523,8 @@
  "block.create.tiled_glass": "Kahelita vitro",
  "block.create.tiled_glass_pane": "Kahelita glaco",
  "block.create.track": "Fervojo",
+ "block.create.track_observer": "Trajna observilo",
+ "block.create.track_signal": "Trajna signalilo",
  "block.create.track_station": "Fervoja stacio",
  "block.create.tuff_pillar": "Tofa kolono",
  "block.create.turntable": "Turnplado",

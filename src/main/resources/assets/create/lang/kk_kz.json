@@ -468,6 +468,8 @@
  "block.create.tiled_glass": "Тақташа шыны",
  "block.create.tiled_glass_pane": "Тақташа терезе панелі",
  "block.create.track": "Темір жол",
+ "block.create.track_observer": "Теміржол бақылауыш",
+ "block.create.track_signal": "Темір жол бағдаршамы",
  "block.create.track_station": "Темір жол бекеті",
  "block.create.tuff_pillar": "Туф бағана",
  "block.create.turntable": "Айналғыш үстел",

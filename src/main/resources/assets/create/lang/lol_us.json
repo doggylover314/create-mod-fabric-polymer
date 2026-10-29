@@ -293,6 +293,8 @@
  "block.create.stockpile_switch": "Too much stuf detectur",
  "block.create.stressometer": "Stwess Mesuwer",
  "block.create.track": "CHOO CHOO TRAK!!!",
+ "block.create.track_observer": "CHOO CHOO PASSER!!!",
+ "block.create.track_signal": "CHOO CHOO SIGNIL!!!",
  "block.create.track_station": "CHOO CHOO PAWKING!!!",
  "block.create.turntable": "spinzy tabel",
  "block.create.warped_window": "Warpt Windoze",

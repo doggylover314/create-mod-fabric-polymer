@@ -478,6 +478,8 @@
  "block.create.tiled_glass": "Gwydr Teils",
  "block.create.tiled_glass_pane": "Cwarel Gwydr Teils",
  "block.create.track": "Trac Trên",
+ "block.create.track_observer": "Gwyliwr Trên",
+ "block.create.track_signal": "Signal Trên",
  "block.create.track_station": "Gorsaf Drenau",
  "block.create.tuff_pillar": "Colofn Twff",
  "block.create.turntable": "Trofwrdd",

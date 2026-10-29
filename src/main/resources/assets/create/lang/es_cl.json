@@ -528,6 +528,8 @@
  "block.create.tiled_glass": "Vidrio esmaltado",
  "block.create.tiled_glass_pane": "Panel de Vidrio esmaltado",
  "block.create.track": "Vía de tren",
+ "block.create.track_observer": "Observador de tren",
+ "block.create.track_signal": "Señal de tren",
  "block.create.track_station": "Estación de tren",
  "block.create.tuff_pillar": "Pilar de toba",
  "block.create.turntable": "Plato Giratorio",

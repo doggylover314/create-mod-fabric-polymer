@@ -475,6 +475,8 @@
  "block.create.tiled_glass": "Стакла на Кубчета",
  "block.create.tiled_glass_pane": "Панел от Стакло на Кубчета",
  "block.create.track": "Релса за Влак",
+ "block.create.track_observer": "Наблюдател за Влак",
+ "block.create.track_signal": "Семафор",
  "block.create.track_station": "Гара",
  "block.create.tuff_pillar": "Стълб от Туф",
  "block.create.turntable": "Въртяща се Плоча",

@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.jspecify.annotations.Nullable;
 
+import dev.createpolymer.contraptions.StructureTransform;
 import dev.createpolymer.foundation.blockEntity.SmartBlockEntity;
 import dev.createpolymer.foundation.blockEntity.behaviour.BehaviourType;
 import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
@@ -27,6 +28,7 @@ import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -281,6 +283,18 @@ public class TrackTargetingBehaviour<T extends TrackEdgePoint> extends BlockEnti
 		return targetBezier != null
 			? TrackGraphHelper.getBezierGraphLocationAt(level, pos, targetDirection, targetBezier)
 			: TrackGraphHelper.getGraphLocationAt(level, pos, targetDirection, trackAxes.get(0));
+	}
+
+	public void transform(BlockEntity be, StructureTransform transform) {
+		id = UUID.randomUUID();
+		targetTrack = transform.applyWithoutOffset(targetTrack);
+		if (prevDirection != null)
+			rotatedDirection = transform.applyWithoutOffsetUncentered(prevDirection);
+		if (targetBezier != null)
+			targetBezier = new BezierTrackPointLocation(transform.applyWithoutOffset(targetBezier.curveTarget()
+				.subtract(getPos()))
+				.offset(getPos()), targetBezier.segment());
+		blockEntity.notifyUpdate();
 	}
 
 	public static enum RenderedTrackOverlayType {

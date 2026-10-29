@@ -1,50 +1,77 @@
 package dev.createpolymer.trains.signal;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.UUID;
 
+import dev.createpolymer.registry.feature.TrackRegistry;
 import dev.createpolymer.trains.TrackNbt;
 import dev.createpolymer.trains.graph.DimensionPalette;
 import dev.createpolymer.trains.graph.EdgePointType;
+import dev.createpolymer.trains.graph.TrackGraph;
 import dev.createpolymer.trains.graph.TrackNode;
 import dev.createpolymer.trains.signal.SignalBlock.SignalType;
+import dev.createpolymer.trains.signal.SignalBlockEntity.OverlayState;
+import dev.createpolymer.trains.signal.SignalBlockEntity.SignalState;
 import dev.createpolymer.util.Couple;
+import dev.createpolymer.util.Iterate;
+import dev.createpolymer.util.NBTHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-/**
- * Create's signal edge point. This is the part the track graph depends on (the signal groups of both sides and their
- * saving); the signal block, its states and the train interaction come with the signals.
- */
 public class SignalBoundary extends TrackEdgePoint {
 
-	public Couple<UUID> groups;
+	public Couple<Map<BlockPos, Boolean>> blockEntities;
 	public Couple<SignalType> types;
+	public Couple<UUID> groups;
+	public Couple<Boolean> sidesToUpdate;
+	public Couple<SignalState> cachedStates;
+
+	private Couple<Map<UUID, Boolean>> chainedSignals;
 
 	public SignalBoundary() {
+		blockEntities = Couple.create(HashMap::new);
+		chainedSignals = Couple.create(null, null);
 		groups = Couple.create(null, null);
-		types = Couple.create(SignalType.ENTRY_SIGNAL, SignalType.ENTRY_SIGNAL);
+		sidesToUpdate = Couple.create(true, true);
+		types = Couple.create(() -> SignalType.ENTRY_SIGNAL);
+		cachedStates = Couple.create(() -> SignalState.INVALID);
 	}
 
-	/** Whether redstone holds the signal red for trains entering from this side. */
-	public boolean isForcedRed(TrackNode side) {
-		return false;
+	public void setGroup(boolean primary, UUID groupId) {
+		UUID previous = groups.get(primary);
+
+		groups.set(primary, groupId);
+
+		UUID opposite = groups.get(!primary);
+		Map<UUID, SignalEdgeGroup> signalEdgeGroups = TrackRegistry.RAILWAYS.signalEdgeGroups;
+
+		if (opposite != null && signalEdgeGroups.containsKey(opposite)) {
+			SignalEdgeGroup oppositeGroup = signalEdgeGroups.get(opposite);
+			if (previous != null)
+				oppositeGroup.removeAdjacent(previous);
+			if (groupId != null)
+				oppositeGroup.putAdjacent(groupId);
+		}
+
+		if (groupId != null && signalEdgeGroups.containsKey(groupId)) {
+			SignalEdgeGroup group = signalEdgeGroups.get(groupId);
+			if (opposite != null)
+				group.putAdjacent(opposite);
+		}
 	}
 
-	/** Same, for the side of the primary (true) or the other group. */
-	public boolean isForcedRed(boolean primary) {
-		return false;
-	}
-
-	public UUID getGroup(TrackNode side) {
-		return groups.get(isPrimary(side));
-	}
-
-	@Override
-	public boolean canCoexistWith(EdgePointType<?> otherType, boolean front) {
-		return otherType == EdgePointType.OBSERVER;
+	public void setGroupAndUpdate(TrackNode side, UUID groupId) {
+		boolean primary = isPrimary(side);
+		setGroup(primary, groupId);
+		sidesToUpdate.set(primary, false);
+		chainedSignals.set(primary, null);
 	}
 
 	@Override
@@ -53,35 +80,236 @@ public class SignalBoundary extends TrackEdgePoint {
 	}
 
 	@Override
-	public void invalidate(LevelAccessor level) {}
+	public void invalidate(LevelAccessor level) {
+		blockEntities.forEach(s -> s.keySet()
+			.forEach(p -> invalidateAt(level, p)));
+		groups.forEach(uuid -> TrackRegistry.RAILWAYS.signalEdgeGroups.remove(uuid));
+	}
 
 	@Override
-	public void blockEntityAdded(BlockEntity blockEntity, boolean front) {}
+	public boolean canCoexistWith(EdgePointType<?> otherType, boolean front) {
+		return otherType == getType();
+	}
+
+	@Override
+	public void blockEntityAdded(BlockEntity blockEntity, boolean front) {
+		Map<BlockPos, Boolean> blockEntitiesOnSide = blockEntities.get(front);
+		if (blockEntitiesOnSide.isEmpty())
+			blockEntity.getBlockState()
+				.getOptionalValue(SignalBlock.TYPE)
+				.ifPresent(type -> types.set(front, type));
+		blockEntitiesOnSide.put(blockEntity.getBlockPos(),
+			blockEntity instanceof SignalBlockEntity ste && ste.getReportedPower());
+	}
+
+	public void updateBlockEntityPower(SignalBlockEntity blockEntity) {
+		for (boolean front : Iterate.trueAndFalse)
+			blockEntities.get(front)
+				.computeIfPresent(blockEntity.getBlockPos(), (p, c) -> blockEntity.getReportedPower());
+	}
 
 	@Override
 	public void blockEntityRemoved(BlockPos blockEntityPos, boolean front) {
-		removeFromAllGraphs();
+		blockEntities.forEach(s -> s.remove(blockEntityPos));
+		if (blockEntities.both(Map::isEmpty))
+			removeFromAllGraphs();
+	}
+
+	@Override
+	public void onRemoved(TrackGraph graph) {
+		super.onRemoved(graph);
+		SignalPropagator.onSignalRemoved(graph, this);
+	}
+
+	public void queueUpdate(TrackNode side) {
+		sidesToUpdate.set(isPrimary(side), true);
+	}
+
+	public UUID getGroup(TrackNode side) {
+		return groups.get(isPrimary(side));
+	}
+
+	@Override
+	public boolean canNavigateVia(TrackNode side) {
+		return !blockEntities.get(isPrimary(side))
+			.isEmpty();
+	}
+
+	public OverlayState getOverlayFor(BlockPos blockEntity) {
+		for (boolean first : Iterate.trueAndFalse) {
+			Map<BlockPos, Boolean> set = blockEntities.get(first);
+			for (BlockPos blockPos : set.keySet()) {
+				if (blockPos.equals(blockEntity))
+					return blockEntities.get(!first)
+						.isEmpty() ? OverlayState.RENDER : OverlayState.DUAL;
+				return OverlayState.SKIP;
+			}
+		}
+		return OverlayState.SKIP;
+	}
+
+	public SignalType getTypeFor(BlockPos blockEntity) {
+		return types.get(blockEntities.getFirst()
+			.containsKey(blockEntity));
+	}
+
+	public SignalState getStateFor(BlockPos blockEntity) {
+		for (boolean first : Iterate.trueAndFalse) {
+			Map<BlockPos, Boolean> set = blockEntities.get(first);
+			if (set.containsKey(blockEntity))
+				return cachedStates.get(first);
+		}
+		return SignalState.INVALID;
+	}
+
+	@Override
+	public void tick(TrackGraph graph, boolean preTrains) {
+		super.tick(graph, preTrains);
+		if (!preTrains) {
+			tickState(graph);
+			return;
+		}
+		for (boolean front : Iterate.trueAndFalse) {
+			if (!sidesToUpdate.get(front))
+				continue;
+			sidesToUpdate.set(front, false);
+			SignalPropagator.propagateSignalGroup(graph, this, front);
+			chainedSignals.set(front, null);
+		}
+	}
+
+	private void tickState(TrackGraph graph) {
+		for (boolean current : Iterate.trueAndFalse) {
+			Map<BlockPos, Boolean> set = blockEntities.get(current);
+			if (set.isEmpty())
+				continue;
+
+			boolean forcedRed = isForcedRed(current);
+			UUID group = groups.get(current);
+			if (Objects.equals(group, groups.get(!current))) {
+				cachedStates.set(current, SignalState.INVALID);
+				continue;
+			}
+
+			Map<UUID, SignalEdgeGroup> signalEdgeGroups = TrackRegistry.RAILWAYS.signalEdgeGroups;
+			SignalEdgeGroup signalEdgeGroup = signalEdgeGroups.get(group);
+			if (signalEdgeGroup == null) {
+				cachedStates.set(current, SignalState.INVALID);
+				continue;
+			}
+
+			boolean occupiedUnlessBySelf = forcedRed || signalEdgeGroup.isOccupiedUnless(this);
+			cachedStates.set(current, occupiedUnlessBySelf ? SignalState.RED : resolveSignalChain(graph, current));
+		}
+	}
+
+	public boolean isForcedRed(TrackNode side) {
+		return isForcedRed(isPrimary(side));
+	}
+
+	public boolean isForcedRed(boolean primary) {
+		Collection<Boolean> values = blockEntities.get(primary)
+			.values();
+		for (Boolean b : values)
+			if (b)
+				return true;
+		return false;
+	}
+
+	private SignalState resolveSignalChain(TrackGraph graph, boolean side) {
+		if (types.get(side) != SignalType.CROSS_SIGNAL)
+			return SignalState.GREEN;
+
+		if (chainedSignals.get(side) == null)
+			chainedSignals.set(side, SignalPropagator.collectChainedSignals(graph, this, side));
+
+		boolean allPathsFree = true;
+		boolean noPathsFree = true;
+		boolean invalid = false;
+
+		for (Entry<UUID, Boolean> entry : chainedSignals.get(side)
+			.entrySet()) {
+			UUID uuid = entry.getKey();
+			boolean sideOfOther = entry.getValue();
+			SignalBoundary otherSignal = graph.getPoint(EdgePointType.SIGNAL, uuid);
+			if (otherSignal == null) {
+				invalid = true;
+				break;
+			}
+			if (otherSignal.blockEntities.get(sideOfOther)
+				.isEmpty())
+				continue;
+			SignalState otherState = otherSignal.cachedStates.get(sideOfOther);
+			allPathsFree &= otherState == SignalState.GREEN || otherState == SignalState.INVALID;
+			noPathsFree &= otherState == SignalState.RED;
+		}
+		if (invalid) {
+			chainedSignals.set(side, null);
+			return SignalState.INVALID;
+		}
+		if (allPathsFree)
+			return SignalState.GREEN;
+		if (noPathsFree)
+			return SignalState.RED;
+		return SignalState.YELLOW;
 	}
 
 	@Override
 	public void read(CompoundTag nbt, HolderLookup.Provider registries, boolean migration, DimensionPalette dimensions) {
 		super.read(nbt, registries, migration, dimensions);
+
 		if (migration)
 			return;
+
+		blockEntities = Couple.create(HashMap::new);
 		groups = Couple.create(null, null);
-		if (nbt.contains("Group1"))
-			groups.setFirst(TrackNbt.getUUID(nbt, "Group1"));
-		if (nbt.contains("Group2"))
-			groups.setSecond(TrackNbt.getUUID(nbt, "Group2"));
+
+		for (int i = 1; i <= 2; i++)
+			if (nbt.contains("Tiles" + i)) {
+				boolean first = i == 1;
+				NBTHelper.iterateCompoundList(nbt.getListOrEmpty("Tiles" + i), c -> blockEntities.get(first)
+					.put(TrackNbt.getBlockPos(c, "Pos"), c.getBooleanOr("Power", false)));
+			}
+
+		for (int i = 1; i <= 2; i++)
+			if (nbt.contains("Group" + i))
+				groups.set(i == 1, TrackNbt.getUUID(nbt, "Group" + i));
+		for (int i = 1; i <= 2; i++)
+			sidesToUpdate.set(i == 1, nbt.contains("Update" + i));
+		for (int i = 1; i <= 2; i++)
+			types.set(i == 1, NBTHelper.readEnum(nbt, "Type" + i, SignalType.class));
+		for (int i = 1; i <= 2; i++)
+			cachedStates.set(i == 1, NBTHelper.readEnum(nbt, "State" + i, SignalState.class));
 	}
 
 	@Override
 	public void write(CompoundTag nbt, HolderLookup.Provider registries, DimensionPalette dimensions) {
 		super.write(nbt, registries, dimensions);
-		if (groups.getFirst() != null)
-			TrackNbt.putUUID(nbt, "Group1", groups.getFirst());
-		if (groups.getSecond() != null)
-			TrackNbt.putUUID(nbt, "Group2", groups.getSecond());
+		for (int i = 1; i <= 2; i++)
+			if (!blockEntities.get(i == 1)
+				.isEmpty())
+				nbt.put("Tiles" + i, NBTHelper.writeCompoundList(blockEntities.get(i == 1)
+					.entrySet(), e -> {
+						CompoundTag c = new CompoundTag();
+						TrackNbt.putBlockPos(c, "Pos", e.getKey());
+						c.putBoolean("Power", e.getValue());
+						return c;
+					}));
+		for (int i = 1; i <= 2; i++)
+			if (groups.get(i == 1) != null)
+				TrackNbt.putUUID(nbt, "Group" + i, groups.get(i == 1));
+		for (int i = 1; i <= 2; i++)
+			if (sidesToUpdate.get(i == 1))
+				nbt.putBoolean("Update" + i, true);
+		for (int i = 1; i <= 2; i++)
+			NBTHelper.writeEnum(nbt, "Type" + i, types.get(i == 1));
+		for (int i = 1; i <= 2; i++)
+			NBTHelper.writeEnum(nbt, "State" + i, cachedStates.get(i == 1));
+	}
+
+	public void cycleSignalType(BlockPos pos) {
+		types.set(blockEntities.getFirst()
+			.containsKey(pos), SignalType.values()[(getTypeFor(pos).ordinal() + 1) % SignalType.values().length]);
 	}
 
 }

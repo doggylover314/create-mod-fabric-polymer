@@ -527,6 +527,8 @@
  "block.create.tiled_glass": "kiwen lukin leko",
  "block.create.tiled_glass_pane": "sinpin lukin leko",
  "block.create.track": "nasin palisa suli",
+ "block.create.track_observer": "ilo lukin pi tomo tawa linja",
+ "block.create.track_signal": "ilo toki pi tomo tawa linja",
  "block.create.track_station": "tomo pi tomo tawa linja",
  "block.create.tuff_pillar": "ko seli kiwen palisa",
  "block.create.turntable": "supa pi tawa sike",

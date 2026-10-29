@@ -1,0 +1,36 @@
+{
+  "items": [
+    "track_signal",
+    "track_observer"
+  ],
+  "blocks": [
+    "track_signal",
+    "track_observer"
+  ],
+  "display_models": [
+    "block/track_signal/block_entry_signal",
+    "block/track_signal/block_cross_signal",
+    "block/track_signal/indicator_on",
+    "block/track_signal/indicator_off",
+    "block/track_observer/block",
+    "block/track_observer/block_powered"
+  ],
+  "blockstates": [
+    "track_signal",
+    "track_observer"
+  ],
+  "crafting": [
+    "kinetics/track_signal",
+    "kinetics/track_observer",
+    "kinetics/track_observer_from_other_plates"
+  ],
+  "lang_ids": [
+    "track_signal",
+    "track_observer"
+  ],
+  "lang_prefixes": [
+    "create.track_signal.",
+    "create.logistics.train_observer.",
+    "create.display_source.observed_train_name"
+  ]
+}

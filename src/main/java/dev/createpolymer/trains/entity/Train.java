@@ -38,6 +38,9 @@ import dev.createpolymer.trains.graph.TrackEdge;
 import dev.createpolymer.trains.graph.TrackGraph;
 import dev.createpolymer.trains.graph.TrackGraphLocation;
 import dev.createpolymer.trains.graph.TrackNode;
+import dev.createpolymer.foundation.fluid.FluidStack;
+import dev.createpolymer.foundation.fluid.IFluidHandler;
+import dev.createpolymer.foundation.fluid.IFluidHandler.FluidAction;
 import dev.createpolymer.trains.observer.TrackObserver;
 import dev.createpolymer.trains.schedule.ScheduleRuntime;
 import dev.createpolymer.trains.schedule.ScheduleRuntime.State;
@@ -232,7 +235,17 @@ public class Train {
 					}
 				}
 
-				// Create also lets observers filter for fluids; fluid filters are not ported
+				IFluidHandler tank = carriage.storage.getFluids();
+				if (tank != null) {
+					for (int slot = 0; slot < tank.getTanks(); slot++) {
+						if (shouldActivate)
+							break;
+						FluidStack drain = tank.drain(1, FluidAction.SIMULATE);
+						if (drain.isEmpty())
+							continue;
+						shouldActivate |= TrackObserver.testFluid(level, filter, drain);
+					}
+				}
 			}
 
 			cachedObserverFiltering.put(uuid, Pair.of(storageVersion, shouldActivate));
