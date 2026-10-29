@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "  T",
+    "RCT",
+    "SSS"
+  ],
+  "key": {
+    "C": "#c:plates/brass",
+    "R": "#c:dusts/redstone",
+    "S": "#c:stones",
+    "T": "minecraft:redstone_torch"
+  },
+  "result": {
+    "id": "create:pulse_extender",
+    "count": 1
+  }
+}

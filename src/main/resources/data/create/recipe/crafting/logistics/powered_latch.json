@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " T ",
+    "RCR",
+    "SSS"
+  ],
+  "key": {
+    "C": "minecraft:lever",
+    "R": "#c:dusts/redstone",
+    "S": "#c:stones",
+    "T": "minecraft:redstone_torch"
+  },
+  "result": {
+    "id": "create:powered_latch",
+    "count": 1
+  }
+}

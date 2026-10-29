@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " S ",
+    "CWC",
+    "CCC"
+  ],
+  "key": {
+    "C": "minecraft:cobblestone",
+    "S": "#c:plates/iron",
+    "W": "#c:dusts/redstone"
+  },
+  "result": {
+    "id": "create:redstone_contact",
+    "count": 2
+  }
+}

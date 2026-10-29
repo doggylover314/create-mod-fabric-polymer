@@ -32,12 +32,17 @@
     "create:mechanical_drill",
     "create:mechanical_saw",
     "create:deployer",
+    "create:redstone_contact",
     "create:andesite_casing",
     "create:brass_casing",
     "create:copper_casing",
     "create:mechanical_crafter",
     "create:sequenced_gearshift",
     "create:flywheel",
+    "create:content_observer",
+    "create:stockpile_switch",
+    "create:redstone_link",
+    "create:analog_lever",
     "create:cardboard_block",
     "create:bound_cardboard_block"
   ]

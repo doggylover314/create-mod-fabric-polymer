@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "P",
+    "S"
+  ],
+  "key": {
+    "P": "#c:rods/wooden",
+    "S": "create:andesite_casing"
+  },
+  "result": {
+    "id": "create:analog_lever",
+    "count": 1
+  }
+}
