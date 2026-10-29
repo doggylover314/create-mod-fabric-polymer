@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " S ",
+    " C ",
+    "SSS"
+  ],
+  "key": {
+    "C": "#minecraft:wool",
+    "S": "create:andesite_alloy"
+  },
+  "result": {
+    "id": "create:nozzle",
+    "count": 1
+  }
+}

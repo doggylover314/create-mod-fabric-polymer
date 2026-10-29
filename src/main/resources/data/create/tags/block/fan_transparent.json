@@ -1,0 +1,45 @@
+{
+  "values": [
+    {
+      "id": "create:blaze_burner",
+      "required": false
+    },
+    {
+      "id": "create:lit_blaze_burner",
+      "required": false
+    },
+    {
+      "id": "create:sail_frame",
+      "required": false
+    },
+    {
+      "id": "create:andesite_bars",
+      "required": false
+    },
+    {
+      "id": "create:brass_bars",
+      "required": false
+    },
+    {
+      "id": "create:copper_bars",
+      "required": false
+    },
+    {
+      "id": "create:copycat_base",
+      "required": false
+    },
+    "minecraft:iron_bars",
+    "minecraft:mangrove_roots",
+    "minecraft:copper_grate",
+    "minecraft:exposed_copper_grate",
+    "minecraft:weathered_copper_grate",
+    "minecraft:oxidized_copper_grate",
+    "minecraft:waxed_copper_grate",
+    "minecraft:waxed_exposed_copper_grate",
+    "minecraft:waxed_weathered_copper_grate",
+    "minecraft:waxed_oxidized_copper_grate",
+    "#minecraft:campfires",
+    "#minecraft:fences",
+    "#minecraft:leaves"
+  ]
+}

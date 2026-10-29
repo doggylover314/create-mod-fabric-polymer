@@ -1,0 +1,32 @@
+{
+  "items": [
+    "encased_fan",
+    "nozzle",
+    "propeller"
+  ],
+  "blocks": [
+    "encased_fan",
+    "nozzle"
+  ],
+  "display_models": [
+    "block/encased_fan/propeller"
+  ],
+  "blockstates": [
+    "encased_fan",
+    "nozzle"
+  ],
+  "crafting": [
+    "kinetics/encased_fan",
+    "kinetics/nozzle",
+    "kinetics/propeller"
+  ],
+  "processing_types": [
+    "splashing",
+    "haunting"
+  ],
+  "lang_ids": [
+    "encased_fan",
+    "nozzle",
+    "propeller"
+  ]
+}

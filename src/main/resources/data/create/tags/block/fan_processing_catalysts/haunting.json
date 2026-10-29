@@ -1,0 +1,10 @@
+{
+  "values": [
+    {
+      "id": "create:lit_blaze_burner",
+      "required": false
+    },
+    "minecraft:soul_fire",
+    "minecraft:soul_campfire"
+  ]
+}

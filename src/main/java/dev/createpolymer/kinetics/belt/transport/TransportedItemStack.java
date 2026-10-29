@@ -3,7 +3,11 @@ package dev.createpolymer.kinetics.belt.transport;
 import java.util.Random;
 
 import dev.createpolymer.kinetics.belt.BeltHelper;
+import dev.createpolymer.kinetics.fan.processing.AllFanProcessingTypes;
+import dev.createpolymer.kinetics.fan.processing.FanProcessingType;
+import dev.createpolymer.kinetics.fan.processing.FanProcessingTypeRegistry;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -24,6 +28,7 @@ public class TransportedItemStack implements Comparable<TransportedItemStack> {
 	public float prevBeltPosition;
 	public float prevSideOffset;
 
+	public FanProcessingType processedBy;
 	public int processingTime;
 
 	public TransportedItemStack(ItemStack stack) {
@@ -50,6 +55,7 @@ public class TransportedItemStack implements Comparable<TransportedItemStack> {
 		copy.insertedFrom = insertedFrom;
 		copy.prevBeltPosition = prevBeltPosition;
 		copy.prevSideOffset = prevSideOffset;
+		copy.processedBy = processedBy;
 		copy.processingTime = processingTime;
 		return copy;
 	}
@@ -71,8 +77,14 @@ public class TransportedItemStack implements Comparable<TransportedItemStack> {
 		nbt.putInt("Angle", angle);
 		nbt.putInt("InDirection", insertedFrom.get3DDataValue());
 
-		if (processingTime != 0)
+		if (processedBy != null) {
+			Identifier key = FanProcessingTypeRegistry.getKey(processedBy);
+			if (key == null)
+				throw new IllegalArgumentException("Could not get id for FanProcessingType " + processedBy + "!");
+
+			nbt.putString("FanProcessingType", key.toString());
 			nbt.putInt("FanProcessingTime", processingTime);
+		}
 
 		if (locked)
 			nbt.putBoolean("Locked", locked);
@@ -91,12 +103,17 @@ public class TransportedItemStack implements Comparable<TransportedItemStack> {
 		stack.insertedFrom = Direction.from3DDataValue(nbt.getIntOr("InDirection", 0));
 		stack.locked = nbt.getBooleanOr("Locked", false);
 		stack.lockedExternally = nbt.getBooleanOr("LockedExternally", false);
-		stack.processingTime = nbt.getIntOr("FanProcessingTime", 0);
+
+		if (nbt.getString("FanProcessingType").isPresent()) {
+			stack.processedBy = AllFanProcessingTypes.parseLegacy(nbt.getStringOr("FanProcessingType", ""));
+			stack.processingTime = nbt.getIntOr("FanProcessingTime", 0);
+		}
 
 		return stack;
 	}
 
 	public void clearFanProcessingData() {
+		processedBy = null;
 		processingTime = 0;
 	}
 

@@ -15,6 +15,8 @@
     "create:adjustable_chain_gearshift",
     "create:water_wheel",
     "create:large_water_wheel",
+    "create:encased_fan",
+    "create:nozzle",
     "create:turntable",
     "create:hand_crank",
     "create:cuckoo_clock",
