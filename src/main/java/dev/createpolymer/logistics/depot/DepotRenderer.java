@@ -37,6 +37,8 @@ public class DepotRenderer {
 	private final Slot[] outputs = new Slot[8];
 	private final List<Slot> main = new ArrayList<>();
 	private int lastDataVersion = -1;
+	private final Matrix4f transform = new Matrix4f();
+	private boolean transformChanged;
 
 	public DepotRenderer(ElementHolder holder) {
 		this.holder = holder;
@@ -44,21 +46,34 @@ public class DepotRenderer {
 			outputs[i] = new Slot();
 	}
 
+	/**
+	 * Draws everything relative to this transform (block-centred), like Create's renderItemsOf does inside the
+	 * pose of whatever carries the items. The ejector's moving plate uses it.
+	 */
+	public void setTransform(Matrix4f matrix) {
+		if (transform.equals(matrix))
+			return;
+		transform.set(matrix);
+		transformChanged = true;
+	}
+
 	/** Call once per tick. */
 	public void render(DepotBehaviour depotBehaviour, int dataVersion) {
 		TransportedItemStack transported = depotBehaviour.heldItem;
+		boolean force = transformChanged;
+		transformChanged = false;
 
 		// Render main items
 		int index = 0;
 		if (transported != null)
-			showMain(index++, transported);
+			showMain(index++, transported, force);
 		for (TransportedItemStack tis : depotBehaviour.incoming)
-			showMain(index++, tis);
+			showMain(index++, tis, force);
 		for (; index < main.size(); index++)
 			main.get(index).hide();
 
 		// Render output items
-		if (dataVersion == lastDataVersion)
+		if (dataVersion == lastDataVersion && !force)
 			return;
 		lastDataVersion = dataVersion;
 		for (int i = 0; i < outputs.length; i++) {
@@ -80,11 +95,11 @@ public class DepotRenderer {
 		}
 	}
 
-	private void showMain(int index, TransportedItemStack tis) {
+	private void showMain(int index, TransportedItemStack tis, boolean force) {
 		while (main.size() <= index)
 			main.add(new Slot());
 		Slot slot = main.get(index);
-		if (!slot.changed(tis)) 
+		if (!slot.changed(tis) && !force)
 			return;
 
 		Matrix4f m = base();
@@ -108,8 +123,8 @@ public class DepotRenderer {
 	}
 
 	/** Create translates the PoseStack to (.5, 15/16, .5) of the block; display coordinates are block-centred. */
-	private static Matrix4f base() {
-		return new Matrix4f().translate(0, 15 / 16f - .5f, 0);
+	private Matrix4f base() {
+		return new Matrix4f(transform).translate(0, 15 / 16f - .5f, 0);
 	}
 
 	/**

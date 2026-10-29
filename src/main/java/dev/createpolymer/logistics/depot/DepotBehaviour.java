@@ -221,8 +221,9 @@ public class DepotBehaviour extends BlockEntityBehaviour implements Clearable {
 		int cumulativeStackSize = getPresentStackSize();
 		for (TransportedItemStack transportedItemStack : incoming)
 			cumulativeStackSize += transportedItemStack.stack.getCount();
-		int fromGetter =
-			Math.min(maxStackSize.get() == 0 ? 64 : maxStackSize.get(), getHeldItemStack().getMaxStackSize());
+		// Create asks the empty stack here, which has a maximum of 64; in 26.3 it is 1
+		int fromGetter = Math.min(maxStackSize.get() == 0 ? 64 : maxStackSize.get(),
+			heldItem == null ? 64 : heldItem.stack.getMaxStackSize());
 		return (fromGetter) - cumulativeStackSize;
 	}
 

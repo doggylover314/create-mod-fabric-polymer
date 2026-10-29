@@ -32,6 +32,7 @@
     "create:blaze_burner",
     "create:lit_blaze_burner",
     "create:depot",
+    "create:weighted_ejector",
     "create:chute",
     "create:smart_chute",
     "create:speedometer",

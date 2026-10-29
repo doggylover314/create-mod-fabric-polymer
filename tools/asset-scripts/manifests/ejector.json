@@ -1,0 +1,24 @@
+{
+  "items": [
+    "weighted_ejector"
+  ],
+  "blocks": [
+    "weighted_ejector"
+  ],
+  "display_models": [
+    "block/weighted_ejector/block",
+    "block/weighted_ejector/top"
+  ],
+  "blockstates": [
+    "weighted_ejector"
+  ],
+  "crafting": [
+    "kinetics/weighted_ejector"
+  ],
+  "lang_ids": [
+    "weighted_ejector"
+  ],
+  "lang_prefixes": [
+    "create.weighted_ejector."
+  ]
+}

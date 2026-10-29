@@ -25,6 +25,7 @@
     "create:mechanical_press",
     "create:mechanical_mixer",
     "create:depot",
+    "create:weighted_ejector",
     "create:speedometer",
     "create:stressometer",
     "create:mechanical_drill",
