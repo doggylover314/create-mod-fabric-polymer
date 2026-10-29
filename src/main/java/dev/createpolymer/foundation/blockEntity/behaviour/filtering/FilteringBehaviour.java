@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import dev.createpolymer.foundation.fluid.FluidStack;
 import dev.createpolymer.CreatePolymer;
 import dev.createpolymer.foundation.blockEntity.SmartBlockEntity;
 import dev.createpolymer.foundation.blockEntity.behaviour.BehaviourType;
@@ -227,6 +228,10 @@ public class FilteringBehaviour extends BlockEntityBehaviour implements ValueSet
 	}
 
 	public boolean test(ItemStack stack) {
+		return !isActive() || filter.test(blockEntity.getLevel(), stack);
+	}
+
+	public boolean test(FluidStack stack) {
 		return !isActive() || filter.test(blockEntity.getLevel(), stack);
 	}
 

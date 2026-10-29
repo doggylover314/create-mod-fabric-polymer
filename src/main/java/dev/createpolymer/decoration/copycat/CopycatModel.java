@@ -15,6 +15,7 @@ import eu.pb4.polymer.virtualentity.api.elements.BlockDisplayElement;
 import eu.pb4.polymer.virtualentity.api.elements.VirtualElement;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -27,8 +28,16 @@ import net.minecraft.world.level.block.state.BlockState;
  */
 public abstract class CopycatModel extends BaseModel {
 
+	/**
+	 * What one piece of a copycat shows, for drawing the copycat somewhere else than in the world (a contraption):
+	 * either a block state or a model item, placed by {@code matrix} relative to the centre of the block. For a block
+	 * state the matrix maps the unit cube of a block display (see {@link #box}).
+	 */
+	public record Shape(@Nullable BlockState block, @Nullable ItemStack item, Matrix4f matrix) {}
+
 	private BlockState shownMaterial;
 	private final List<VirtualElement> pieces = new ArrayList<>();
+	private final List<Shape> shapes = new ArrayList<>();
 
 	protected CopycatModel(BlockState state, BlockState material) {
 		super(state);
@@ -38,6 +47,11 @@ public abstract class CopycatModel extends BaseModel {
 	/** The material the pieces currently show. */
 	public BlockState getShownMaterial() {
 		return shownMaterial;
+	}
+
+	/** The shapes that make up the copycat. */
+	public List<Shape> getShapes() {
+		return List.copyOf(shapes);
 	}
 
 	/** The display entities that make up the copycat. */
@@ -56,6 +70,7 @@ public abstract class CopycatModel extends BaseModel {
 		for (VirtualElement piece : pieces)
 			removeElement(piece);
 		pieces.clear();
+		shapes.clear();
 		shownMaterial = material;
 		build(material);
 	}
@@ -75,11 +90,14 @@ public abstract class CopycatModel extends BaseModel {
 
 	/** A model of Create's copycat_base (a model under models/block, see the copycat manifest). */
 	protected Part addBase(String model, Quaternionf orientation, float x, float y, float z) {
-		Part part = addPart(ModelItems.block(model));
+		ItemStack stack = ModelItems.block(model);
+		Part part = addPart(stack);
 		part.orientation(orientation)
 			.translation(x, y, z)
 			.apply(0);
 		pieces.add(part.element);
+		shapes.add(new Shape(null, stack, new Matrix4f().translate(x, y, z)
+			.rotate(orientation)));
 		return part;
 	}
 
@@ -92,6 +110,7 @@ public abstract class CopycatModel extends BaseModel {
 		display.setTeleportDuration(0);
 		addElement(display);
 		pieces.add(display);
+		shapes.add(new Shape(displayState, null, new Matrix4f(matrix)));
 		return display;
 	}
 

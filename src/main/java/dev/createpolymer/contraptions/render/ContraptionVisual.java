@@ -5,9 +5,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import org.jspecify.annotations.Nullable;
 import org.joml.Matrix3f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -16,6 +18,7 @@ import dev.createpolymer.contraptions.AbstractContraptionEntity;
 import dev.createpolymer.contraptions.AbstractContraptionEntity.ContraptionRotationState;
 import dev.createpolymer.contraptions.Contraption;
 import dev.createpolymer.contraptions.ContraptionWorld;
+import dev.createpolymer.decoration.bracket.BracketBlock;
 import dev.createpolymer.visual.BlockstateModels;
 import eu.pb4.polymer.core.api.block.PolymerBlock;
 import eu.pb4.polymer.virtualentity.api.ElementHolder;
@@ -30,6 +33,7 @@ import eu.pb4.polymer.virtualentity.api.elements.VirtualElement;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.level.ServerPlayer;
@@ -91,7 +95,13 @@ public class ContraptionVisual extends ElementHolder {
 		CENTERED
 	}
 
-	private record Piece(BlockPos local, BlockState state, Kind kind, DisplayElement element, Quaternionf own) {}
+	/**
+	 * One display of a block. {@code offset} is where the display starts inside the block (relative to its centre) and
+	 * {@code scale} how far it is stretched; both are turned with the contraption. {@code nbt} is the block entity
+	 * data the display was made from.
+	 */
+	private record Piece(BlockPos local, BlockState state, @Nullable CompoundTag nbt, Kind kind, DisplayElement element,
+		Quaternionf own, Vector3f offset, Vector3f scale) {}
 
 	private record Proxy(BlockPos local, GenericEntityElement element) {}
 
@@ -171,8 +181,10 @@ public class ContraptionVisual extends ElementHolder {
 		List<Piece> drop = new ArrayList<>();
 		for (Piece p : pieces) {
 			StructureBlockInfo info = blocks.get(p.local);
-			if (info != null && info.state() == p.state && unchanged.add(p.local))
+			if (info != null && info.state() == p.state && Objects.equals(info.nbt(), p.nbt)) {
+				unchanged.add(p.local);
 				keep.add(p);
+			}
 			else
 				drop.add(p);
 		}
@@ -183,7 +195,7 @@ public class ContraptionVisual extends ElementHolder {
 		for (StructureBlockInfo info : blocks.values()) {
 			if (shown.contains(info.pos()))
 				continue;
-			createPieces(info.pos(), info.state());
+			createPieces(info.pos(), info.state(), info.nbt());
 		}
 
 		// proxies are cheap to recompute: replace them all
@@ -205,26 +217,66 @@ public class ContraptionVisual extends ElementHolder {
 			removeElement(e);
 	}
 
-	private void addPiece(BlockPos local, BlockState state, Kind kind, DisplayElement element, Quaternionf own) {
+	private void addPiece(BlockPos local, BlockState state, @Nullable CompoundTag nbt, Kind kind,
+		DisplayElement element, Quaternionf own) {
+		Vector3f offset = kind == Kind.BLOCK ? new Vector3f(-.5f, -.5f, -.5f) : new Vector3f();
+		addPiece(local, state, nbt, kind, element, own, offset, new Vector3f(1, 1, 1));
+	}
+
+	private void addPiece(BlockPos local, BlockState state, @Nullable CompoundTag nbt, Kind kind,
+		DisplayElement element, Quaternionf own, Vector3f offset, Vector3f scale) {
 		element.setViewRange(1.5f);
 		element.setTeleportDuration(0);
 		element.setInterpolationDuration(0);
 		element.ignorePositionUpdates();
-		pieces.add(new Piece(local, state, kind, element, own));
+		pieces.add(new Piece(local, state, nbt, kind, element, own, offset, scale));
 		addElement(element);
 		VirtualEntityUtils.addVirtualPassenger(entity, element.getEntityIds().getInt(0));
 	}
 
-	private void createPieces(BlockPos local, BlockState state) {
+	private void createPieces(BlockPos local, BlockState state, @Nullable CompoundTag nbt) {
 		if (state.isAir())
 			return;
+		createBlockPieces(local, state, nbt);
+		createBracketPiece(local, state, nbt);
+	}
+
+	/**
+	 * Create's BracketedBlockEntityBehaviour keeps the bracket in the block entity data: it is drawn as one more
+	 * piece, like the bracket models of Create's PipeAttachmentModel and BracketedKineticBlockModel.
+	 */
+	private void createBracketPiece(BlockPos local, BlockState state, @Nullable CompoundTag nbt) {
+		if (nbt == null)
+			return;
+		BlockState bracket = nbt.read("Bracket", BlockState.CODEC)
+			.orElse(null);
+		if (bracket == null || !(bracket.getBlock() instanceof BracketBlock bracketBlock))
+			return;
+		BlockstateModels.Variant variant = BlockstateModels.get(bracketBlock.blockstateFile(), bracket);
+		if (variant == null)
+			return;
+		ItemDisplayElement element = new ItemDisplayElement(variant.stack());
+		element.setItemDisplayContext(ItemDisplayContext.NONE);
+		addPiece(local, state, nbt, Kind.CENTERED, element, variant.rotation());
+	}
+
+	private void createBlockPieces(BlockPos local, BlockState state, @Nullable CompoundTag nbt) {
 		Block block = state.getBlock();
 
 		if (block instanceof ContraptionDisplay display) {
-			for (ContraptionDisplay.Piece piece : display.getContraptionPieces(state)) {
+			for (ContraptionDisplay.Piece piece : display.getContraptionPieces(state, nbt)) {
 				ItemDisplayElement element = new ItemDisplayElement(piece.stack());
 				element.setItemDisplayContext(ItemDisplayContext.NONE);
-				addPiece(local, state, Kind.CENTERED, element, piece.orientation());
+				addPiece(local, state, nbt, Kind.CENTERED, element, piece.orientation(), piece.translation(),
+					new Vector3f(1, 1, 1));
+			}
+			for (ContraptionDisplay.BlockPiece piece : display.getContraptionBlockPieces(state, nbt)) {
+				// Block displays are placed from their corner: split the matrix into where the display starts,
+				// how it is turned inside the block and how it is stretched
+				Vector3f offset = piece.matrix().getTranslation(new Vector3f());
+				Quaternionf own = piece.matrix().getNormalizedRotation(new Quaternionf());
+				Vector3f scale = piece.matrix().getScale(new Vector3f());
+				addPiece(local, state, nbt, Kind.BLOCK, new BlockDisplayElement(piece.state()), own, offset, scale);
 			}
 			return;
 		}
@@ -234,10 +286,10 @@ public class ContraptionVisual extends ElementHolder {
 			if (client.isAir())
 				return;
 			if (!client.is(Blocks.BARRIER)) {
-				addPiece(local, state, Kind.BLOCK, new BlockDisplayElement(client), new Quaternionf());
+				addPiece(local, state, nbt, Kind.BLOCK, new BlockDisplayElement(client), new Quaternionf());
 				return;
 			}
-			createModelBlockPiece(local, state);
+			createModelBlockPiece(local, state, nbt);
 			return;
 		}
 
@@ -247,17 +299,17 @@ public class ContraptionVisual extends ElementHolder {
 				return;
 			ItemDisplayElement element = new ItemDisplayElement(stack);
 			element.setItemDisplayContext(ItemDisplayContext.NONE);
-			addPiece(local, state, Kind.CENTERED, element, orientationFor(state));
+			addPiece(local, state, nbt, Kind.CENTERED, element, orientationFor(state));
 			return;
 		}
 
 		if (state.getRenderShape() == RenderShape.INVISIBLE)
 			return;
-		addPiece(local, state, Kind.BLOCK, new BlockDisplayElement(state), new Quaternionf());
+		addPiece(local, state, nbt, Kind.BLOCK, new BlockDisplayElement(state), new Quaternionf());
 	}
 
 	/** Create blocks drawn with display models: their blockstate file when bundled, else their item's model. */
-	private void createModelBlockPiece(BlockPos local, BlockState state) {
+	private void createModelBlockPiece(BlockPos local, BlockState state, @Nullable CompoundTag nbt) {
 		String path = BuiltInRegistries.BLOCK.getKey(state.getBlock()).getPath();
 		BlockstateModels.Variant variant = null;
 		if (ContraptionVisual.class.getResource("/create_polymer/blockstates/" + path + ".json") != null)
@@ -275,7 +327,7 @@ public class ContraptionVisual extends ElementHolder {
 		}
 		ItemDisplayElement element = new ItemDisplayElement(stack);
 		element.setItemDisplayContext(ItemDisplayContext.NONE);
-		addPiece(local, state, Kind.CENTERED, element, own);
+		addPiece(local, state, nbt, Kind.CENTERED, element, own);
 	}
 
 	/** Vanilla blocks drawn by a block entity renderer have no block model: show their item instead. */
@@ -400,14 +452,12 @@ public class ContraptionVisual extends ElementHolder {
 		Matrix3f linear = new Matrix3f().rotation(rotation);
 
 		for (Piece p : pieces) {
-			Vector3f local = new Vector3f(p.local.getX(), p.local.getY(), p.local.getZ());
-			if (p.kind == Kind.BLOCK)
-				local.sub(.5f, .5f, .5f);
+			Vector3f local = new Vector3f(p.local.getX(), p.local.getY(), p.local.getZ()).add(p.offset);
 			Vector3f translation = linear.transform(local, new Vector3f()).add(anchorRel).add(.5f, .5f, .5f);
 			Quaternionf left = new Quaternionf(rotation).mul(p.own);
 			p.element.setTranslation(translation);
 			p.element.setLeftRotation(left);
-			p.element.setScale(new Vector3f(1, 1, 1));
+			p.element.setScale(new Vector3f(p.scale));
 			// Item displays are turned half way round by the client; undo it, as Part does
 			p.element.setRightRotation(p.kind == Kind.CENTERED ? new Quaternionf().rotationY((float) Math.PI) : new Quaternionf());
 			if (p.element.isTransformationDirty()) {

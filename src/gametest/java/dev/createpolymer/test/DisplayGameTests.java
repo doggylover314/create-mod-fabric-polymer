@@ -118,7 +118,7 @@ public class DisplayGameTests {
 			var level = helper.getLevel();
 			helper.assertTrue(DisplaySource.getAll(level, helper.absolutePos(new BlockPos(1, 1, 1))).equals(List.of(DisplayRegistry.KINETIC_SPEED)), "speedometer");
 			helper.assertTrue(DisplaySource.getAll(level, helper.absolutePos(new BlockPos(2, 1, 1))).equals(List.of(DisplayRegistry.TIME_OF_DAY, DisplayRegistry.STOPWATCH)), "cuckoo clock");
-			helper.assertTrue(DisplaySource.getAll(level, helper.absolutePos(new BlockPos(3, 1, 1))).size() == 4, "smart observer");
+			helper.assertTrue(DisplaySource.getAll(level, helper.absolutePos(new BlockPos(3, 1, 1))).size() == 5, "smart observer");
 			helper.assertTrue(DisplaySource.getAll(level, helper.absolutePos(new BlockPos(6, 1, 1))).equals(List.of(DisplayRegistry.REDSTONE_POWER)), "target block");
 			helper.assertTrue(DisplaySource.getAll(level, helper.absolutePos(new BlockPos(4, 1, 1))).isEmpty(), "sign is not a source");
 			helper.assertTrue(DisplayTarget.get(level, helper.absolutePos(new BlockPos(4, 1, 1))) == DisplayRegistry.SIGN, "sign target");

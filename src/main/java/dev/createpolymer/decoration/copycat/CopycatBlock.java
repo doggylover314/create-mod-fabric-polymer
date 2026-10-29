@@ -1,8 +1,14 @@
 package dev.createpolymer.decoration.copycat;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jspecify.annotations.Nullable;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import dev.createpolymer.CreatePolymer;
+import dev.createpolymer.contraptions.render.ContraptionDisplay;
 import dev.createpolymer.foundation.block.IBE;
 import dev.createpolymer.item.IWrenchable;
 import dev.createpolymer.registry.feature.CopycatRegistry;
@@ -12,6 +18,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundLevelEventPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -55,7 +62,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  * {@link #LIGHT} block state property, and the look of the material is drawn by block displays
  * (see {@link CopycatModel}).
  */
-public abstract class CopycatBlock extends Block implements IBE<CopycatBlockEntity>, IWrenchable, PolymerModelBlock {
+public abstract class CopycatBlock extends Block implements IBE<CopycatBlockEntity>, IWrenchable, PolymerModelBlock, ContraptionDisplay {
 
 	/** Light level of the material; the block state is the only place vanilla reads a block's light from. */
 	public static final IntegerProperty LIGHT = IntegerProperty.create("light", 0, 15);
@@ -270,6 +277,43 @@ public abstract class CopycatBlock extends Block implements IBE<CopycatBlockEnti
 	}
 
 	//
+
+	/** The model that shows this copycat made of {@code material}. */
+	protected abstract CopycatModel copycatModel(BlockState state, BlockState material);
+
+	// A contraption keeps the block entity data of the copycat, the material is read from it
+
+	@Override
+	public List<Piece> getContraptionPieces(BlockState state) {
+		return getContraptionPieces(state, null);
+	}
+
+	@Override
+	public List<Piece> getContraptionPieces(BlockState state, @Nullable CompoundTag blockEntityData) {
+		List<Piece> pieces = new ArrayList<>();
+		for (CopycatModel.Shape shape : copycatModel(state, materialOf(blockEntityData)).getShapes())
+			if (shape.item() != null)
+				pieces.add(new Piece(shape.item(), shape.matrix()
+					.getNormalizedRotation(new Quaternionf()), shape.matrix()
+						.getTranslation(new Vector3f())));
+		return pieces;
+	}
+
+	@Override
+	public List<BlockPiece> getContraptionBlockPieces(BlockState state, @Nullable CompoundTag blockEntityData) {
+		List<BlockPiece> pieces = new ArrayList<>();
+		for (CopycatModel.Shape shape : copycatModel(state, materialOf(blockEntityData)).getShapes())
+			if (shape.block() != null)
+				pieces.add(new BlockPiece(shape.block(), shape.matrix()));
+		return pieces;
+	}
+
+	private static BlockState materialOf(@Nullable CompoundTag blockEntityData) {
+		if (blockEntityData == null)
+			return CopycatRegistry.COPYCAT_BASE.defaultBlockState();
+		return blockEntityData.read("Material", BlockState.CODEC)
+			.orElseGet(CopycatRegistry.COPYCAT_BASE::defaultBlockState);
+	}
 
 	public static BlockState getMaterial(BlockGetter reader, BlockPos targetPos) {
 		if (reader.getBlockEntity(targetPos) instanceof CopycatBlockEntity cbe)

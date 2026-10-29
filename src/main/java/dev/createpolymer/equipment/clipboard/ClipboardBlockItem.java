@@ -3,11 +3,13 @@ package dev.createpolymer.equipment.clipboard;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.Nullable;
 
+import dev.createpolymer.foundation.recipe.ItemCopyingRecipe.SupportsItemCopying;
 import dev.createpolymer.CreatePolymer;
 import dev.createpolymer.equipment.clipboard.ClipboardOverrides.ClipboardType;
 import dev.createpolymer.registry.feature.ToolsRegistry;
 import eu.pb4.polymer.core.api.item.PolymerBlockItem;
 import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
@@ -26,7 +28,7 @@ import net.minecraft.world.level.block.Block;
  * The item model follows the {@link ClipboardType} of the content: empty, written, or with a quill while the editor
  * is open (Create's model predicate).
  */
-public class ClipboardBlockItem extends PolymerBlockItem {
+public class ClipboardBlockItem extends PolymerBlockItem implements SupportsItemCopying {
 
 	public ClipboardBlockItem(Block pBlock, Properties pProperties) {
 		super(pBlock, pProperties, Items.TRIAL_KEY, true);
@@ -72,4 +74,10 @@ public class ClipboardBlockItem extends PolymerBlockItem {
 			case EDITING -> "clipboard_2";
 		});
 	}
+
+	@Override
+	public DataComponentType<?> getComponentType() {
+		return ToolsRegistry.CLIPBOARD_CONTENT;
+	}
+
 }

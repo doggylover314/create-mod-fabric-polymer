@@ -10,6 +10,11 @@ import dev.createpolymer.redstone.displayLink.DisplayLinkBlock;
 import dev.createpolymer.redstone.displayLink.DisplayLinkBlockEntity;
 import dev.createpolymer.redstone.displayLink.DisplayLinkBlockItem;
 import dev.createpolymer.redstone.displayLink.source.AccumulatedItemCountDisplaySource;
+import dev.createpolymer.redstone.displayLink.source.CurrentFloorDisplaySource;
+import dev.createpolymer.redstone.displayLink.source.EntityNameDisplaySource;
+import dev.createpolymer.redstone.displayLink.source.FactoryGaugeDisplaySource;
+import dev.createpolymer.redstone.displayLink.source.PackageAddressDisplaySource;
+import dev.createpolymer.redstone.displayLink.source.TrainStatusDisplaySource;
 import dev.createpolymer.redstone.displayLink.source.BoilerDisplaySource;
 import dev.createpolymer.redstone.displayLink.source.DeathCounterDisplaySource;
 import dev.createpolymer.redstone.displayLink.source.EnchantPowerDisplaySource;
@@ -54,8 +59,7 @@ import net.minecraft.world.level.material.MapColor;
 /**
  * Create's display link and the display board, and the display sources and targets (Create's AllDisplaySources and
  * AllDisplayTargets). The station summary and observed train name sources are registered by SchedulesRegistry and
- * SignalsRegistry. Not ported yet: the train status, elevator floor, factory gauge, package address, seat and
- * computer sources.
+ * SignalsRegistry. Not ported: the computer source (ComputerCraft is not supported).
  * <p>
  * Other features add their own sources and targets with {@link DisplaySource#register},
  * {@link DisplaySource#BY_BLOCK} and {@link DisplayTarget#BY_BLOCK}.
@@ -133,6 +137,12 @@ public final class DisplayRegistry {
 	public static final FluidAmountDisplaySource COUNT_FLUIDS = DisplaySource.register("count_fluids", new FluidAmountDisplaySource());
 	public static final FluidListDisplaySource LIST_FLUIDS = DisplaySource.register("list_fluids", new FluidListDisplaySource());
 
+	public static final TrainStatusDisplaySource TRAIN_STATUS = DisplaySource.register("train_status", new TrainStatusDisplaySource());
+	public static final CurrentFloorDisplaySource CURRENT_FLOOR = DisplaySource.register("current_floor", new CurrentFloorDisplaySource());
+	public static final FactoryGaugeDisplaySource GAUGE_STATUS = DisplaySource.register("gauge_status", new FactoryGaugeDisplaySource());
+	public static final EntityNameDisplaySource ENTITY_NAME = DisplaySource.register("entity_name", new EntityNameDisplaySource());
+	public static final PackageAddressDisplaySource READ_PACKAGE_ADDRESS = DisplaySource.register("read_package_address", new PackageAddressDisplaySource());
+
 	private static <T> DataComponentType<T> component(String id, DataComponentType<T> type) {
 		Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, CreatePolymer.id(id), type);
 		PolymerComponent.registerDataComponent(type);
@@ -167,6 +177,12 @@ public final class DisplayRegistry {
 		DisplaySource.BY_BLOCK.add(RedstoneRegistry.SMART_OBSERVER, LIST_ITEMS);
 		DisplaySource.BY_BLOCK.add(RedstoneRegistry.SMART_OBSERVER, COUNT_FLUIDS);
 		DisplaySource.BY_BLOCK.add(RedstoneRegistry.SMART_OBSERVER, LIST_FLUIDS);
+		DisplaySource.BY_BLOCK.add(RedstoneRegistry.SMART_OBSERVER, READ_PACKAGE_ADDRESS);
+		DisplaySource.BY_BLOCK.add(TrainsRegistry.TRACK_STATION, TRAIN_STATUS);
+		DisplaySource.BY_BLOCK.add(PulleyRegistry.ELEVATOR_CONTACT, CURRENT_FLOOR);
+		DisplaySource.BY_BLOCK.add(FactoryGaugeRegistry.FACTORY_GAUGE, GAUGE_STATUS);
+		for (var seat : ActorsRegistry.SEATS.values())
+			DisplaySource.BY_BLOCK.add(seat, ENTITY_NAME);
 
 		// Targets: AllDisplayTargets' associate and the displayTarget calls in AllBlocks and AllBlockEntityTypes
 		DisplayTarget.BY_BLOCK_ENTITY.register(BlockEntityTypes.SIGN, SIGN);
@@ -195,6 +211,11 @@ public final class DisplayRegistry {
 		DisplaySource.LEGACY_NAMES.put("content_observer_source_count_fluids", COUNT_FLUIDS);
 		DisplaySource.LEGACY_NAMES.put("content_observer_source_list_fluids", LIST_FLUIDS);
 		DisplaySource.LEGACY_NAMES.put("stockpile_switch_source_fill_level", FILL_LEVEL);
+		DisplaySource.LEGACY_NAMES.put("elevator_contact_source_current_floor", CURRENT_FLOOR);
+		DisplaySource.LEGACY_NAMES.put("track_station_source_train_status", TRAIN_STATUS);
+		DisplaySource.LEGACY_NAMES.put("factory_gauge_source_gauge_status", GAUGE_STATUS);
+		for (var color : ActorsRegistry.SEATS.keySet())
+			DisplaySource.LEGACY_NAMES.put(color.getSerializedName() + "_seat_source_entity_name", ENTITY_NAME);
 		DisplaySource.LEGACY_NAMES.put("depot_source_combine_item_names", ITEM_NAMES);
 		DisplaySource.LEGACY_NAMES.put("weighted_ejector_source_combine_item_names", ITEM_NAMES);
 		DisplayTarget.LEGACY_NAMES.put("sign_display_target", SIGN);

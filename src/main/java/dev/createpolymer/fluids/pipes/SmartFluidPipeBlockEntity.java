@@ -10,10 +10,7 @@ import dev.createpolymer.foundation.blockEntity.SmartBlockEntity;
 import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import dev.createpolymer.foundation.blockEntity.behaviour.ValueBoxTransform;
 import dev.createpolymer.foundation.blockEntity.behaviour.filtering.FilteringBehaviour;
-import dev.createpolymer.foundation.fluid.FluidItemHandlers;
 import dev.createpolymer.foundation.fluid.FluidStack;
-import dev.createpolymer.logistics.filter.FilterItemStack;
-import dev.createpolymer.logistics.filter.FilterItemStack.ListFilterItemStack;
 import dev.createpolymer.util.AngleHelper;
 import dev.createpolymer.util.VecHelper;
 import net.minecraft.core.BlockPos;
@@ -29,8 +26,6 @@ import net.minecraft.world.phys.Vec3;
 
 public class SmartFluidPipeBlockEntity extends SmartBlockEntity implements Clearable {
 	private FilteringBehaviour filter;
-	private ItemStack testedFilter = ItemStack.EMPTY;
-	private FilterItemStack testedFilterStack = FilterItemStack.empty();
 
 	public SmartFluidPipeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
@@ -61,55 +56,6 @@ public class SmartFluidPipeBlockEntity extends SmartBlockEntity implements Clear
 			FluidPropagator.propagateChangedPipe(level, worldPosition, getBlockState());
 	}
 
-	/**
-	 * Create's FilteringBehaviour#test(FluidStack). The filter item can be a fluid container (a bucket or anything
-	 * with a fluid storage), or a list filter holding such items. Containers that Create empties through recipes
-	 * (potions, bottles) are not understood.
-	 */
-	boolean testFluid(FluidStack fluid) {
-		if (!filter.isActive())
-			return true;
-		ItemStack stack = filter.getFilter();
-		if (!ItemStack.matches(stack, testedFilter)) {
-			testedFilter = stack.copy();
-			testedFilterStack = FilterItemStack.of(stack.copy());
-		}
-		return testFluid(testedFilterStack, fluid, false);
-	}
-
-	private static boolean testFluid(FilterItemStack filter, FluidStack fluid, boolean matchNBT) {
-		if (filter.isEmpty())
-			return true;
-		if (filter instanceof ListFilterItemStack list) {
-			if (list.containedItems.isEmpty())
-				return true;
-			for (FilterItemStack contained : list.containedItems)
-				if (testFluid(contained, fluid, list.shouldRespectNBT))
-					return !list.isBlacklist;
-			return list.isBlacklist;
-		}
-		if (fluid.isEmpty())
-			return false;
-		FluidStack contained = fluidIn(filter.item());
-		if (contained.isEmpty())
-			return false;
-		if (!matchNBT)
-			return contained.getFluid().isSame(fluid.getFluid());
-		return FluidStack.isSameFluidSameComponents(contained, fluid);
-	}
-
-	private static FluidStack fluidIn(ItemStack stack) {
-		return FluidItemHandlers.get(stack.copyWithCount(1))
-			.map(handler -> {
-				for (int i = 0; i < handler.getTanks(); i++)
-					if (!handler.getFluidInTank(i)
-						.isEmpty())
-						return handler.getFluidInTank(i);
-				return FluidStack.EMPTY;
-			})
-			.orElse(FluidStack.EMPTY);
-	}
-
 	class SmartPipeBehaviour extends StraightPipeFluidTransportBehaviour {
 		public SmartPipeBehaviour(SmartBlockEntity be) {
 			super(be);
@@ -117,7 +63,7 @@ public class SmartFluidPipeBlockEntity extends SmartBlockEntity implements Clear
 
 		@Override
 		public boolean canPullFluidFrom(FluidStack fluid, BlockState state, Direction direction) {
-			if (fluid.isEmpty() || filter != null && testFluid(fluid))
+			if (fluid.isEmpty() || filter != null && filter.test(fluid))
 				return super.canPullFluidFrom(fluid, state, direction);
 			return false;
 		}

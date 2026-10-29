@@ -158,7 +158,12 @@ public class CopycatStepBlock extends WaterloggedCopycatBlock {
 	@Override
 	public eu.pb4.polymer.virtualentity.api.ElementHolder createModel(ServerLevel world, BlockPos pos,
 		BlockState state) {
-		return new CopycatStepModel(state, CopycatBlock.getMaterial(world, pos));
+		return copycatModel(state, CopycatBlock.getMaterial(world, pos));
+	}
+
+	@Override
+	protected CopycatModel copycatModel(BlockState state, BlockState material) {
+		return new CopycatStepModel(state, material);
 	}
 
 }

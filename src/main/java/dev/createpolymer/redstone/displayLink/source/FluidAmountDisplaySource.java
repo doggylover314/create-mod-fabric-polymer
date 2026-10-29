@@ -29,7 +29,7 @@ public class FluidAmountDisplaySource extends SingleLineDisplaySource {
 			FluidStack stack = handler.getFluidInTank(i);
 			if (stack.isEmpty())
 				continue;
-			if (!ObservedFluids.test(filteringBehaviour, stack))
+			if (!filteringBehaviour.test(stack))
 				continue;
 			collected += stack.getAmount();
 		}

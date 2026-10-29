@@ -2,14 +2,21 @@ package dev.createpolymer.redstone.nixieTube;
 
 import dev.createpolymer.redstone.displayLink.DisplayLinkBlock;
 
+import java.lang.ref.WeakReference;
 import java.util.Optional;
 
+import org.jspecify.annotations.Nullable;
+
 import dev.createpolymer.foundation.blockEntity.SmartBlockEntity;
+import dev.createpolymer.trains.signal.SignalBlockEntity;
+import dev.createpolymer.trains.signal.SignalBlockEntity.SignalState;
 import dev.createpolymer.util.Couple;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
@@ -18,6 +25,8 @@ import net.minecraft.world.level.storage.ValueOutput;
 /**
  * Create's nixie tube. The custom text of a row of tubes is kept as a plain {@link Component} (Create resolves
  * selectors and scoreboard scores in it as well); the signal strength is shown as two digits.
+ * A tube whose back is against a train signal shows that signal's state instead (Create does this on the client,
+ * here the server looks the signal up and the tube's model draws the lamps).
  */
 public class NixieTubeBlockEntity extends SmartBlockEntity {
 
@@ -28,11 +37,41 @@ public class NixieTubeBlockEntity extends SmartBlockEntity {
 	private int nixieIndex;
 	private Couple<String> displayedStrings;
 
+	private WeakReference<SignalBlockEntity> cachedSignalTE;
+	public @Nullable SignalState signalState;
+
 	public NixieTubeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
 		customText = Optional.empty();
 		redstoneStrength = 0;
+		cachedSignalTE = new WeakReference<>(null);
 		updateDisplayedStrings();
+	}
+
+	@Override
+	public void tick() {
+		super.tick();
+		if (level == null || level.isClientSide())
+			return;
+
+		SignalState previous = signalState;
+		signalState = null;
+
+		SignalBlockEntity signalBlockEntity = cachedSignalTE.get();
+
+		if (signalBlockEntity == null || signalBlockEntity.isRemoved()) {
+			Direction facing = NixieTubeBlock.getFacing(getBlockState());
+			BlockEntity blockEntity = level.getBlockEntity(worldPosition.relative(facing.getOpposite()));
+			if (blockEntity instanceof SignalBlockEntity signal) {
+				signalState = signal.getState();
+				cachedSignalTE = new WeakReference<>(signal);
+			} else
+				cachedSignalTE = new WeakReference<>(null);
+		} else
+			signalState = signalBlockEntity.getState();
+
+		if (previous != null && signalState == null)
+			updateDisplayedStrings();
 	}
 
 	public boolean reactsToRedstone() {
@@ -77,6 +116,8 @@ public class NixieTubeBlockEntity extends SmartBlockEntity {
 	}
 
 	public void updateDisplayedStrings() {
+		if (signalState != null)
+			return;
 		customText.map(Component::getString)
 			.ifPresentOrElse(
 				fullText -> displayedStrings = Couple.create(charOrEmpty(fullText, nixieIndex * 2),

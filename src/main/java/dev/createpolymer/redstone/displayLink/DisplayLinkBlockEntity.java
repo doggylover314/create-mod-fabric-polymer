@@ -4,6 +4,9 @@ import java.util.List;
 
 import dev.createpolymer.api.behaviour.display.DisplaySource;
 import dev.createpolymer.api.behaviour.display.DisplayTarget;
+import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
+import dev.createpolymer.logistics.factoryBoard.FactoryPanelPosition;
+import dev.createpolymer.logistics.factoryBoard.FactoryPanelSupportBehaviour;
 import dev.createpolymer.util.VecHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -26,12 +29,20 @@ public class DisplayLinkBlockEntity extends LinkWithBulbBlockEntity {
 	public int targetLine;
 
 	public int refreshTicks;
+	public FactoryPanelSupportBehaviour factoryPanelSupport;
 
 	public DisplayLinkBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
 		targetOffset = BlockPos.ZERO;
 		sourceConfig = new CompoundTag();
 		targetLine = 0;
+	}
+
+	@Override
+	public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
+		behaviours.add(factoryPanelSupport = new FactoryPanelSupportBehaviour(this, () -> false, () -> false, () -> {
+			updateGatheredData();
+		}));
 	}
 
 	@Override
@@ -180,6 +191,8 @@ public class DisplayLinkBlockEntity extends LinkWithBulbBlockEntity {
 	}
 
 	public BlockPos getSourcePosition() {
+		for (FactoryPanelPosition position : factoryPanelSupport.getLinkedPanels())
+			return position.pos();
 		return worldPosition.relative(getDirection());
 	}
 

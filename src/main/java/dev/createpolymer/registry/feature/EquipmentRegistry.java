@@ -38,6 +38,7 @@ import dev.createpolymer.equipment.toolbox.ToolboxBlockEntity;
 import dev.createpolymer.equipment.toolbox.ToolboxDyeingRecipe;
 import dev.createpolymer.equipment.toolbox.ToolboxInventory;
 import dev.createpolymer.equipment.toolbox.UncontainableBlockItem;
+import dev.createpolymer.foundation.recipe.ItemCopyingRecipe;
 import dev.createpolymer.kinetics.base.BlockStressValues;
 import dev.createpolymer.processing.recipe.ProcessingRecipe;
 import dev.createpolymer.registry.ModBlockEntities;
@@ -163,6 +164,8 @@ public final class EquipmentRegistry {
 		serializer("sandpaper_polishing", ProcessingRecipe.codec(SandPaperPolishingRecipe::new));
 	public static final RecipeSerializer<ToolboxDyeingRecipe> TOOLBOX_DYEING_SERIALIZER =
 		serializer("toolbox_dyeing", ToolboxDyeingRecipe.SERIALIZER);
+	public static final RecipeSerializer<ItemCopyingRecipe> ITEM_COPYING_SERIALIZER =
+		serializer("item_copying", ItemCopyingRecipe.SERIALIZER);
 
 	private static <T extends Recipe<?>> RecipeType<T> type(String name) {
 		RecipeType<T> type = new RecipeType<>() {

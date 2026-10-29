@@ -17,6 +17,8 @@ import dev.createpolymer.schematics.requirement.ItemRequirement.ItemUseType;
 import dev.createpolymer.schematics.requirement.ItemRequirement;
 import dev.createpolymer.util.Iterate;
 import dev.createpolymer.util.VoxelShaper;
+import dev.createpolymer.trains.signal.SignalBlockEntity.SignalState;
+import dev.createpolymer.util.AngleHelper;
 import dev.createpolymer.visual.BaseModel;
 import dev.createpolymer.visual.ModelItems;
 import dev.createpolymer.visual.Part;
@@ -386,6 +388,8 @@ public class NixieTubeBlock extends DoubleFaceAttachedBlock
 		private String shownFirst = null;
 		private String shownSecond = null;
 		private BlockState shownState = null;
+		private @Nullable SignalParts signal = null;
+		private static final Map<String, ItemStack> SIGNAL_MODELS = new java.util.HashMap<>();
 
 		public Model(BlockState state) {
 			super(state);
@@ -418,6 +422,12 @@ public class NixieTubeBlock extends DoubleFaceAttachedBlock
 		protected void update(ServerLevel level, BlockPos pos, @Nullable BlockEntity be, long time) {
 			if (!(be instanceof NixieTubeBlockEntity nixie))
 				return;
+			if (nixie.signalState != null) {
+				showSignal(nixie.signalState, time);
+				return;
+			}
+			if (signal != null)
+				hideSignal();
 			String first = nixie.getDisplayedStrings().getFirst();
 			String second = nixie.getDisplayedStrings().getSecond();
 			if (first.equals(shownFirst) && second.equals(shownSecond) && state == shownState)
@@ -429,11 +439,114 @@ public class NixieTubeBlock extends DoubleFaceAttachedBlock
 			show(1, second);
 		}
 
+		/**
+		 * Create's NixieTubeRenderer.renderAsSignal: the digits are replaced by a panel with a red lamp in one tube
+		 * and a green or yellow one in the other. Create draws additive glows; displays cannot blend additively, so
+		 * the lamps are the tube, glow and cube models of the track signal at full brightness.
+		 */
+		private void showSignal(SignalState signalState, long time) {
+			boolean fresh = signal == null;
+			if (fresh) {
+				signal = new SignalParts();
+				shownFirst = null;
+				shownSecond = null;
+				for (int i = 0; i < 2; i++) {
+					front[i].setText(Component.empty());
+					back[i].setText(Component.empty());
+				}
+			}
+
+			boolean red = signalState.isRedLight(time);
+			boolean yellow = signalState.isYellowLight(time);
+			boolean green = signalState.isGreenLight(time);
+			int key = (red ? 1 : 0) | (yellow ? 2 : 0) | (green ? 4 : 0);
+			if (!fresh && key == signal.shownKey && state == signal.shownState)
+				return;
+			signal.shownKey = key;
+			signal.shownState = state;
+
+			Direction facing = getFacing(state);
+			boolean invertTubes = facing == Direction.DOWN || state.getValue(FACE) == DoubleAttachFace.WALL_REVERSED;
+			DoubleAttachFace face = state.getValue(FACE);
+			float yRot = AngleHelper.horizontalAngle(state.getValue(FACING)) - 90
+				+ (face == DoubleAttachFace.WALL_REVERSED ? 180 : 0);
+			float xRot = face == DoubleAttachFace.WALL ? -90 : face == DoubleAttachFace.WALL_REVERSED ? 90 : 0;
+
+			Matrix4f base = new Matrix4f()
+				.rotateY((float) Math.toRadians(yRot))
+				.rotateZ((float) Math.toRadians(xRot));
+			if (facing == Direction.DOWN)
+				base.rotateZ((float) Math.PI);
+			signal.panel.setMatrix(base, 0);
+
+			for (int slot = 0; slot < 2; slot++) {
+				boolean first = slot == 0;
+				boolean lit = first ? red : green || yellow;
+				SignalLamp lamp = signal.lamps[slot];
+				if (!lit) {
+					lamp.tube.setItem(ItemStack.EMPTY);
+					lamp.glow.setItem(ItemStack.EMPTY);
+					lamp.cube.setItem(ItemStack.EMPTY);
+					continue;
+				}
+
+				boolean flip = first == invertTubes;
+				boolean vert = first ^ facing.getAxis().isHorizontal();
+				float longSide = yellow ? 1 : 4;
+				float longSideGlow = yellow ? 2 : 5.125f;
+				String colour = first ? "red" : yellow ? "yellow" : "white";
+
+				// the lamp models are centred on their own origin, which a display puts half a block off its centre
+				Matrix4f at = new Matrix4f(base).translate(flip ? 4 / 16f : -4 / 16f, -.5f / 16f, 0);
+				lamp.tube.setItem(SIGNAL_MODELS.computeIfAbsent(colour + "_tube", Model::signalModel));
+				lamp.tube.setMatrix(new Matrix4f(at).scale(1 + 1 / 16f).translate(.5f, .5f, .5f), 0);
+				lamp.glow.setItem(SIGNAL_MODELS.computeIfAbsent(colour + "_glow", Model::signalModel));
+				lamp.glow.setMatrix(new Matrix4f(at).scale(vert ? longSideGlow : 2, vert ? 2 : longSideGlow, 2)
+					.translate(.5f, .5f, .5f), 0);
+				lamp.cube.setItem(SIGNAL_MODELS.computeIfAbsent("white_cube", Model::signalModel));
+				lamp.cube.setMatrix(new Matrix4f(at).scale(vert ? longSide : 1, vert ? 1 : longSide, 1)
+					.translate(.5f, .5f, .5f), 0);
+			}
+		}
+
+		private static ItemStack signalModel(String name) {
+			return ModelItems.block("track_signal/" + name);
+		}
+
+		private void hideSignal() {
+			removeElement(signal.panel.element);
+			for (SignalLamp lamp : signal.lamps) {
+				removeElement(lamp.tube.element);
+				removeElement(lamp.glow.element);
+				removeElement(lamp.cube.element);
+			}
+			signal = null;
+		}
+
+		private class SignalParts {
+			final Part panel = addPart(signalModel("panel"));
+			final SignalLamp[] lamps = { new SignalLamp(), new SignalLamp() };
+			int shownKey = -1;
+			@Nullable BlockState shownState;
+		}
+
+		private class SignalLamp {
+			final Part tube = lampPart();
+			final Part glow = lampPart();
+			final Part cube = lampPart();
+
+			private Part lampPart() {
+				Part part = addPart(ItemStack.EMPTY);
+				part.element.setBrightness(Brightness.FULL_BRIGHT);
+				return part;
+			}
+		}
+
 		private void show(int tube, String character) {
 			DyeColor dye = colorOf(state);
 			int[] colors = DYE_COLORS.getOrDefault(dye, DYE_COLORS.get(DyeColor.WHITE));
 			DoubleAttachFace face = state.getValue(FACE);
-			float yRot = dev.createpolymer.util.AngleHelper.horizontalAngle(state.getValue(FACING)) - 90
+			float yRot = AngleHelper.horizontalAngle(state.getValue(FACING)) - 90
 				+ (face == DoubleAttachFace.WALL_REVERSED ? 180 : 0);
 			float xRot = face == DoubleAttachFace.WALL ? -90 : face == DoubleAttachFace.WALL_REVERSED ? 90 : 0;
 

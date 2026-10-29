@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 
 import org.jetbrains.annotations.NotNull;
 
+import dev.createpolymer.foundation.recipe.ItemCopyingRecipe.SupportsItemCopying;
 import dev.createpolymer.foundation.item.ItemHelper;
 import dev.createpolymer.logistics.box.PackageItem;
 import dev.createpolymer.registry.feature.PackagesRegistry;
@@ -31,7 +32,7 @@ import net.minecraft.world.level.Level;
  * Base of Create's filter items. Players see it as a vanilla item with Create's item model (the same Polymer
  * mechanism as every other item here); the filter's contents live in data components that are never sent to clients.
  */
-public abstract class FilterItem extends SimplePolymerItem {
+public abstract class FilterItem extends SimplePolymerItem implements SupportsItemCopying {
 	public static ListFilterItem regular(Properties properties) {
 		return new ListFilterItem(properties);
 	}

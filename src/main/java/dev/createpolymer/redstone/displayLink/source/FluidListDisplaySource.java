@@ -43,7 +43,7 @@ public class FluidListDisplaySource extends ValueListDisplaySource {
 			FluidStack stack = handler.getFluidInTank(i);
 			if (stack.isEmpty())
 				continue;
-			if (!ObservedFluids.test(filteringBehaviour, stack))
+			if (!filteringBehaviour.test(stack))
 				continue;
 
 			fluids.merge(stack.getFluid(), stack.getAmount(), Integer::sum);

@@ -58,7 +58,15 @@
     "block/nixie_tube/block",
     "block/content_observer/block",
     "block/threshold_switch/block_wall_0",
-    "block/redstone_contact/block"
+    "block/redstone_contact/block",
+    "block/track_signal/panel",
+    "block/track_signal/red_tube",
+    "block/track_signal/red_glow",
+    "block/track_signal/white_cube",
+    "block/track_signal/white_tube",
+    "block/track_signal/white_glow",
+    "block/track_signal/yellow_tube",
+    "block/track_signal/yellow_glow"
   ],
   "blockstates": [
     "analog_lever",

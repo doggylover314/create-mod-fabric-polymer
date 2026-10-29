@@ -10,13 +10,19 @@ import dev.createpolymer.foundation.blockEntity.behaviour.inventory.InvManipulat
 import dev.createpolymer.foundation.blockEntity.behaviour.inventory.VersionedInventoryTrackerBehaviour;
 import dev.createpolymer.foundation.fluid.FluidHandlerLookup;
 import dev.createpolymer.foundation.fluid.IFluidHandler;
-import dev.createpolymer.foundation.fluid.IFluidHandler.FluidAction;
+import dev.createpolymer.foundation.fluid.FluidStack;
+import dev.createpolymer.fluids.FluidTransportBehaviour;
+import dev.createpolymer.fluids.PipeConnection.Flow;
+import dev.createpolymer.kinetics.chainConveyor.ChainConveyorBlockEntity;
+import dev.createpolymer.kinetics.chainConveyor.ChainConveyorPackage;
+import dev.createpolymer.util.Iterate;
 import dev.createpolymer.kinetics.belt.behaviour.TransportedItemStackHandlerBehaviour;
 import dev.createpolymer.kinetics.belt.behaviour.TransportedItemStackHandlerBehaviour.TransportedResult;
 import dev.createpolymer.redstone.DirectedDirectionalBlock;
 import dev.createpolymer.redstone.FilteredDetectorFilterSlot;
 import dev.createpolymer.util.BlockFace;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.Clearable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -28,8 +34,8 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
 /**
- * Create's smart observer. Detecting fluids in pipes and packages on chain conveyors is not part of this port (those
- * blocks are not ported); fluid containers are detected through their fluid handler, without a fluid filter.
+ * Create's smart observer. Fluid containers are detected through their fluid handler (Create's
+ * TankManipulationBehaviour.extractAny is the first fluid in the tanks that passes the filter).
  */
 public class SmartObserverBlockEntity extends SmartBlockEntity implements Clearable {
 	private static final int DEFAULT_DELAY = 6;
@@ -106,6 +112,32 @@ public class SmartObserverBlockEntity extends SmartBlockEntity implements Cleara
 			return;
 		}
 
+		// Detect fluids in pipe
+		FluidTransportBehaviour fluidBehaviour =
+			BlockEntityBehaviour.get(level, targetPos, FluidTransportBehaviour.TYPE);
+		if (fluidBehaviour != null) {
+			for (Direction side : Iterate.directions) {
+				Flow flow = fluidBehaviour.getFlow(side);
+				if (flow == null || !flow.inbound || !flow.complete)
+					continue;
+				if (!filtering.test(flow.fluid))
+					continue;
+				activate();
+				return;
+			}
+			return;
+		}
+
+		// Detect packages looping on a chain conveyor
+		if (level.getBlockEntity(targetPos) instanceof ChainConveyorBlockEntity ccbe) {
+			for (ChainConveyorPackage box : ccbe.getLoopingPackages())
+				if (filtering.test(box.item)) {
+					activate();
+					return;
+				}
+			return;
+		}
+
 		if (observedInventory.hasInventory()) {
 			boolean skipInv = invVersionTracker.stillWaiting(observedInventory);
 			invVersionTracker.awaitNewVersion(observedInventory);
@@ -131,17 +163,20 @@ public class SmartObserverBlockEntity extends SmartBlockEntity implements Cleara
 		}
 	}
 
-	/** Whether the block in front holds any fluid (a fluid filter is not supported, an item filter hides fluids). */
+	/** Whether the block in front holds a fluid that passes the filter. */
 	private boolean hasObservedFluid() {
-		if (!filtering.getFilter()
-			.isEmpty())
-			return false;
 		BlockPos targetPos = worldPosition.relative(SmartObserverBlock.getTargetDirection(getBlockState()));
 		if (!level.isLoaded(targetPos))
 			return false;
 		IFluidHandler tank = FluidHandlerLookup.get(level, targetPos, null);
-		return tank != null && !tank.drain(Integer.MAX_VALUE, FluidAction.SIMULATE)
-			.isEmpty();
+		if (tank == null)
+			return false;
+		for (int i = 0; i < tank.getTanks(); i++) {
+			FluidStack fluid = tank.getFluidInTank(i);
+			if (!fluid.isEmpty() && filtering.test(fluid))
+				return true;
+		}
+		return false;
 	}
 
 	public void activate() {

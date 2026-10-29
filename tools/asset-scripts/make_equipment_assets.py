@@ -104,6 +104,7 @@ for name, items, opts in TYPES:
 # ---- Recipes with custom or smithing types (written after convert_recipes.py, which clears the folder) ----
 R = os.path.join(DATA, 'recipe/crafting')
 dump(os.path.join(R, 'curiosities/toolbox_dyeing.json'), {'type': 'create:toolbox_dyeing', 'category': 'misc'})
+dump(os.path.join(R, 'curiosities/item_copying.json'), {'type': 'create:item_copying', 'category': 'misc'})
 
 def smithing(name, base, addition, result):
     dump(os.path.join(R, 'appliances', name + '.json'), {

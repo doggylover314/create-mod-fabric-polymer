@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 
 import org.jetbrains.annotations.Nullable;
 
+import dev.createpolymer.foundation.recipe.ItemCopyingRecipe.SupportsItemCopying;
 import dev.createpolymer.contraptions.Contraption;
 import dev.createpolymer.registry.feature.SchedulesRegistry;
 import dev.createpolymer.trains.entity.CarriageContraption;
@@ -13,6 +14,7 @@ import dev.createpolymer.trains.entity.Train;
 import dev.createpolymer.trains.schedule.destination.DestinationInstruction;
 import dev.createpolymer.util.Couple;
 import eu.pb4.polymer.core.api.item.SimplePolymerItem;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -36,7 +38,7 @@ import net.minecraft.world.level.Level;
  * component that is never sent to clients, and is edited in a chest GUI ({@link ScheduleGui}) instead of Create's
  * screen.
  */
-public class ScheduleItem extends SimplePolymerItem {
+public class ScheduleItem extends SimplePolymerItem implements SupportsItemCopying {
 
 	public ScheduleItem(Properties properties) {
 		super(properties, Items.TRIAL_KEY, true);
@@ -154,6 +156,11 @@ public class ScheduleItem extends SimplePolymerItem {
 		if (!pStack.has(SchedulesRegistry.TRAIN_SCHEDULE))
 			return null;
 		return Schedule.fromTag(registries, pStack.get(SchedulesRegistry.TRAIN_SCHEDULE));
+	}
+
+	@Override
+	public DataComponentType<?> getComponentType() {
+		return SchedulesRegistry.TRAIN_SCHEDULE;
 	}
 
 }
