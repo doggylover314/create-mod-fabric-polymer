@@ -38,6 +38,7 @@
     "create:gantry_shaft",
     "create:rope_pulley",
     "create:elevator_pulley",
+    "create:cart_assembler",
     "create:mechanical_drill",
     "create:mechanical_saw",
     "create:deployer",

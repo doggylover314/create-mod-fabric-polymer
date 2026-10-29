@@ -1,0 +1,43 @@
+{
+  "items": [
+    "cart_assembler",
+    "controller_rail",
+    "minecart_coupling",
+    "minecart_contraption",
+    "furnace_minecart_contraption",
+    "chest_minecart_contraption"
+  ],
+  "blocks": [
+    "cart_assembler",
+    "controller_rail"
+  ],
+  "display_models": [
+    "block/cart_assembler/block",
+    "block/cart_assembler/minecart_anchor"
+  ],
+  "blockstates": [
+    "cart_assembler"
+  ],
+  "crafting": [
+    "kinetics/cart_assembler",
+    "kinetics/controller_rail",
+    "curiosities/minecart_coupling",
+    "kinetics/minecart_from_contraption_cart",
+    "kinetics/furnace_minecart_from_contraption_cart"
+  ],
+  "lang_ids": [
+    "cart_assembler",
+    "controller_rail",
+    "minecart_anchor",
+    "minecart_coupling",
+    "minecart_contraption",
+    "furnace_minecart_contraption",
+    "chest_minecart_contraption"
+  ],
+  "lang_prefixes": [
+    "create.minecart_coupling.",
+    "create.block.cart_assembler.",
+    "create.contraption.minecart_contraption",
+    "create.contraptions.cart_movement_mode"
+  ]
+}

@@ -39,6 +39,7 @@ import dev.createpolymer.foundation.collision.CollisionList;
 import dev.createpolymer.foundation.collision.CollisionList.Populate;
 import dev.createpolymer.impl.contraption.ContraptionBlockTags;
 import dev.createpolymer.registry.feature.ContraptionRegistry;
+import dev.createpolymer.registry.feature.MinecartRegistry;
 import dev.createpolymer.util.BlockFace;
 import dev.createpolymer.util.Iterate;
 import dev.createpolymer.util.NBTHelper;
@@ -314,6 +315,10 @@ public abstract class Contraption {
 			movePistonHead(world, pos, frontier, visited, state);
 
 		// Cart assemblers attach themselves
+		BlockPos posDown = pos.below();
+		BlockState stateBelow = world.getBlockState(posDown);
+		if (!visited.contains(posDown) && stateBelow.is(MinecartRegistry.CART_ASSEMBLER))
+			frontier.add(posDown);
 
 		// Slime blocks and super glue drag adjacent blocks if possible
 		for (Direction offset : Iterate.directions) {

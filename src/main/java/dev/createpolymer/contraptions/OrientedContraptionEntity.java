@@ -3,11 +3,19 @@ package dev.createpolymer.contraptions;
 import static dev.createpolymer.util.AngleHelper.angleLerp;
 
 import java.util.UUID;
+import java.util.function.Predicate;
 
 import org.jetbrains.annotations.Nullable;
 
+import dev.createpolymer.api.contraption.storage.item.MountedItemStorageWrapper;
+import dev.createpolymer.contraptions.minecart.FurnaceCartFuel;
+import dev.createpolymer.contraptions.minecart.MinecartSim2020;
+import dev.createpolymer.contraptions.minecart.capability.CapabilityMinecartController;
+import dev.createpolymer.contraptions.minecart.capability.MinecartController;
+import dev.createpolymer.foundation.item.ItemHelper;
 import dev.createpolymer.registry.feature.ContraptionRegistry;
 import dev.createpolymer.util.AngleHelper;
+import dev.createpolymer.util.Couple;
 import dev.createpolymer.util.NBTHelper;
 import dev.createpolymer.util.VecHelper;
 import net.minecraft.core.BlockPos;
@@ -17,10 +25,14 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.DoubleTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.vehicle.minecart.AbstractMinecart;
+import net.minecraft.world.entity.vehicle.minecart.MinecartFurnace;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseRailBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -32,15 +44,17 @@ import net.minecraft.world.phys.Vec3;
  * Oriented Contraption Entities can rotate freely around two axes
  * simultaneously.
  * <p>
- * Minecart controllers (couplings, furnace cart fuel, picking carts up) and the stabilized-bearing variant are
- * not ported yet: the contraption hooks {@link Contraption#getStabilizedFacing()},
- * {@link Contraption#isRotationLocked()}, {@link Contraption#pausesActorsWhileRotating()} and
- * {@link Contraption#addExtraInventories(Entity)} stand in for Create's instanceof checks on those kinds.
+ * The contraption hooks {@link Contraption#getStabilizedFacing()}, {@link Contraption#isRotationLocked()},
+ * {@link Contraption#pausesActorsWhileRotating()} and {@link Contraption#addExtraInventories(Entity)} stand in for
+ * Create's instanceof checks on the contraption kind. Couplings, stalled carts and furnace cart fuel go through the
+ * {@link MinecartController} of the cart.
  */
 public class OrientedContraptionEntity extends AbstractContraptionEntity {
 
 	protected Vec3 motionBeforeStall;
 	protected boolean forceAngle;
+	private static final Predicate<ItemStack> FUEL_ITEMS = stack -> stack.is(Items.COAL) || stack.is(Items.CHARCOAL);
+
 	private boolean attachedExtraInventories;
 	private boolean manuallyPlaced;
 
@@ -256,21 +270,64 @@ public class OrientedContraptionEntity extends AbstractContraptionEntity {
 			tickActors();
 		boolean isStalled = isStalled();
 
-		// vanilla carts only: Create's minecart controller (couplings) takes over this part
-		if (isStalled) {
-			if (!wasStalled)
-				motionBeforeStall = riding.getDeltaMovement();
-			riding.setDeltaMovement(0, 0, 0);
+		MinecartController controller = MinecartController.get(riding);
+		if (controller.isPresent()) {
+			if (!level().isClientSide())
+				controller.setStalledExternally(isStalled);
+		} else {
+			if (isStalled) {
+				if (!wasStalled)
+					motionBeforeStall = riding.getDeltaMovement();
+				riding.setDeltaMovement(0, 0, 0);
+			}
+			if (wasStalled && !isStalled) {
+				riding.setDeltaMovement(motionBeforeStall);
+				motionBeforeStall = Vec3.ZERO;
+			}
 		}
-		if (wasStalled && !isStalled) {
-			riding.setDeltaMovement(motionBeforeStall);
-			motionBeforeStall = Vec3.ZERO;
+
+		if (level().isClientSide())
+			return;
+
+		if (!isStalled()) {
+			if (isOnCoupling) {
+				Couple<MinecartController> coupledCarts = getCoupledCartsIfPresent();
+				if (coupledCarts == null)
+					return;
+				coupledCarts.map(MinecartController::cart)
+					.forEach(this::powerFurnaceCartWithFuelFromStorage);
+				return;
+			}
+			powerFurnaceCartWithFuelFromStorage(riding);
 		}
 	}
 
 	protected boolean updateOrientation(boolean rotationLock, boolean wasStalled, Entity riding, boolean isOnCoupling) {
 		if (isOnCoupling) {
-			// coupled carts orient the contraption along the coupling: needs the minecart controllers
+			Couple<MinecartController> coupledCarts = getCoupledCartsIfPresent();
+			if (coupledCarts == null)
+				return false;
+
+			Vec3 positionVec = coupledCarts.getFirst()
+				.cart()
+				.position();
+			Vec3 coupledVec = coupledCarts.getSecond()
+				.cart()
+				.position();
+
+			double diffX = positionVec.x - coupledVec.x;
+			double diffY = positionVec.y - coupledVec.y;
+			double diffZ = positionVec.z - coupledVec.z;
+
+			prevYaw = yaw;
+			prevPitch = pitch;
+			yaw = (float) (Mth.atan2(diffZ, diffX) * 180 / Math.PI);
+			pitch = (float) (Math.atan2(diffY, Math.sqrt(diffX * diffX + diffZ * diffZ)) * 180 / Math.PI);
+
+			if (getCouplingId().equals(riding.getUUID())) {
+				pitch *= -1;
+				yaw += 180;
+			}
 			return false;
 		}
 
@@ -300,15 +357,11 @@ public class OrientedContraptionEntity extends AbstractContraptionEntity {
 
 		if (!rotationLock) {
 			if (riding instanceof AbstractMinecart minecartEntity) {
-				BlockPos railPosition = minecartEntity.blockPosition();
+				BlockPos railPosition = minecartEntity.getCurrentBlockPosOrRailBelow();
 				BlockState blockState = level().getBlockState(railPosition);
-				if (!(blockState.getBlock() instanceof BaseRailBlock))
-					blockState = level().getBlockState(railPosition = railPosition.below());
 				if (blockState.getBlock() instanceof BaseRailBlock abstractRailBlock) {
 					RailShape railDirection = blockState.getValue(abstractRailBlock.getShapeProperty());
-					Vec3 railVec = getRailVec(railDirection);
-					if (railVec != null)
-						motion = VecHelper.project(motion, railVec);
+					motion = VecHelper.project(motion, MinecartSim2020.getRailVec(railDirection));
 				}
 			}
 
@@ -334,14 +387,56 @@ public class OrientedContraptionEntity extends AbstractContraptionEntity {
 		return rotating;
 	}
 
-	/** Create's MinecartSim2020.getRailVec for straight rails; curves do not constrain the direction. */
+	protected void powerFurnaceCartWithFuelFromStorage(Entity riding) {
+		if (!(riding instanceof MinecartFurnace furnaceCart))
+			return;
+
+		int fuel = FurnaceCartFuel.getFuel(furnaceCart);
+		int fuelBefore = fuel;
+
+		int i = Mth.floor(furnaceCart.getX());
+		int j = Mth.floor(furnaceCart.getY());
+		int k = Mth.floor(furnaceCart.getZ());
+		if (furnaceCart.level()
+			.getBlockState(new BlockPos(i, j - 1, k))
+			.is(BlockTags.RAILS))
+			--j;
+
+		BlockPos blockpos = new BlockPos(i, j, k);
+		BlockState blockstate = this.level()
+			.getBlockState(blockpos);
+		if (blockstate.is(BlockTags.RAILS))
+			if (fuel > 1)
+				riding.setDeltaMovement(riding.getDeltaMovement()
+					.normalize()
+					.scale(1));
+		if (fuel < 5 && contraption != null) {
+			MountedItemStorageWrapper fuelItems = contraption.getStorage()
+				.getFuelItems();
+			if (fuelItems != null) {
+				ItemStack coal = ItemHelper.extract(fuelItems, FUEL_ITEMS, 1, false);
+				if (!coal.isEmpty())
+					fuel += 3600;
+			}
+		}
+
+		if (fuel != fuelBefore)
+			FurnaceCartFuel.addFuel(furnaceCart, fuel - fuelBefore);
+	}
+
 	@Nullable
-	private static Vec3 getRailVec(RailShape shape) {
-		return switch (shape) {
-			case NORTH_SOUTH, ASCENDING_NORTH, ASCENDING_SOUTH -> new Vec3(0, 0, 1);
-			case EAST_WEST, ASCENDING_EAST, ASCENDING_WEST -> new Vec3(1, 0, 0);
-			default -> null;
-		};
+	public Couple<MinecartController> getCoupledCartsIfPresent() {
+		UUID couplingId = getCouplingId();
+		if (couplingId == null)
+			return null;
+		MinecartController controller = CapabilityMinecartController.getIfPresent(level(), couplingId);
+		if (controller == null || !controller.isPresent())
+			return null;
+		UUID coupledCart = controller.getCoupledCart(true);
+		MinecartController coupledController = CapabilityMinecartController.getIfPresent(level(), coupledCart);
+		if (coupledController == null || !coupledController.isPresent())
+			return null;
+		return Couple.create(controller, coupledController);
 	}
 
 	@Nullable
@@ -358,8 +453,11 @@ public class OrientedContraptionEntity extends AbstractContraptionEntity {
 			contraption.addExtraInventories(riding);
 			return;
 		}
-		// coupled carts: both carts' inventories, needs the minecart controllers
-		contraption.addExtraInventories(riding);
+		Couple<MinecartController> coupledCarts = getCoupledCartsIfPresent();
+		if (coupledCarts == null)
+			return;
+		coupledCarts.map(MinecartController::cart)
+			.forEach(contraption::addExtraInventories);
 	}
 
 	@Override
