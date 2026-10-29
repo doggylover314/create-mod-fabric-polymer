@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import org.joml.Matrix3f;
 import org.joml.Quaternionf;
@@ -29,7 +30,10 @@ import eu.pb4.polymer.virtualentity.api.elements.VirtualElement;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypes;
@@ -68,6 +72,9 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  * carrier at an offset, so they are normal virtual entities that Polymer moves with relative move packets; they
  * are capped to {@link #MAX_PROXIES} per contraption.
  * <p>
+ * Entities sitting on the contraption's seats do not ride the carrier on clients, but a seat proxy each (see
+ * {@link ContraptionSeats}), so they and a riding player's camera are on their seat.
+ * <p>
  * Limits: one display entity per block (a 1000 block contraption is 1000 entities for everyone tracking it);
  * moving parts of Create blocks (shafts, cogs, heads) do not animate; non-axis-aligned rotation moves the shulker
  * hitboxes but they stay axis-aligned.
@@ -89,6 +96,7 @@ public class ContraptionVisual extends ElementHolder {
 	private record Proxy(BlockPos local, GenericEntityElement element) {}
 
 	private final AbstractContraptionEntity entity;
+	private final ContraptionSeats seats;
 	private final List<Piece> pieces = new ArrayList<>();
 	private final List<Proxy> proxies = new ArrayList<>();
 	private final Map<BlockPos, BlockState> shownStates = new HashMap<>();
@@ -103,6 +111,7 @@ public class ContraptionVisual extends ElementHolder {
 	public ContraptionVisual(AbstractContraptionEntity entity) {
 		this.entity = entity;
 		this.contraption = entity.getContraption();
+		this.seats = new ContraptionSeats(this, entity);
 	}
 
 	@Override
@@ -114,6 +123,24 @@ public class ContraptionVisual extends ElementHolder {
 		if (structureVersion != contraption.getStructureVersion())
 			rebuild();
 		updateTransforms();
+		seats.update();
+	}
+
+	/** The proxies the entities sitting on the contraption's seats ride on for clients. */
+	public ContraptionSeats getSeats() {
+		return seats;
+	}
+
+	/** An entity boarded or left a seat: put its proxy up or take it down now. */
+	public void seatsChanged() {
+		seats.refresh();
+		seats.requestResync();
+	}
+
+	@Override
+	protected void startWatchingExtraPackets(ServerGamePacketListenerImpl player,
+		Consumer<Packet<ClientGamePacketListener>> packetConsumer) {
+		seats.watcherAdded(player);
 	}
 
 	/** Number of display entities currently used (for tests and diagnostics). */
@@ -411,6 +438,7 @@ public class ContraptionVisual extends ElementHolder {
 
 	@Override
 	public void destroy() {
+		seats.clear();
 		super.destroy();
 		pieces.clear();
 		proxies.clear();

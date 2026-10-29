@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.tuple.MutablePair;
@@ -16,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 
 import dev.createpolymer.api.behaviour.movement.MovementBehaviour;
 import dev.createpolymer.contraptions.behaviour.MovementContext;
+import dev.createpolymer.contraptions.render.ContraptionSeats;
 import dev.createpolymer.contraptions.render.ContraptionVisual;
 import dev.createpolymer.foundation.collision.Matrix3d;
 import dev.createpolymer.registry.ModItems;
@@ -30,6 +33,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -60,7 +65,9 @@ import net.minecraft.world.phys.Vec3;
 
 /**
  * Ported from Create's AbstractContraptionEntity. Vanilla clients see this entity as an invisible item display (a
- * "carrier") that the {@link ContraptionVisual} hangs the contraption's blocks on; see PolymerEntity below.
+ * "carrier") that the {@link ContraptionVisual} hangs the contraption's blocks on; see PolymerEntity below. Entities
+ * sitting on its seats are passengers of this entity for the server, but ride seat proxies for clients, see
+ * {@link ContraptionSeats}.
  */
 public abstract class AbstractContraptionEntity extends Entity implements PolymerEntity {
 
@@ -111,6 +118,19 @@ public abstract class AbstractContraptionEntity extends Entity implements Polyme
 	public void modifyRawTrackedData(List<SynchedEntityData.DataValue<?>> data, ServerPlayer player, boolean initial) {
 		// the carrier is moved by position packets: let the client glide between them
 		data.add(SynchedEntityData.DataValue.create(DisplayEntityData.TELEPORTATION_DURATION, 3));
+	}
+
+	/**
+	 * Clients are not told that seated entities ride the carrier: they ride seat proxies (see {@link ContraptionSeats}),
+	 * so the carrier's passenger lists are sent without them. This sees the lists the entity tracker sends (when the
+	 * passengers change, when a client starts to track the entity, and the ones that update the block displays);
+	 * the ones other code sends straight to a connection are made good by the proxies' own passenger packets.
+	 */
+	@Override
+	public void onEntityPacketSent(Consumer<Packet<?>> consumer, Packet<?> packet) {
+		if (packet instanceof ClientboundSetPassengersPacket passengers)
+			ContraptionSeats.hideSeatedPassengers(this, passengers);
+		consumer.accept(packet);
 	}
 
 	public ContraptionVisual getVisual() {
@@ -182,6 +202,8 @@ public abstract class AbstractContraptionEntity extends Entity implements Polyme
 			return;
 		contraption.getSeatMapping()
 			.put(passenger.getUUID(), seatIndex);
+		if (visual != null)
+			visual.seatsChanged();
 	}
 
 	@Override
@@ -196,6 +218,8 @@ public abstract class AbstractContraptionEntity extends Entity implements Polyme
 			dismountLocations.put(passenger.getUUID(), transformedVector);
 		contraption.getSeatMapping()
 			.remove(passenger.getUUID());
+		if (visual != null)
+			visual.seatsChanged();
 	}
 
 	@Override
@@ -212,15 +236,30 @@ public abstract class AbstractContraptionEntity extends Entity implements Polyme
 	protected void positionRider(Entity passenger, MoveFunction callback) {
 		if (!hasPassenger(passenger))
 			return;
-		Vec3 transformedVector = getPassengerPosition(passenger, 1);
-		if (transformedVector == null)
+		Vec3 position = getSeatedPosition(passenger, v -> toGlobalVector(v, 1));
+		if (position == null)
 			return;
+		callback.accept(passenger, position.x, position.y, position.z);
+	}
+
+	/**
+	 * Where a passenger's feet are put (see positionRider) with the contraption turned as {@code state}; null if the
+	 * passenger has no place on the contraption.
+	 */
+	public Vec3 getSeatedPosition(Entity passenger, ContraptionRotationState state) {
+		return getSeatedPosition(passenger, v -> toGlobalVector(v, state));
+	}
+
+	private Vec3 getSeatedPosition(Entity passenger, UnaryOperator<Vec3> toGlobal) {
+		Vec3 transformedVector = getPassengerPosition(passenger, toGlobal);
+		if (transformedVector == null)
+			return null;
 
 		float offset = -1 / 8f;
 		if (passenger instanceof AbstractContraptionEntity)
 			offset = 0.0f;
-		callback.accept(passenger, transformedVector.x,
-			transformedVector.y + getCustomEntitySeatOffset(passenger) + offset, transformedVector.z);
+		return new Vec3(transformedVector.x, transformedVector.y + getCustomEntitySeatOffset(passenger) + offset,
+			transformedVector.z);
 	}
 
 	/** Create's SeatEntity.getCustomEntitySeatOffset: some mobs sit lower or higher than their hitbox suggests. */
@@ -236,6 +275,10 @@ public abstract class AbstractContraptionEntity extends Entity implements Polyme
 	}
 
 	public Vec3 getPassengerPosition(Entity passenger, float partialTicks) {
+		return getPassengerPosition(passenger, v -> toGlobalVector(v, partialTicks));
+	}
+
+	private Vec3 getPassengerPosition(Entity passenger, UnaryOperator<Vec3> toGlobal) {
 		if (contraption == null)
 			return null;
 
@@ -243,7 +286,7 @@ public abstract class AbstractContraptionEntity extends Entity implements Polyme
 		if (passenger instanceof OrientedContraptionEntity) {
 			BlockPos localPos = contraption.getBearingPosOf(id);
 			if (localPos != null)
-				return toGlobalVector(VecHelper.getCenterOf(localPos), partialTicks)
+				return toGlobal.apply(VecHelper.getCenterOf(localPos))
 					.add(VecHelper.getCenterOf(BlockPos.ZERO))
 					.subtract(.5f, 1, .5f);
 		}
@@ -254,12 +297,11 @@ public abstract class AbstractContraptionEntity extends Entity implements Polyme
 		if (seat == null)
 			return null;
 
-		Vec3 transformedVector = toGlobalVector(Vec3.atLowerCornerOf(seat)
+		Vec3 transformedVector = toGlobal.apply(Vec3.atLowerCornerOf(seat)
 			.add(.5,
 				-passenger.getVehicleAttachmentPoint(this).y + ySize + .125
 					- getCustomEntitySeatOffset(passenger),
-				.5),
-			partialTicks).add(VecHelper.getCenterOf(BlockPos.ZERO))
+				.5)).add(VecHelper.getCenterOf(BlockPos.ZERO))
 				.subtract(0.5, ySize, 0.5);
 		return transformedVector;
 	}
@@ -364,6 +406,14 @@ public abstract class AbstractContraptionEntity extends Entity implements Polyme
 		localVec = localVec.add(rotationOffset)
 			.add(anchor);
 		return localVec;
+	}
+
+	/** Like {@link #toGlobalVector(Vec3, float)} for the contraption turned as {@code state}. */
+	public Vec3 toGlobalVector(Vec3 localVec, ContraptionRotationState state) {
+		Vec3 rotationOffset = VecHelper.getCenterOf(BlockPos.ZERO);
+		return state.applyTo(localVec.subtract(rotationOffset))
+			.add(rotationOffset)
+			.add(getAnchorVec());
 	}
 
 	public Vec3 toLocalVector(Vec3 localVec, float partialTicks) {
