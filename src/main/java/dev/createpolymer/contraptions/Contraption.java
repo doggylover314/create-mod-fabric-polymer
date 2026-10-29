@@ -271,6 +271,11 @@ public abstract class Contraption {
 		// windmill bearing: wbbe.disassembleForMovement();
 
 		// gantry carriage / shaft: moveGantryPinion, moveGantryShaft
+		if (state.getBlock() instanceof dev.createpolymer.contraptions.gantry.GantryCarriageBlock)
+			moveGantryPinion(world, pos, frontier, visited, state);
+
+		if (state.getBlock() instanceof dev.createpolymer.kinetics.gantry.GantryShaftBlock)
+			moveGantryShaft(world, pos, frontier, visited, state);
 
 		// stickers: attach the block in front of extended stickers
 
@@ -296,6 +301,8 @@ public abstract class Contraption {
 			moveSeat(world, pos);
 
 		// Pulleys drag their rope and their attached structure: movePulley
+		if (state.getBlock() instanceof dev.createpolymer.contraptions.pulley.PulleyBlock)
+			movePulley(world, pos, frontier, visited);
 
 		// Pistons drag their attaches poles and extension
 		if (state.getBlock() instanceof MechanicalPistonBlock)
@@ -411,6 +418,60 @@ public abstract class Contraption {
 		getSeats().add(local);
 		// Create also moves the passenger of the SeatEntity at this position into initialPassengers; seat entities
 		// come with the seat port.
+	}
+
+	protected void moveGantryPinion(Level world, BlockPos pos, Queue<BlockPos> frontier, Set<BlockPos> visited,
+									BlockState state) {
+		BlockPos offset = pos.relative(state.getValue(dev.createpolymer.contraptions.gantry.GantryCarriageBlock.FACING));
+		if (!visited.contains(offset))
+			frontier.add(offset);
+		Axis rotationAxis = ((dev.createpolymer.kinetics.base.IRotate) state.getBlock()).getRotationAxis(state);
+		for (Direction d : Iterate.directionsInAxis(rotationAxis)) {
+			offset = pos.relative(d);
+			BlockState offsetState = world.getBlockState(offset);
+			if (offsetState.getBlock() instanceof dev.createpolymer.kinetics.gantry.GantryShaftBlock
+				&& offsetState.getValue(dev.createpolymer.kinetics.gantry.GantryShaftBlock.FACING)
+					.getAxis() == d.getAxis())
+				if (!visited.contains(offset))
+					frontier.add(offset);
+		}
+	}
+
+	protected void moveGantryShaft(Level world, BlockPos pos, Queue<BlockPos> frontier, Set<BlockPos> visited,
+								   BlockState state) {
+		for (Direction d : Iterate.directions) {
+			BlockPos offset = pos.relative(d);
+			if (!visited.contains(offset)) {
+				BlockState offsetState = world.getBlockState(offset);
+				Direction facing = state.getValue(dev.createpolymer.kinetics.gantry.GantryShaftBlock.FACING);
+				if (d.getAxis() == facing.getAxis()
+					&& offsetState.getBlock() instanceof dev.createpolymer.kinetics.gantry.GantryShaftBlock
+					&& offsetState.getValue(dev.createpolymer.kinetics.gantry.GantryShaftBlock.FACING) == facing)
+					frontier.add(offset);
+				else if (offsetState.getBlock() instanceof dev.createpolymer.contraptions.gantry.GantryCarriageBlock
+					&& offsetState.getValue(dev.createpolymer.contraptions.gantry.GantryCarriageBlock.FACING) == d)
+					frontier.add(offset);
+			}
+		}
+	}
+
+	private void movePulley(Level world, BlockPos pos, Queue<BlockPos> frontier, Set<BlockPos> visited) {
+		int limit = ContraptionRegistry.maxRopeLength;
+		BlockPos ropePos = pos;
+		while (limit-- >= 0) {
+			ropePos = ropePos.below();
+			if (!world.isLoaded(ropePos))
+				break;
+			BlockState ropeState = world.getBlockState(ropePos);
+			Block block = ropeState.getBlock();
+			if (!(block instanceof dev.createpolymer.contraptions.pulley.PulleyBlock.RopeBlock)
+				&& !(block instanceof dev.createpolymer.contraptions.pulley.PulleyBlock.MagnetBlock)) {
+				if (!visited.contains(ropePos))
+					frontier.add(ropePos);
+				break;
+			}
+			addBlock(world, ropePos, capture(world, ropePos));
+		}
 	}
 
 	private boolean moveMechanicalPiston(Level world, BlockPos pos, Queue<BlockPos> frontier, Set<BlockPos> visited,
@@ -930,7 +991,9 @@ public abstract class Contraption {
 				verticalRotation = verticalRotation && transform.rotation != Rotation.NONE;
 				if (verticalRotation) {
 					// ropes and magnets break when turned sideways
-					if (state.getBlock() instanceof DoorBlock)
+					if (state.getBlock() instanceof dev.createpolymer.contraptions.pulley.PulleyBlock.RopeBlock
+						|| state.getBlock() instanceof dev.createpolymer.contraptions.pulley.PulleyBlock.MagnetBlock
+						|| state.getBlock() instanceof DoorBlock)
 						world.destroyBlock(targetPos, shouldDropBlocks);
 				}
 
@@ -948,6 +1011,10 @@ public abstract class Contraption {
 					tag.putInt("z", targetPos.getZ());
 
 					// pulleys forget their offsets when turned sideways
+					if (verticalRotation && blockEntity instanceof dev.createpolymer.contraptions.pulley.PulleyBlockEntity) {
+						tag.remove("Offset");
+						tag.remove("InitialOffset");
+					}
 
 					if (blockEntity instanceof IMultiBlockEntityContainer) {
 						if (tag.contains("LastKnownPos") || capturedMultiblocks.isEmpty()) {

@@ -1,0 +1,279 @@
+package dev.createpolymer.contraptions.elevator;
+
+import java.util.List;
+
+import dev.createpolymer.contraptions.AssemblyException;
+import dev.createpolymer.contraptions.ControlledContraptionEntity;
+import dev.createpolymer.contraptions.elevator.ElevatorColumn.ColumnCoords;
+import dev.createpolymer.contraptions.pulley.PulleyBlockEntity;
+import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
+import dev.createpolymer.registry.feature.ContraptionRegistry;
+import dev.createpolymer.registry.feature.PulleyRegistry;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+
+public class ElevatorPulleyBlockEntity extends PulleyBlockEntity {
+
+	private float prevSpeed;
+	private boolean arrived;
+	private int clientOffsetTarget;
+
+	public ElevatorPulleyBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+		super(type, pos, state);
+		prevSpeed = 0;
+		arrived = true;
+	}
+
+	private int getTargetOffset() {
+		if (movedContraption == null || !(movedContraption.getContraption() instanceof ElevatorContraption ec))
+			return (int) offset;
+
+		Integer target = ec.getCurrentTargetY(level);
+		if (target == null)
+			return (int) offset;
+
+		return worldPosition.getY() - target + ec.getContactYOffset() - 1;
+	}
+
+	@Override
+	public void attach(ControlledContraptionEntity contraption) {
+		super.attach(contraption);
+		if (offset >= 0)
+			resetContraptionToOffset();
+
+		if (contraption.getContraption() instanceof ElevatorContraption ec)
+			ElevatorColumn.getOrCreate(level, ec.getGlobalColumn())
+				.setActive(true);
+	}
+
+	@Override
+	public void tick() {
+		boolean wasArrived = arrived;
+		super.tick();
+
+		if (movedContraption == null)
+			return;
+		if (!(movedContraption.getContraption() instanceof ElevatorContraption ec))
+			return;
+
+		waitingForSpeedChange = false;
+		ec.arrived = wasArrived;
+
+		if (!arrived)
+			return;
+
+		double y = movedContraption.getY();
+		int targetLevel = Mth.floor(0.5f + y) + ec.getContactYOffset();
+
+		Integer ecCurrentTargetY = ec.getCurrentTargetY(level);
+		if (ecCurrentTargetY != null)
+			targetLevel = ecCurrentTargetY;
+		if (!wasArrived) {
+			triggerContact(ec, targetLevel - ec.getContactYOffset());
+			PulleyRegistry.playContraptionDisassemble(level, worldPosition.below((int) offset), 0.75f, 0.8f);
+		}
+
+		double diff = targetLevel - y - ec.getContactYOffset();
+		if (Math.abs(diff) > 1f / 128)
+			diff *= 0.25f;
+		movedContraption.setPos(movedContraption.position()
+			.add(0, diff, 0));
+	}
+
+	@Override
+	public void lazyTick() {
+		super.lazyTick();
+		if (!arrived)
+			return;
+		if (movedContraption == null || !movedContraption.isAlive())
+			return;
+		if (!(movedContraption.getContraption() instanceof ElevatorContraption ec))
+			return;
+		if (getTargetOffset() != (int) offset)
+			return;
+
+		double y = movedContraption.getY();
+		int targetLevel = Mth.floor(0.5f + y);
+		triggerContact(ec, targetLevel);
+	}
+
+	private void triggerContact(ElevatorContraption ec, int targetLevel) {
+		ColumnCoords coords = ec.getGlobalColumn();
+		ElevatorColumn column = ElevatorColumn.get(level, coords);
+		if (column == null)
+			return;
+
+		BlockPos contactPos = column.contactAt(targetLevel + ec.getContactYOffset());
+		if (!level.isLoaded(contactPos))
+			return;
+		BlockState contactState = level.getBlockState(contactPos);
+		if (!(contactState.getBlock() instanceof ElevatorContactBlock ecb))
+			return;
+		if (contactState.getValue(ElevatorContactBlock.POWERING))
+			return;
+
+		ecb.withBlockEntityDo(level, contactPos, be -> be.activateBlock = true);
+		ecb.scheduleActivation(level, contactPos);
+	}
+
+	@Override
+	public float getMovementSpeed() {
+		int currentTarget = getTargetOffset();
+
+		if (currentTarget != clientOffsetTarget) {
+			clientOffsetTarget = currentTarget;
+			sendData();
+		}
+
+		float diff = currentTarget - offset;
+		float movementSpeed = Mth.clamp(convertToLinear(getSpeed() * 2), -1.99f, 1.99f);
+		float rpmLimit = Math.abs(movementSpeed);
+
+		float configacc = Mth.lerp(Math.abs(movementSpeed), 0.0075f, 0.0175f);
+		float decelleration = (float) Math.sqrt(2 * Math.abs(diff) * configacc);
+
+		float speed = diff;
+		speed = Mth.clamp(speed, -rpmLimit, rpmLimit);
+		speed = Mth.clamp(speed, prevSpeed - configacc, prevSpeed + configacc);
+		speed = Mth.clamp(speed, -decelleration, decelleration);
+
+		arrived = Math.abs(diff) < 0.5f;
+
+		if (speed > 1 / 1024f)
+			setChanged();
+
+		return prevSpeed = speed;
+	}
+
+	@Override
+	protected boolean shouldCreateRopes() {
+		return false;
+	}
+
+	@Override
+	public void disassemble() {
+		if (movedContraption != null && movedContraption.getContraption() instanceof ElevatorContraption ec) {
+			ElevatorColumn column = ElevatorColumn.get(level, ec.getGlobalColumn());
+			if (column != null)
+				column.setActive(false);
+		}
+
+		super.disassemble();
+		offset = -1;
+		sendData();
+	}
+
+	public void clicked() {
+		if (isPassive() && level.getBlockEntity(mirrorParent) instanceof ElevatorPulleyBlockEntity parent) {
+			parent.clicked();
+			return;
+		}
+
+		if (running)
+			disassemble();
+		else
+			assembleNextTick = true;
+	}
+
+	@Override
+	protected boolean moveAndCollideContraption() {
+		if (arrived)
+			return false;
+		super.moveAndCollideContraption();
+		return false;
+	}
+
+	@Override
+	public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
+	}
+
+	@Override
+	protected void assemble() throws AssemblyException {
+		if (!(level.getBlockState(worldPosition)
+			.getBlock() instanceof ElevatorPulleyBlock))
+			return;
+		if (getSpeed() == 0)
+			return;
+
+		int maxLength = ContraptionRegistry.maxRopeLength;
+		int i = 1;
+		while (i <= maxLength) {
+			BlockPos ropePos = worldPosition.below(i);
+			BlockState ropeState = level.getBlockState(ropePos);
+			if (!ropeState.getCollisionShape(level, ropePos)
+				.isEmpty()
+				&& !ropeState.canBeReplaced()) {
+				break;
+			}
+			++i;
+		}
+
+		offset = i - 1;
+		forceMove = true;
+
+		// Collect Construct
+		if (mirrorParent == null) {
+			needsContraption = false;
+			BlockPos anchor = worldPosition.below(Mth.floor(offset + 1));
+			offset = Mth.floor(offset);
+			ElevatorContraption contraption = new ElevatorContraption((int) offset);
+
+			float offsetOnSucess = offset;
+			offset = 0;
+
+			boolean canAssembleStructure = contraption.assemble(level, anchor);
+			if (!canAssembleStructure && getSpeed() > 0)
+				return;
+
+			if (!contraption.getBlocks()
+				.isEmpty()) {
+				offset = offsetOnSucess;
+				contraption.removeBlocksFromWorld(level, BlockPos.ZERO);
+				movedContraption = ControlledContraptionEntity.create(level, this, contraption);
+				movedContraption.setPos(anchor.getX(), anchor.getY(), anchor.getZ());
+				contraption.maxContactY = worldPosition.getY() + contraption.getContactYOffset() - 1;
+				contraption.minContactY = contraption.maxContactY - maxLength;
+				level.addFreshEntity(movedContraption);
+				forceMove = true;
+				needsContraption = true;
+
+				for (BlockPos pos : contraption.createColliders(level, Direction.UP)) {
+					if (pos.getY() != 0)
+						continue;
+					pos = pos.offset(anchor);
+					if (level.getBlockEntity(new BlockPos(pos.getX(), worldPosition.getY(),
+						pos.getZ())) instanceof ElevatorPulleyBlockEntity pbe)
+						pbe.startMirroringOther(worldPosition);
+				}
+
+				ElevatorColumn column = ElevatorColumn.getOrCreate(level, contraption.getGlobalColumn());
+				int target = (int) (worldPosition.getY() + contraption.getContactYOffset() - 1 - offset);
+				column.target(target);
+				column.gatherAll();
+				column.setActive(true);
+				column.markDirty();
+
+				contraption.broadcastFloorData(level, column.contactAt(target));
+				clientOffsetTarget = column.getTargetedYLevel();
+				arrived = true;
+			}
+		}
+
+		running = true;
+		sendData();
+	}
+
+	@Override
+	public void onSpeedChanged(float previousSpeed) {
+		setChanged();
+	}
+
+	@Override
+	protected MovementMode getMovementMode() {
+		return MovementMode.MOVE_NEVER_PLACE;
+	}
+
+}

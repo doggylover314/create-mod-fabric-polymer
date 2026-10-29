@@ -2,6 +2,9 @@ package dev.createpolymer.redstone.contact;
 
 import org.jspecify.annotations.Nullable;
 
+import dev.createpolymer.contraptions.elevator.ElevatorColumn;
+import dev.createpolymer.contraptions.elevator.ElevatorColumn.ColumnCoords;
+import dev.createpolymer.contraptions.elevator.ElevatorContactBlock;
 import dev.createpolymer.redstone.WrenchableDirectionalBlock;
 import dev.createpolymer.registry.feature.RedstoneRegistry;
 import dev.createpolymer.visual.BaseModel;
@@ -11,9 +14,12 @@ import dev.createpolymer.visual.PolymerModelBlock;
 import eu.pb4.polymer.virtualentity.api.ElementHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -27,8 +33,9 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 
 /**
- * Create's redstone contact. Two contacts facing each other power each other. The part of Create's contact that
- * works with moving contraptions and elevators is not ported. As for Create's {@code shouldCheckWeakPower = false},
+ * Create's redstone contact. Two contacts facing each other power each other; wrenching one that is lined up with an
+ * elevator's column turns it into an elevator contact. The part of Create's contact that works with moving
+ * contraptions is not ported. As for Create's {@code shouldCheckWeakPower = false},
  * the registration makes the block not a redstone conductor.
  */
 public class RedstoneContactBlock extends WrenchableDirectionalBlock implements PolymerModelBlock {
@@ -64,6 +71,29 @@ public class RedstoneContactBlock extends WrenchableDirectionalBlock implements 
 	}
 
 	@Override
+	public InteractionResult onWrenched(BlockState state, UseOnContext context) {
+		InteractionResult onWrenched = super.onWrenched(state, context);
+		if (onWrenched != InteractionResult.SUCCESS)
+			return onWrenched;
+
+		Level level = context.getLevel();
+		if (level.isClientSide())
+			return onWrenched;
+
+		BlockPos pos = context.getClickedPos();
+		state = level.getBlockState(pos);
+		Direction facing = state.getValue(RedstoneContactBlock.FACING);
+		if (facing.getAxis() == Axis.Y)
+			return onWrenched;
+		if (ElevatorColumn.get(level, new ColumnCoords(pos.getX(), pos.getZ(), facing)) == null)
+			return onWrenched;
+
+		level.setBlockAndUpdate(pos, ElevatorContactBlock.copyProperties(state, ElevatorContactBlock.defaultContact()));
+
+		return onWrenched;
+	}
+
+	@Override
 	protected BlockState updateShape(BlockState stateIn, LevelReader level, ScheduledTickAccess ticks, BlockPos currentPos,
 		Direction facing, BlockPos facingPos, BlockState facingState, RandomSource random) {
 		if (facing != stateIn.getValue(FACING))
@@ -91,7 +121,8 @@ public class RedstoneContactBlock extends WrenchableDirectionalBlock implements 
 
 	public static boolean hasValidContact(BlockGetter world, BlockPos pos, Direction direction) {
 		BlockState blockState = world.getBlockState(pos.relative(direction));
-		return blockState.is(RedstoneRegistry.REDSTONE_CONTACT) && blockState.getValue(FACING) == direction.getOpposite();
+		return (blockState.is(RedstoneRegistry.REDSTONE_CONTACT) || blockState.getBlock() instanceof ElevatorContactBlock)
+			&& blockState.getValue(FACING) == direction.getOpposite();
 	}
 
 	@Override

@@ -1,0 +1,58 @@
+{
+  "items": [
+    "rope_pulley",
+    "gantry_shaft",
+    "gantry_carriage",
+    "elevator_pulley",
+    "elevator_contact"
+  ],
+  "blocks": [
+    "rope_pulley",
+    "gantry_shaft",
+    "gantry_carriage",
+    "elevator_pulley",
+    "elevator_contact"
+  ],
+  "display_models": [
+    "block/shaft",
+    "block/rope_pulley/rope_coil",
+    "block/rope_pulley/rope_half",
+    "block/rope_pulley/rope_half_magnet",
+    "block/rope_pulley/pulley_magnet",
+    "block/rope_pulley/rope",
+    "block/gantry_carriage/wheels",
+    "block/elevator_pulley/rope_coil",
+    "block/elevator_pulley/rope_half",
+    "block/elevator_pulley/pulley_magnet",
+    "block/elevator_pulley/rope",
+    "block/elevator_contact/block"
+  ],
+  "blockstates": [
+    "rope_pulley",
+    "gantry_shaft",
+    "gantry_carriage",
+    "elevator_pulley",
+    "elevator_contact"
+  ],
+  "crafting": [
+    "kinetics/rope_pulley",
+    "kinetics/gantry_shaft",
+    "kinetics/gantry_carriage",
+    "kinetics/elevator_pulley"
+  ],
+  "lang_ids": [
+    "rope_pulley",
+    "rope",
+    "pulley_magnet",
+    "gantry_shaft",
+    "gantry_carriage",
+    "elevator_pulley",
+    "elevator_contact"
+  ],
+  "lang_prefixes": [
+    "create.gui.assembly.exception",
+    "create.elevator_contact.",
+    "create.gui.threshold_switch."
+  ],
+  "lang_keys": []
+}
