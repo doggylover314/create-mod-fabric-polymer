@@ -5,11 +5,9 @@ import java.util.List;
 import com.google.common.collect.ImmutableList;
 
 import dev.createpolymer.CreatePolymer;
-import dev.createpolymer.fluids.transfer.GenericItemEmptying;
 import dev.createpolymer.foundation.fluid.FluidStack;
 import dev.createpolymer.foundation.fluid.IFluidHandler;
 import dev.createpolymer.logistics.filter.FilterItemStack;
-import dev.createpolymer.logistics.filter.FilterItemStack.ListFilterItemStack;
 import dev.createpolymer.trains.entity.Carriage;
 import dev.createpolymer.trains.entity.Train;
 import dev.createpolymer.trains.schedule.ScheduleConfigBuilder;
@@ -48,7 +46,7 @@ public class FluidThresholdCondition extends CargoThresholdCondition {
 			IFluidHandler fluids = carriage.storage.getFluids();
 			for (int i = 0; i < fluids.getTanks(); i++) {
 				FluidStack fluidInTank = fluids.getFluidInTank(i);
-				if (!testFluid(level, compareStack, fluidInTank, false))
+				if (!compareStack.test(level, fluidInTank, false))
 					continue;
 				foundFluid += fluidInTank.getAmount();
 			}
@@ -56,32 +54,6 @@ public class FluidThresholdCondition extends CargoThresholdCondition {
 
 		requestStatusToUpdate(foundFluid / 1000, context);
 		return operator.test(foundFluid, target * 1000);
-	}
-
-	/**
-	 * Create's FilterItemStack#test(Level, FluidStack): the filter is an item that holds a fluid, or a list filter
-	 * of such items. Filters do not match fluids in this port, so the condition does it.
-	 */
-	private static boolean testFluid(Level level, FilterItemStack filter, FluidStack stack, boolean matchNBT) {
-		if (filter.isEmpty())
-			return true;
-		if (filter instanceof ListFilterItemStack list) {
-			for (FilterItemStack contained : list.containedItems)
-				if (testFluid(level, contained, stack, list.shouldRespectNBT))
-					return !list.isBlacklist;
-			return list.isBlacklist;
-		}
-		if (filter.isFilterItem())
-			return false;
-
-		FluidStack filterFluid = GenericItemEmptying.emptyItem(level, filter.item(), true)
-			.getFirst();
-		if (filterFluid.isEmpty())
-			return false;
-		if (!matchNBT)
-			return filterFluid.getFluid()
-				.isSame(stack.getFluid());
-		return FluidStack.isSameFluidSameComponents(filterFluid, stack);
 	}
 
 	@Override

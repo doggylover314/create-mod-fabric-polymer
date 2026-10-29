@@ -54,4 +54,9 @@ public class KineticScrollValueBehaviour extends ScrollValueBehaviour {
 			.add(Lang.builder(CreatePolymer.MOD_ID).text(ChatFormatting.BOLD, settings.row() == 0 ? "⟳" : "⟲"))
 			.component();
 	}
+	@Override
+	public String getClipboardKey() {
+		return "Speed";
+	}
+
 }

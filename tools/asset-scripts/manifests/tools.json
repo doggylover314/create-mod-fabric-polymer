@@ -1,0 +1,55 @@
+{
+  "items": [
+    "attribute_filter",
+    "package_filter",
+    "clipboard",
+    "clipboard_0",
+    "clipboard_2",
+    "linked_controller",
+    "crafting_blueprint"
+  ],
+  "blocks": [
+    "clipboard",
+    "lectern_controller"
+  ],
+  "display_models": [
+    "item/linked_controller/powered",
+    "item/linked_controller/button"
+  ],
+  "blockstates": [
+    "clipboard"
+  ],
+  "crafting": [
+    "kinetics/attribute_filter",
+    "kinetics/package_filter",
+    "appliances/attribute_filter_clear",
+    "appliances/package_filter_clear",
+    "appliances/clipboard",
+    "appliances/clipboard_clear",
+    "appliances/linked_controller",
+    "appliances/crafting_blueprint"
+  ],
+  "lang_ids": [
+    "attribute_filter",
+    "package_filter",
+    "clipboard",
+    "linked_controller",
+    "crafting_blueprint",
+    "lectern_controller"
+  ],
+  "lang_prefixes": [
+    "create.item_attributes.",
+    "create.gui.attribute_filter.",
+    "create.gui.package_filter.",
+    "create.gui.package_port.",
+    "create.gui.filter_gui.",
+    "create.gui.clipboard.",
+    "create.clipboard.",
+    "create.crafting_blueprint.",
+    "create.linked_controller.",
+    "color.minecraft."
+  ],
+  "lang_keys": [
+    "entity.create.crafting_blueprint"
+  ]
+}

@@ -4,19 +4,26 @@ import static dev.createpolymer.redstone.diodes.BrassDiodeBlock.POWERING;
 
 import java.util.List;
 
+import org.jetbrains.annotations.NotNull;
+
+import dev.createpolymer.equipment.clipboard.ClipboardCloneable;
 import dev.createpolymer.foundation.blockEntity.SmartBlockEntity;
 import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import dev.createpolymer.foundation.blockEntity.behaviour.scrollValue.ScrollValueBehaviour;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.DiodeBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
-public abstract class BrassDiodeBlockEntity extends SmartBlockEntity {
+public abstract class BrassDiodeBlockEntity extends SmartBlockEntity implements ClipboardCloneable {
 
 	protected int state;
 	ScrollValueBehaviour maxState;
@@ -87,6 +94,30 @@ public abstract class BrassDiodeBlockEntity extends SmartBlockEntity {
 
 	public int getMaxDelay() {
 		return maxState.getValue();
+	}
+
+	@Override
+	public String getClipboardKey() {
+		return "Block";
+	}
+
+	@Override
+	public boolean readFromClipboard(@NotNull HolderLookup.Provider registries, CompoundTag tag, Player player, Direction side, boolean simulate) {
+		if (!tag.contains("Inverted"))
+			return false;
+		if (simulate)
+			return true;
+		BlockState blockState = getBlockState();
+		if (blockState.getValue(BrassDiodeBlock.INVERTED) != tag.getBooleanOr("Inverted", false))
+			level.setBlockAndUpdate(worldPosition, blockState.cycle(BrassDiodeBlock.INVERTED));
+		return true;
+	}
+
+	@Override
+	public boolean writeToClipboard(@NotNull HolderLookup.Provider registries, CompoundTag tag, Direction side) {
+		tag.putBoolean("Inverted", getBlockState().getOptionalValue(BrassDiodeBlock.INVERTED)
+			.orElse(false));
+		return true;
 	}
 
 }

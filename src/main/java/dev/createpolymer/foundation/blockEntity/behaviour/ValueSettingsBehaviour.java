@@ -1,6 +1,11 @@
 package dev.createpolymer.foundation.blockEntity.behaviour;
 
+import org.jetbrains.annotations.NotNull;
+
+import dev.createpolymer.equipment.clipboard.ClipboardCloneable;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvents;
@@ -11,7 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
-public interface ValueSettingsBehaviour {
+public interface ValueSettingsBehaviour extends ClipboardCloneable {
 
 	record ValueSettings(int row, int value) {
 		public MutableComponent format() {
@@ -38,6 +43,33 @@ public interface ValueSettingsBehaviour {
 	ValueSettings getValueSettings();
 
 	default boolean acceptsValueSettings() {
+		return true;
+	}
+
+	@Override
+	default String getClipboardKey() {
+		return "Settings";
+	}
+
+	@Override
+	default boolean writeToClipboard(HolderLookup.@NotNull Provider registries, CompoundTag tag, Direction side) {
+		if (!acceptsValueSettings())
+			return false;
+		ValueSettings valueSettings = getValueSettings();
+		tag.putInt("Value", valueSettings.value());
+		tag.putInt("Row", valueSettings.row());
+		return true;
+	}
+
+	@Override
+	default boolean readFromClipboard(HolderLookup.@NotNull Provider registries, CompoundTag tag, Player player, Direction side, boolean simulate) {
+		if (!acceptsValueSettings())
+			return false;
+		if (!tag.contains("Value") || !tag.contains("Row"))
+			return false;
+		if (simulate)
+			return true;
+		setValueSettings(player, new ValueSettings(tag.getIntOr("Row", 0), tag.getIntOr("Value", 0)), false);
 		return true;
 	}
 

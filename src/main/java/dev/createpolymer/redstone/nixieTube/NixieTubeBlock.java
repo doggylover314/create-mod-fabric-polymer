@@ -1,6 +1,7 @@
 package dev.createpolymer.redstone.nixieTube;
 
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
@@ -22,6 +23,8 @@ import eu.pb4.polymer.virtualentity.api.elements.TextDisplayElement;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
+import dev.createpolymer.equipment.clipboard.ClipboardBlockItem;
+import dev.createpolymer.equipment.clipboard.ClipboardEntry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Brightness;
@@ -99,13 +102,21 @@ public class NixieTubeBlock extends DoubleFaceAttachedBlock
 			return InteractionResult.SUCCESS;
 		}
 
-		boolean display = stack.getItem() == Items.NAME_TAG && stack.has(DataComponents.CUSTOM_NAME);
+		boolean display = stack.getItem() == Items.NAME_TAG && stack.has(DataComponents.CUSTOM_NAME)
+			|| stack.getItem() instanceof ClipboardBlockItem;
 		DyeColor dye = stack.get(DataComponents.DYE);
 
 		if (!display && dye == null)
 			return InteractionResult.TRY_WITH_EMPTY_HAND;
 
-		Component component = stack.getOrDefault(DataComponents.CUSTOM_NAME, Component.empty());
+		Component customName = stack.getOrDefault(DataComponents.CUSTOM_NAME, Component.empty());
+
+		if (stack.getItem() instanceof ClipboardBlockItem) {
+			List<ClipboardEntry> entries = ClipboardEntry.getLastViewedEntries(stack);
+			if (!entries.isEmpty())
+				customName = entries.getFirst().text;
+		}
+		Component component = customName;
 
 		if (level.isClientSide())
 			return InteractionResult.SUCCESS;

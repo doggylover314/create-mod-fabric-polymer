@@ -326,6 +326,8 @@
  "create.generic.daytime.pm": "ãpt",
  "create.generic.daytime.second": "xo",
  "create.generic.in_quotes": "\"%1$s\"",
+ "create.item_attributes.shulker_level.empty": "ohare",
+ "create.item_attributes.shulker_level.full": "pulap",
  "create.station.assemble_train": "Maha Rofai",
  "create.station.close": "Kini Mado",
  "create.station.create_train": "Maha neo Rofai",

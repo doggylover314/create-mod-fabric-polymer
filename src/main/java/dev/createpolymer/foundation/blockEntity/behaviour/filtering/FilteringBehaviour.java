@@ -18,10 +18,17 @@ import dev.createpolymer.foundation.item.handler.InvWrapper;
 import dev.createpolymer.logistics.filter.FilterItem;
 import dev.createpolymer.logistics.filter.FilterItemStack;
 import dev.createpolymer.registry.ModItems;
+import dev.createpolymer.util.Iterate;
 import dev.createpolymer.util.Lang;
 import dev.createpolymer.util.VecHelper;
+import org.jetbrains.annotations.NotNull;
+
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -330,6 +337,73 @@ public class FilteringBehaviour extends BlockEntityBehaviour implements ValueSet
 
 	public boolean isRecipeFilter() {
 		return recipeFilter;
+	}
+
+	@Override
+	public String getClipboardKey() {
+		return "Filtering";
+	}
+
+	@Override
+	public boolean writeToClipboard(HolderLookup.@NotNull Provider registries, CompoundTag tag, Direction side) {
+		ValueSettingsBehaviour.super.writeToClipboard(registries, tag, side);
+		ItemStack filter = getFilter(side);
+		tag.store("Filter", ItemStack.OPTIONAL_CODEC, registries.createSerializationContext(NbtOps.INSTANCE), filter);
+		return true;
+	}
+
+	@Override
+	public boolean readFromClipboard(HolderLookup.@NotNull Provider registries, CompoundTag tag, Player player, Direction side, boolean simulate) {
+		if (!mayInteract(player))
+			return false;
+		boolean upstreamResult = ValueSettingsBehaviour.super.readFromClipboard(registries, tag, player, side, simulate);
+		if (!tag.contains("Filter"))
+			return upstreamResult;
+		if (simulate)
+			return true;
+		if (getWorld().isClientSide())
+			return true;
+
+		ItemStack refund = ItemStack.EMPTY;
+		if (getFilter(side).getItem() instanceof FilterItem && !player.isCreative())
+			refund = getFilter(side).copy();
+
+		ItemStack copied = tag.read("Filter", ItemStack.OPTIONAL_CODEC, registries.createSerializationContext(NbtOps.INSTANCE))
+			.orElse(ItemStack.EMPTY);
+
+		if (copied.getItem() instanceof FilterItem filterType && !player.isCreative()) {
+			InvWrapper inv = new InvWrapper(player.getInventory());
+
+			for (boolean preferStacksWithoutData : Iterate.trueAndFalse) {
+				if (refund.getItem() != filterType && ItemHelper
+					.extract(inv, stack -> stack.getItem() == filterType && preferStacksWithoutData == stack.getComponentsPatch().isEmpty(),
+						1, false)
+					.isEmpty())
+					continue;
+
+				if (!refund.isEmpty() && refund.getItem() != filterType)
+					player.getInventory()
+						.placeItemBackInInventory(refund, Prediction.SERVER_ONLY);
+
+				return setFilter(side, copied);
+			}
+
+			player.sendOverlayMessage(Lang.builder(CreatePolymer.MOD_ID)
+				.translate("logistics.filter.requires_item_in_inventory", copied.getHoverName()
+					.copy()
+					.withStyle(ChatFormatting.WHITE))
+				.component()
+				.copy()
+				.withStyle(ChatFormatting.RED));
+			getWorld().playSound(null, player.blockPosition(), SoundEvents.NOTE_BLOCK_BASS.value(), SoundSource.PLAYERS, 1, .5f);
+			return false;
+		}
+
+		if (!refund.isEmpty())
+			player.getInventory()
+				.placeItemBackInInventory(refund, Prediction.SERVER_ONLY);
+
+		return setFilter(side, copied);
 	}
 
 	@Override

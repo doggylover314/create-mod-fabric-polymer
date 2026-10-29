@@ -27,6 +27,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;
 import net.minecraft.core.component.DataComponents;
+import dev.createpolymer.equipment.clipboard.ClipboardBlockItem;
+import dev.createpolymer.equipment.clipboard.ClipboardEntry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -162,7 +164,8 @@ public class FlapDisplayBlock extends HorizontalKineticBlock
 			return InteractionResult.SUCCESS;
 		}
 
-		boolean display = stack.getItem() == Items.NAME_TAG && stack.has(DataComponents.CUSTOM_NAME);
+		boolean display = stack.getItem() == Items.NAME_TAG && stack.has(DataComponents.CUSTOM_NAME)
+			|| stack.getItem() instanceof ClipboardBlockItem;
 		DyeColor dye = stack.get(DataComponents.DYE);
 
 		if (!display && dye == null)
@@ -174,8 +177,21 @@ public class FlapDisplayBlock extends HorizontalKineticBlock
 
 		Component customName = stack.get(DataComponents.CUSTOM_NAME);
 
-		if (display)
+		if (display) {
+			if (stack.getItem() instanceof ClipboardBlockItem) {
+				List<ClipboardEntry> entries = ClipboardEntry.getLastViewedEntries(stack);
+				int line = lineIndex;
+				for (ClipboardEntry entry : entries) {
+					for (String string : entry.text.getString()
+						.split("\n")) {
+						flapBE.applyTextManually(line++, Component.literal(string));
+					}
+				}
+				return InteractionResult.SUCCESS;
+			}
+
 			flapBE.applyTextManually(lineIndex, customName);
+		}
 		if (dye != null) {
 			level.playSound(null, pos, SoundEvents.DYE_USE, SoundSource.BLOCKS, 1.0F, 1.0F);
 			flapBE.setColour(lineIndex, dye);

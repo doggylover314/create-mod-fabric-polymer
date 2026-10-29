@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "ASA"
+  ],
+  "key": {
+    "A": "#c:nuggets/zinc",
+    "S": "#minecraft:wool"
+  },
+  "result": {
+    "id": "create:package_filter",
+    "count": 1
+  }
+}

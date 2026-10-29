@@ -31,6 +31,16 @@ public abstract class GhostItemGui extends SimpleGui {
 
 	protected abstract boolean allowRepeats();
 
+	/** The GUI slot that shows a ghost slot. Ghost slots fill the first GUI slots, unless a GUI places them elsewhere. */
+	protected int guiSlot(int ghostSlot) {
+		return ghostSlot;
+	}
+
+	/** The ghost slot that a GUI slot shows, or -1 if it is not a ghost slot. */
+	protected int ghostSlot(int guiSlot) {
+		return guiSlot >= 0 && guiSlot < ghostInventory.getSlots() ? guiSlot : -1;
+	}
+
 	/** Called after the ghost items changed. */
 	protected void onGhostChanged() {
 	}
@@ -46,9 +56,9 @@ public abstract class GhostItemGui extends SimpleGui {
 	protected void refreshGhostSlot(int slot) {
 		ItemStack stack = ghostInventory.getStackInSlot(slot);
 		if (stack.isEmpty())
-			clearSlot(slot);
+			clearSlot(guiSlot(slot));
 		else
-			setSlot(slot, stack.copy());
+			setSlot(guiSlot(slot), stack.copy());
 	}
 
 	/** Whether the player slot with this menu index must not be touched. */
@@ -65,7 +75,8 @@ public abstract class GhostItemGui extends SimpleGui {
 
 	@Override
 	public boolean onClick(int index, ClickType type, ContainerInput action, GuiElement element) {
-		if (index < 0 || index >= ghostInventory.getSlots())
+		int ghost = ghostSlot(index);
+		if (ghost < 0)
 			return false;
 		if (action == ContainerInput.THROW || type.isDragging || type.numKey || action == ContainerInput.PICKUP_ALL)
 			return false;
@@ -73,7 +84,7 @@ public abstract class GhostItemGui extends SimpleGui {
 		ItemStack held = player.containerMenu.getCarried();
 		if (action == ContainerInput.CLONE) {
 			if (player.isCreative() && held.isEmpty()) {
-				ItemStack stackInSlot = ghostInventory.getStackInSlot(index)
+				ItemStack stackInSlot = ghostInventory.getStackInSlot(ghost)
 					.copy();
 				stackInSlot.setCount(stackInSlot.getMaxStackSize());
 				player.containerMenu.setCarried(stackInSlot);
@@ -82,7 +93,7 @@ public abstract class GhostItemGui extends SimpleGui {
 		}
 
 		if (action == ContainerInput.QUICK_MOVE) {
-			ghostInventory.setStackInSlot(index, ItemStack.EMPTY);
+			ghostInventory.setStackInSlot(ghost, ItemStack.EMPTY);
 		} else {
 			ItemStack insert;
 			if (held.isEmpty()) {
@@ -91,9 +102,9 @@ public abstract class GhostItemGui extends SimpleGui {
 				insert = held.copy();
 				insert.setCount(1);
 			}
-			ghostInventory.setStackInSlot(index, insert);
+			ghostInventory.setStackInSlot(ghost, insert);
 		}
-		refreshGhostSlot(index);
+		refreshGhostSlot(ghost);
 		onGhostChanged();
 		return false;
 	}

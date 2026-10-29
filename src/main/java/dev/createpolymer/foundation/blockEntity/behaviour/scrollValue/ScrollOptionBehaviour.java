@@ -34,4 +34,9 @@ public class ScrollOptionBehaviour<E extends Enum<E> & INamedIconOptions> extend
 			new ScrollOptionSettingsFormatter(options));
 	}
 
+	@Override
+	public String getClipboardKey() {
+		return options[0].getClass().getSimpleName();
+	}
+
 }

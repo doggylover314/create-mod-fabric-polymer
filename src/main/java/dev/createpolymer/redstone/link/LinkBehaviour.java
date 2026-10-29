@@ -5,6 +5,11 @@ import java.util.function.IntSupplier;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import org.jetbrains.annotations.NotNull;
+
+import com.mojang.serialization.DynamicOps;
+
+import dev.createpolymer.equipment.clipboard.ClipboardCloneable;
 import dev.createpolymer.foundation.blockEntity.SmartBlockEntity;
 import dev.createpolymer.foundation.blockEntity.behaviour.BehaviourType;
 import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
@@ -12,6 +17,12 @@ import dev.createpolymer.foundation.blockEntity.behaviour.ValueBoxTransform;
 import dev.createpolymer.redstone.link.RedstoneLinkNetworkHandler.Frequency;
 import dev.createpolymer.util.Couple;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -19,7 +30,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
-public class LinkBehaviour extends BlockEntityBehaviour implements IRedstoneLinkable {
+public class LinkBehaviour extends BlockEntityBehaviour implements IRedstoneLinkable, ClipboardCloneable {
 
 	public static final BehaviourType<LinkBehaviour> TYPE = new BehaviourType<>();
 
@@ -199,6 +210,31 @@ public class LinkBehaviour extends BlockEntityBehaviour implements IRedstoneLink
 	@Override
 	public BlockPos getLocation() {
 		return getPos();
+	}
+
+	@Override
+	public String getClipboardKey() {
+		return "Frequencies";
+	}
+
+	@Override
+	public boolean writeToClipboard(@NotNull HolderLookup.Provider registries, CompoundTag tag, Direction side) {
+		DynamicOps<Tag> ops = registries.createSerializationContext(NbtOps.INSTANCE);
+		tag.store("First", ItemStack.OPTIONAL_CODEC, ops, frequencyFirst.getStack());
+		tag.store("Last", ItemStack.OPTIONAL_CODEC, ops, frequencyLast.getStack());
+		return true;
+	}
+
+	@Override
+	public boolean readFromClipboard(@NotNull HolderLookup.Provider registries, CompoundTag tag, Player player, Direction side, boolean simulate) {
+		if (!tag.contains("First") || !tag.contains("Last"))
+			return false;
+		if (simulate)
+			return true;
+		DynamicOps<Tag> ops = registries.createSerializationContext(NbtOps.INSTANCE);
+		setFrequency(true, tag.read("First", ItemStack.OPTIONAL_CODEC, ops).orElse(ItemStack.EMPTY));
+		setFrequency(false, tag.read("Last", ItemStack.OPTIONAL_CODEC, ops).orElse(ItemStack.EMPTY));
+		return true;
 	}
 
 }

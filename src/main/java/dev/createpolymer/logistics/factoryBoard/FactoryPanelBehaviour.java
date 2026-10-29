@@ -51,6 +51,8 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -1105,6 +1107,16 @@ public class FactoryPanelBehaviour extends FilteringBehaviour {
 	@Override
 	public boolean canShortInteract(ItemStack toApply) {
 		return !toApply.is(ModItems.WRENCH);
+	}
+
+	@Override
+	public boolean readFromClipboard(HolderLookup.Provider registries, CompoundTag tag, Player player, Direction side, boolean simulate) {
+		return false;
+	}
+
+	@Override
+	public boolean writeToClipboard(HolderLookup.Provider registries, CompoundTag tag, Direction side) {
+		return false;
 	}
 
 	public String getFrogAddress() {

@@ -4,12 +4,10 @@ import java.util.UUID;
 
 import org.jspecify.annotations.Nullable;
 
-import dev.createpolymer.fluids.transfer.GenericItemEmptying;
 import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import dev.createpolymer.foundation.blockEntity.behaviour.filtering.FilteringBehaviour;
 import dev.createpolymer.foundation.fluid.FluidStack;
 import dev.createpolymer.logistics.filter.FilterItemStack;
-import dev.createpolymer.logistics.filter.FilterItemStack.ListFilterItemStack;
 import dev.createpolymer.registry.feature.TrackRegistry;
 import dev.createpolymer.trains.TrackNbt;
 import dev.createpolymer.trains.entity.Train;
@@ -88,35 +86,9 @@ public class TrackObserver extends SingleBlockEntityEdgePoint {
 		currentTrain = train.id;
 	}
 
-	/**
-	 * Create's FilterItemStack.test(Level, FluidStack), which the filter of this port does not have yet: a list
-	 * filter matches fluids through its contents, any other filter through the fluid its item holds.
-	 */
+	/** Create tests the filter directly; this is {@link FilterItemStack#test(Level, FluidStack)}. */
 	public static boolean testFluid(Level level, FilterItemStack filter, FluidStack stack) {
-		return testFluid(level, filter, stack, true);
-	}
-
-	private static boolean testFluid(Level level, FilterItemStack filter, FluidStack stack, boolean matchNBT) {
-		if (filter.isEmpty())
-			return true;
-		if (filter instanceof ListFilterItemStack list) {
-			for (FilterItemStack contained : list.containedItems)
-				if (testFluid(level, contained, stack, list.shouldRespectNBT))
-					return !list.isBlacklist;
-			return list.isBlacklist;
-		}
-		if (stack.isEmpty())
-			return false;
-		if (!GenericItemEmptying.canItemBeEmptied(level, filter.item()))
-			return false;
-		FluidStack filterFluid = GenericItemEmptying.emptyItem(level, filter.item(), true)
-			.getFirst();
-		if (filterFluid.isEmpty())
-			return false;
-		if (!matchNBT)
-			return filterFluid.getFluid()
-				.isSame(stack.getFluid());
-		return FluidStack.isSameFluidSameComponents(filterFluid, stack);
+		return filter.test(level, stack);
 	}
 
 	@Override

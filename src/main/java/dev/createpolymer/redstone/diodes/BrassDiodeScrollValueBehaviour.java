@@ -76,4 +76,9 @@ public class BrassDiodeScrollValueBehaviour extends ScrollValueBehaviour {
 		});
 	}
 
+	@Override
+	public String getClipboardKey() {
+		return "Timings";
+	}
+
 }

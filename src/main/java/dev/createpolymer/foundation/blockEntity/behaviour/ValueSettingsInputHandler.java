@@ -3,6 +3,7 @@ package dev.createpolymer.foundation.blockEntity.behaviour;
 import dev.createpolymer.foundation.blockEntity.SmartBlockEntity;
 import dev.createpolymer.foundation.blockEntity.behaviour.filtering.SidedFilteringBehaviour;
 import dev.createpolymer.foundation.gui.ValueSettingsGui;
+import dev.createpolymer.equipment.clipboard.ClipboardBlockItem;
 import dev.createpolymer.registry.ModItems;
 import net.fabricmc.fabric.api.entity.FakePlayer;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
@@ -88,6 +89,9 @@ public class ValueSettingsInputHandler {
 	}
 
 	public static boolean canInteract(Player player) {
+		if (player != null && player.getMainHandItem()
+			.getItem() instanceof ClipboardBlockItem)
+			return false;
 		return player != null && !player.isSpectator() && !player.isShiftKeyDown() && !isAdventure(player);
 	}
 

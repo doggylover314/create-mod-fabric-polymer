@@ -269,6 +269,11 @@ public class ChassisBlockEntity extends SmartBlockEntity {
 			return new ValueSettings(vs.row(), vs.value() - 1);
 		}
 
+		@Override
+		public String getClipboardKey() {
+			return "Chassis";
+		}
+
 	}
 
 }

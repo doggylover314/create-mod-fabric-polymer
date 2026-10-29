@@ -1,13 +1,21 @@
 package dev.createpolymer.logistics.packagePort;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import dev.createpolymer.equipment.clipboard.ClipboardBlockItem;
+import dev.createpolymer.equipment.clipboard.ClipboardContent;
+import dev.createpolymer.equipment.clipboard.ClipboardEntry;
+import dev.createpolymer.equipment.clipboard.ClipboardOverrides.ClipboardType;
 import dev.createpolymer.foundation.blockEntity.SmartBlockEntity;
 import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import dev.createpolymer.foundation.item.handler.IItemHandler;
 import dev.createpolymer.foundation.item.handler.ItemHandlerHelper;
 import dev.createpolymer.foundation.item.handler.ItemStackHandler;
 import dev.createpolymer.logistics.box.PackageItem;
+import dev.createpolymer.registry.feature.ToolsRegistry;
+import net.fabricmc.fabric.api.entity.FakePlayer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Clearable;
@@ -23,7 +31,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 /**
  * Create's PackagePortBlockEntity: the inventory, address filter and target shared by the frogport and the postbox.
  * Create opens a menu on right-click; here {@link PackagePortGui} (an sgui chest) takes its place. Writing the
- * address on a clipboard is left out until clipboards are ported.
+ * Right-clicking with a clipboard writes the port's address on it.
  */
 public abstract class PackagePortBlockEntity extends SmartBlockEntity implements Clearable {
 	public boolean acceptsPackages;
@@ -166,11 +174,59 @@ public abstract class PackagePortBlockEntity extends SmartBlockEntity implements
 	public InteractionResult use(Player player) {
 		if (player == null || player.isCrouching())
 			return InteractionResult.TRY_WITH_EMPTY_HAND;
+		if (player instanceof FakePlayer)
+			return InteractionResult.TRY_WITH_EMPTY_HAND;
+		ItemStack mainHandItem = player.getMainHandItem();
+		boolean clipboard = mainHandItem.getItem() instanceof ClipboardBlockItem;
+
 		if (level.isClientSide())
 			return InteractionResult.SUCCESS;
+
+		if (clipboard) {
+			addAddressToClipboard(player, mainHandItem);
+			return InteractionResult.SUCCESS;
+		}
+
 		if (player instanceof ServerPlayer serverPlayer)
 			new PackagePortGui(serverPlayer, this).open();
 		return InteractionResult.SUCCESS;
+	}
+
+	/** Writes the address of this port on a clipboard, as an entry starting with '#'. */
+	private void addAddressToClipboard(Player player, ItemStack mainHandItem) {
+		if (addressFilter == null || addressFilter.isBlank())
+			return;
+
+		ClipboardContent clipboard = mainHandItem.getOrDefault(ToolsRegistry.CLIPBOARD_CONTENT, ClipboardContent.EMPTY);
+		List<List<ClipboardEntry>> list = ClipboardEntry.readAll(clipboard);
+		for (List<ClipboardEntry> page : list) {
+			for (ClipboardEntry entry : page) {
+				String existing = entry.text.getString();
+				if (existing.equals("#" + addressFilter) || existing.equals("# " + addressFilter))
+					return;
+			}
+		}
+
+		List<ClipboardEntry> page = null;
+
+		for (List<ClipboardEntry> freePage : list) {
+			if (freePage.size() > 11)
+				continue;
+			page = freePage;
+			break;
+		}
+
+		if (page == null) {
+			page = new ArrayList<>();
+			list.add(page);
+		}
+
+		page.add(new ClipboardEntry(false, Component.literal("#" + addressFilter)));
+		player.sendOverlayMessage(Component.translatable("create.clipboard.address_added", addressFilter));
+
+		clipboard = clipboard.setPages(list)
+			.setType(ClipboardType.WRITTEN);
+		mainHandItem.set(ToolsRegistry.CLIPBOARD_CONTENT, clipboard);
 	}
 
 	public int getComparatorOutput() {
