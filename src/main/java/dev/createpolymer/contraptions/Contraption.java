@@ -28,6 +28,9 @@ import dev.createpolymer.api.behaviour.interaction.MovingInteractionBehaviour;
 import dev.createpolymer.api.behaviour.movement.MovementBehaviour;
 import dev.createpolymer.api.contraption.BlockMovementChecks;
 import dev.createpolymer.api.contraption.ContraptionType;
+import dev.createpolymer.contraptions.actors.contraptionControls.ContraptionControlsMovement;
+import dev.createpolymer.contraptions.actors.seat.SeatBlock;
+import dev.createpolymer.contraptions.actors.seat.SeatEntity;
 import dev.createpolymer.contraptions.behaviour.MovementContext;
 import dev.createpolymer.contraptions.glue.SuperGlueEntity;
 import dev.createpolymer.contraptions.piston.MechanicalPistonBlock;
@@ -35,6 +38,12 @@ import dev.createpolymer.contraptions.piston.MechanicalPistonBlock.PistonState;
 import dev.createpolymer.contraptions.piston.MechanicalPistonHeadBlock;
 import dev.createpolymer.contraptions.piston.PistonExtensionPoleBlock;
 import dev.createpolymer.foundation.blockEntity.IMultiBlockEntityContainer;
+import dev.createpolymer.foundation.blockEntity.behaviour.filtering.FilteringBehaviour;
+import dev.createpolymer.logistics.crate.CreativeCrateBlockEntity;
+import dev.createpolymer.redstone.contact.RedstoneContactBlock;
+import dev.createpolymer.registry.feature.RedstoneRegistry;
+import dev.createpolymer.kinetics.base.BlockBreakingMovementBehaviour;
+import dev.createpolymer.contraptions.actors.harvester.HarvesterMovementBehaviour;
 import dev.createpolymer.foundation.collision.CollisionList;
 import dev.createpolymer.foundation.collision.CollisionList.Populate;
 import dev.createpolymer.impl.contraption.ContraptionBlockTags;
@@ -488,8 +497,13 @@ public abstract class Contraption {
 	private void moveSeat(Level world, BlockPos pos) {
 		BlockPos local = toLocalPos(pos);
 		getSeats().add(local);
-		// Create also moves the passenger of the SeatEntity at this position into initialPassengers; seat entities
-		// come with the seat port.
+		List<SeatEntity> seatsEntities = world.getEntitiesOfClass(SeatEntity.class, new AABB(pos));
+		if (!seatsEntities.isEmpty()) {
+			SeatEntity seat = seatsEntities.get(0);
+			List<Entity> passengers = seat.getPassengers();
+			if (!passengers.isEmpty())
+				initialPassengers.put(local, passengers.get(0));
+		}
 	}
 
 	protected void moveGantryPinion(Level world, BlockPos pos, Queue<BlockPos> frontier, Set<BlockPos> visited,
@@ -572,7 +586,9 @@ public abstract class Contraption {
 
 	protected Pair<StructureBlockInfo, BlockEntity> capture(Level world, BlockPos pos) {
 		BlockState blockstate = world.getBlockState(pos);
-		// redstone contacts are powered, controls open, sliding doors are hidden on contraptions: with those blocks
+		if (blockstate.is(RedstoneRegistry.REDSTONE_CONTACT))
+			blockstate = blockstate.setValue(RedstoneContactBlock.POWERED, true);
+		// controls open (train carriages only), sliding doors are hidden on contraptions: with those blocks
 		if (blockstate.getBlock() instanceof ButtonBlock) {
 			blockstate = blockstate.setValue(ButtonBlock.POWERED, false);
 			world.scheduleTick(pos, blockstate.getBlock(), -1);
@@ -611,7 +627,10 @@ public abstract class Contraption {
 		if (interactionBehaviour != null)
 			interactors.put(localPos, interactionBehaviour);
 
-		// creative crates with an empty filter set hasUniversalCreativeCrate
+		if (be instanceof CreativeCrateBlockEntity crate && crate.getBehaviour(FilteringBehaviour.TYPE)
+			.getFilter()
+			.isEmpty())
+			hasUniversalCreativeCrate = true;
 	}
 
 	protected void captureMultiblock(BlockPos localPos, StructureBlockInfo structureBlockInfo, BlockEntity be) {
@@ -1157,11 +1176,22 @@ public abstract class Contraption {
 		});
 	}
 
-	/**
-	 * Create sits seated entities down on the seat blocks they were on; that needs SeatBlock/SeatEntity and is added
-	 * with the seat port.
-	 */
 	public void addPassengersToWorld(Level world, StructureTransform transform, List<Entity> seatedEntities) {
+		for (Entity seatedEntity : seatedEntities) {
+			if (getSeatMapping().isEmpty())
+				continue;
+			Integer seatIndex = getSeatMapping().get(seatedEntity.getUUID());
+			if (seatIndex == null)
+				continue;
+			BlockPos seatPos = getSeats().get(seatIndex);
+			seatPos = transform.apply(seatPos);
+			if (!(world.getBlockState(seatPos)
+				.getBlock() instanceof SeatBlock))
+				continue;
+			if (SeatBlock.isSeatOccupied(world, seatPos))
+				continue;
+			SeatBlock.sitDown(world, seatPos, seatedEntity);
+		}
 	}
 
 	public void startMoving(Level world) {
@@ -1173,16 +1203,28 @@ public abstract class Contraption {
 			if (behaviour != null)
 				behaviour.startMoving(context);
 			pair.setRight(context);
-			// contraption controls disable themselves on start (disableActorOnStart)
+			if (behaviour instanceof ContraptionControlsMovement)
+				disableActorOnStart(context);
 		}
 
 		for (ItemStack stack : disabledActors)
 			setActorsActive(stack, false);
 	}
 
-	/** Whether the filter stack of contraption controls matches (ContraptionControlsMovement.isSameFilter). */
+	protected void disableActorOnStart(MovementContext context) {
+		if (!ContraptionControlsMovement.isDisabledInitially(context))
+			return;
+		ItemStack filter = ContraptionControlsMovement.getFilter(context);
+		if (filter == null)
+			return;
+		if (isActorTypeDisabled(filter))
+			return;
+		disabledActors.add(filter);
+	}
+
+	/** Whether the filter stack of contraption controls matches. */
 	protected boolean isSameFilter(ItemStack a, ItemStack b) {
-		return ItemStack.isSameItemSameComponents(a, b);
+		return ContraptionControlsMovement.isSameFilter(a, b);
 	}
 
 	public boolean isActorTypeDisabled(ItemStack filter) {
@@ -1388,7 +1430,11 @@ public abstract class Contraption {
 	}
 
 	public boolean containsBlockBreakers() {
-		// block breaking and harvesting actors count here once they exist
+		for (MutablePair<StructureBlockInfo, MovementContext> pair : actors) {
+			MovementBehaviour behaviour = MovementBehaviour.REGISTRY.get(pair.left.state());
+			if (behaviour instanceof BlockBreakingMovementBehaviour || behaviour instanceof HarvesterMovementBehaviour)
+				return true;
+		}
 		return false;
 	}
 

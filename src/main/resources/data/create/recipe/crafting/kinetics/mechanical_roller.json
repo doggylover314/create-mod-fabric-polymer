@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "A",
+    "C",
+    "I"
+  ],
+  "key": {
+    "A": "create:electron_tube",
+    "C": "create:andesite_casing",
+    "I": "create:crushing_wheel"
+  },
+  "result": {
+    "id": "create:mechanical_roller",
+    "count": 1
+  }
+}

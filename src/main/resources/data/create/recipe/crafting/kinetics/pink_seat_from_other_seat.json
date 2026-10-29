@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "#c:dyes/pink",
+    "#create:seats"
+  ],
+  "result": {
+    "id": "create:pink_seat",
+    "count": 1
+  }
+}

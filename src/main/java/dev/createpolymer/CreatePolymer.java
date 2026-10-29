@@ -15,6 +15,7 @@ import dev.createpolymer.registry.ModBlockEntities;
 import dev.createpolymer.registry.ModBlocks;
 import dev.createpolymer.registry.ModItems;
 import dev.createpolymer.registry.ModRecipeTypes;
+import dev.createpolymer.registry.feature.ActorsRegistry;
 import dev.createpolymer.registry.feature.VaultRegistry;
 import dev.createpolymer.registry.feature.ContraptionRegistry;
 import dev.createpolymer.registry.feature.MinecartRegistry;
@@ -101,6 +102,7 @@ public class CreatePolymer implements ModInitializer {
 		MinecartRegistry.init();
 		FactoryGaugeRegistry.init();
 		dev.createpolymer.registry.feature.BearingRegistry.init();
+		ActorsRegistry.init();
 
 		// Resource pack: Create's models/textures/lang from this jar, served by polymer-autohost.
 		enableAutoHostByDefault();
