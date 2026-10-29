@@ -207,7 +207,7 @@ public abstract class Contraption {
 	public void onEntityCreated(AbstractContraptionEntity entity) {
 		this.entity = entity;
 
-		// Create subcontraptions (stabilized bearings): the bearing port restores this
+		// Create subcontraptions (stabilized bearings)
 		createSubContraptions(entity);
 
 		storage.initialize();
@@ -215,11 +215,63 @@ public abstract class Contraption {
 	}
 
 	/**
-	 * Create's onEntityCreated spawns one StabilizedContraption per entry of {@link #pendingSubContraptions}, removes
-	 * its blocks from the world, adds an OrientedContraptionEntity and records it in
-	 * {@link #stabilizedSubContraptions}. Nothing fills the list until bearings exist.
+	 * Spawns one StabilizedContraption per entry of {@link #pendingSubContraptions} (the stabilized bearings found while
+	 * collecting blocks), removes its blocks from the world, adds an OrientedContraptionEntity and records it in
+	 * {@link #stabilizedSubContraptions}.
 	 */
 	protected void createSubContraptions(AbstractContraptionEntity entity) {
+		for (BlockFace blockFace : pendingSubContraptions) {
+			Direction face = blockFace.getFace();
+			dev.createpolymer.contraptions.bearing.StabilizedContraption subContraption =
+				new dev.createpolymer.contraptions.bearing.StabilizedContraption(face);
+			Level world = entity.level();
+			BlockPos pos = blockFace.getPos();
+			try {
+				if (!subContraption.assemble(world, pos))
+					continue;
+			} catch (AssemblyException e) {
+				continue;
+			}
+			subContraption.removeBlocksFromWorld(world, BlockPos.ZERO);
+			OrientedContraptionEntity movedContraption = OrientedContraptionEntity.create(world, subContraption, face);
+			BlockPos anchor = blockFace.getConnectedPos();
+			movedContraption.setPos(anchor.getX() + .5f, anchor.getY(), anchor.getZ() + .5f);
+			world.addFreshEntity(movedContraption);
+			stabilizedSubContraptions.put(movedContraption.getUUID(), new BlockFace(toLocalPos(pos), face));
+		}
+	}
+
+	private void moveWindmillBearing(BlockPos pos, Queue<BlockPos> frontier, Set<BlockPos> visited, BlockState state) {
+		Direction facing = state.getValue(dev.createpolymer.contraptions.bearing.WindmillBearingBlock.FACING);
+		BlockPos offset = pos.relative(facing);
+		if (!visited.contains(offset))
+			frontier.add(offset);
+	}
+
+	private void moveBearing(BlockPos pos, Queue<BlockPos> frontier, Set<BlockPos> visited, BlockState state) {
+		Direction facing = state.getValue(dev.createpolymer.contraptions.bearing.MechanicalBearingBlock.FACING);
+		if (!canBeStabilized(facing, pos.subtract(anchor))) {
+			BlockPos offset = pos.relative(facing);
+			if (!visited.contains(offset))
+				frontier.add(offset);
+			return;
+		}
+		pendingSubContraptions.add(new BlockFace(pos, facing));
+	}
+
+	private boolean moveChassis(Level world, BlockPos pos, Direction movementDirection, Queue<BlockPos> frontier,
+		Set<BlockPos> visited) {
+		BlockEntity be = world.getBlockEntity(pos);
+		if (!(be instanceof dev.createpolymer.contraptions.chassis.ChassisBlockEntity chassis))
+			return false;
+		chassis.addAttachedChasses(frontier, visited);
+		List<BlockPos> includedBlockPositions = chassis.getIncludedBlockPositions(movementDirection, false);
+		if (includedBlockPositions == null)
+			return false;
+		for (BlockPos blockPos : includedBlockPositions)
+			if (!visited.contains(blockPos))
+				frontier.add(blockPos);
+		return true;
 	}
 
 	public void onEntityInitialize(Level world, AbstractContraptionEntity contraptionEntity) {
@@ -265,11 +317,15 @@ public abstract class Contraption {
 		if (!movementAllowed(state, world, pos))
 			throw AssemblyException.unmovableBlock(pos, state);
 
-		// chassis: if (state.getBlock() instanceof AbstractChassisBlock && !moveChassis(...)) return false;
+		if (state.getBlock() instanceof dev.createpolymer.contraptions.chassis.AbstractChassisBlock
+			&& !moveChassis(world, pos, forcedDirection, frontier, visited))
+			return false;
 
 		// belts: moveBelt(pos, frontier, visited, state);
 
-		// windmill bearing: wbbe.disassembleForMovement();
+		if (state.getBlock() instanceof dev.createpolymer.contraptions.bearing.WindmillBearingBlock
+			&& world.getBlockEntity(pos) instanceof dev.createpolymer.contraptions.bearing.WindmillBearingBlockEntity wbbe)
+			wbbe.disassembleForMovement();
 
 		// gantry carriage / shaft: moveGantryPinion, moveGantryShaft
 		if (state.getBlock() instanceof dev.createpolymer.contraptions.gantry.GantryCarriageBlock)
@@ -278,7 +334,14 @@ public abstract class Contraption {
 		if (state.getBlock() instanceof dev.createpolymer.kinetics.gantry.GantryShaftBlock)
 			moveGantryShaft(world, pos, frontier, visited, state);
 
-		// stickers: attach the block in front of extended stickers
+		if (state.getBlock() instanceof dev.createpolymer.contraptions.chassis.StickerBlock
+			&& state.getValue(dev.createpolymer.contraptions.chassis.StickerBlock.EXTENDED)) {
+			Direction offset = state.getValue(dev.createpolymer.contraptions.chassis.StickerBlock.FACING);
+			BlockPos attached = pos.relative(offset);
+			if (!visited.contains(attached)
+				&& !BlockMovementChecks.isNotSupportive(world.getBlockState(attached), offset.getOpposite()))
+				frontier.add(attached);
+		}
 
 		// chain conveyors: ccbe.notifyConnectedToValidate();
 
@@ -293,9 +356,13 @@ public abstract class Contraption {
 
 		// bogeys: sticky surfaces
 
-		// Bearings potentially create stabilized sub-contraptions: moveBearing(pos, frontier, visited, state);
+		// Bearings potentially create stabilized sub-contraptions
+		if (state.getBlock() instanceof dev.createpolymer.contraptions.bearing.MechanicalBearingBlock)
+			moveBearing(pos, frontier, visited, state);
 
-		// WM Bearings attach their structure when moved: moveWindmillBearing
+		// WM Bearings attach their structure when moved
+		if (state.getBlock() instanceof dev.createpolymer.contraptions.bearing.WindmillBearingBlock)
+			moveWindmillBearing(pos, frontier, visited, state);
 
 		// Seats transfer their passenger to the contraption
 		if (ContraptionBlockTags.SEATS.matches(state))

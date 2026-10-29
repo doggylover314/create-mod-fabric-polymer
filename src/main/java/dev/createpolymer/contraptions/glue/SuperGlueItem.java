@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import eu.pb4.polymer.core.api.item.SimplePolymerItem;
+import dev.createpolymer.contraptions.chassis.AbstractChassisBlock;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -41,6 +42,11 @@ public class SuperGlueItem extends SimplePolymerItem {
 		UseBlockCallback.EVENT.register((player, level, hand, hit) -> {
 			ItemStack stack = player.getItemInHand(hand);
 			if (!(stack.getItem() instanceof SuperGlueItem item) || player.isSpectator())
+				return InteractionResult.PASS;
+			// Chassis handle glue on their own faces (Create's glueItemAlwaysPlacesWhenUsed)
+			BlockState clicked = level.getBlockState(hit.getBlockPos());
+			if (clicked.getBlock() instanceof AbstractChassisBlock chassis
+				&& chassis.getGlueableSide(clicked, hit.getDirection()) != null)
 				return InteractionResult.PASS;
 			return item.useOn(new UseOnContext(player, hand, hit));
 		});

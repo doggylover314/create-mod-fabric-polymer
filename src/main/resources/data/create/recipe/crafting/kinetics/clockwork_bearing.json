@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "B",
+    "C",
+    "S"
+  ],
+  "key": {
+    "B": "#minecraft:wooden_slabs",
+    "C": "create:brass_casing",
+    "S": "create:electron_tube"
+  },
+  "result": {
+    "id": "create:clockwork_bearing",
+    "count": 1
+  }
+}

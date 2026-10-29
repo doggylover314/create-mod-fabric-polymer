@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "B",
+    "C",
+    "I"
+  ],
+  "key": {
+    "B": "#minecraft:wooden_slabs",
+    "C": "create:andesite_casing",
+    "I": "create:shaft"
+  },
+  "result": {
+    "id": "create:mechanical_bearing",
+    "count": 1
+  }
+}

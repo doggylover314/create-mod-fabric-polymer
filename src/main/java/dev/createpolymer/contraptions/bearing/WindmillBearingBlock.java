@@ -1,0 +1,63 @@
+package dev.createpolymer.contraptions.bearing;
+
+import dev.createpolymer.foundation.block.IBE;
+import dev.createpolymer.registry.feature.BearingRegistry;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+
+public class WindmillBearingBlock extends BearingBlock implements IBE<WindmillBearingBlockEntity> {
+
+	public WindmillBearingBlock(Properties properties) {
+		super(properties);
+	}
+
+	@Override
+	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player,
+		InteractionHand hand, BlockHitResult hitResult) {
+		if (!player.mayBuild())
+			return InteractionResult.FAIL;
+		if (player.isShiftKeyDown())
+			return InteractionResult.FAIL;
+		if (stack.isEmpty()) {
+			if (level.isClientSide())
+				return InteractionResult.SUCCESS;
+			withBlockEntityDo(level, pos, be -> {
+				if (be.running) {
+					be.disassemble();
+					return;
+				}
+				be.assembleNextTick = true;
+			});
+			return InteractionResult.SUCCESS;
+		}
+		return InteractionResult.TRY_WITH_EMPTY_HAND;
+	}
+
+	@Override
+	public Class<WindmillBearingBlockEntity> getBlockEntityClass() {
+		return WindmillBearingBlockEntity.class;
+	}
+
+	@Override
+	public BlockEntityType<? extends WindmillBearingBlockEntity> getBlockEntityType() {
+		return BearingRegistry.WINDMILL_BEARING_BLOCK_ENTITY;
+	}
+
+	@Override
+	protected String bodyModel() {
+		return "windmill_bearing";
+	}
+
+	@Override
+	protected String topModel() {
+		return "bearing/top_wooden";
+	}
+
+}

@@ -100,6 +100,7 @@ public class CreatePolymer implements ModInitializer {
 		PulleyRegistry.init();
 		MinecartRegistry.init();
 		FactoryGaugeRegistry.init();
+		dev.createpolymer.registry.feature.BearingRegistry.init();
 
 		// Resource pack: Create's models/textures/lang from this jar, served by polymer-autohost.
 		enableAutoHostByDefault();

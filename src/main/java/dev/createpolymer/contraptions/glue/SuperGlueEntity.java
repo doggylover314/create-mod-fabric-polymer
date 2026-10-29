@@ -1,5 +1,12 @@
 package dev.createpolymer.contraptions.glue;
 
+import dev.createpolymer.contraptions.bearing.BearingBlock;
+import dev.createpolymer.contraptions.chassis.AbstractChassisBlock;
+import dev.createpolymer.contraptions.chassis.StickerBlock;
+import dev.createpolymer.contraptions.gantry.GantryCarriageBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -123,7 +130,19 @@ public class SuperGlueEntity extends Entity implements PolymerEntity {
 		if (MechanicalPistonBlock.isStickyPiston(state))
 			return state.getValue(MechanicalPistonBlock.FACING) == direction;
 
-		// stickers, gantry carriages, bearings and chassis glue sides join here as they are ported
+		Block block = state.getBlock();
+		if (block instanceof StickerBlock)
+			return state.getValue(BlockStateProperties.FACING) == direction;
+		if (block instanceof GantryCarriageBlock)
+			return state.getValue(BlockStateProperties.FACING) == direction;
+		if (block instanceof BearingBlock)
+			return state.getValue(BlockStateProperties.FACING) == direction;
+		if (block instanceof AbstractChassisBlock chassis) {
+			BooleanProperty glueableSide = chassis.getGlueableSide(state, direction);
+			if (glueableSide == null)
+				return false;
+			return state.getValue(glueableSide);
+		}
 
 		if (state.getBlock() == Blocks.SLIME_BLOCK)
 			return true;
