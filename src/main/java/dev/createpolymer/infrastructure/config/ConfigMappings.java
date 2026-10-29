@@ -191,6 +191,13 @@ public final class ConfigMappings {
 		i(TRAINS, "maxAssemblyLength", 128, 5, 512, () -> TrainConfig.maxAssemblyLength,
 			v -> TrainConfig.maxAssemblyLength = v);
 		i(TRAINS, "maxBogeyCount", 20, 1, 200, () -> TrainConfig.maxBogeyCount, v -> TrainConfig.maxBogeyCount = v);
+		f(TRAINS, "manualTrainSpeedModifier", .75f, 0, Float.MAX_VALUE, () -> TrainConfig.manualTrainSpeedModifier, v -> TrainConfig.manualTrainSpeedModifier = v);
+		f(TRAINS, "trainTopSpeed", 28f, 0, Float.MAX_VALUE, () -> TrainConfig.trainTopSpeed, v -> TrainConfig.trainTopSpeed = v);
+		f(TRAINS, "trainTurningTopSpeed", 14f, 0, Float.MAX_VALUE, () -> TrainConfig.trainTurningTopSpeed, v -> TrainConfig.trainTurningTopSpeed = v);
+		f(TRAINS, "trainAcceleration", 3f, 0, Float.MAX_VALUE, () -> TrainConfig.trainAcceleration, v -> TrainConfig.trainAcceleration = v);
+		f(TRAINS, "poweredTrainTopSpeed", 40f, 0, Float.MAX_VALUE, () -> TrainConfig.poweredTrainTopSpeed, v -> TrainConfig.poweredTrainTopSpeed = v);
+		f(TRAINS, "poweredTrainTurningTopSpeed", 20f, 0, Float.MAX_VALUE, () -> TrainConfig.poweredTrainTurningTopSpeed, v -> TrainConfig.poweredTrainTurningTopSpeed = v);
+		f(TRAINS, "poweredTrainAcceleration", 3f, 0, Float.MAX_VALUE, () -> TrainConfig.poweredTrainAcceleration, v -> TrainConfig.poweredTrainAcceleration = v);
 
 		// recipes
 		b(RECIPES, "bulkPressing", false, () -> Config.bulkPressing, v -> Config.bulkPressing = v);

@@ -14,7 +14,10 @@ OUT = os.path.join(out_root, 'src/main/resources/assets/create')
 BASE = 'models/block/track'
 
 OBJ_MODELS = ['ascending', 'diag', 'diag_2', 'cross_diag', 'cross_d1_xo', 'cross_d1_zo', 'cross_d2_xo', 'cross_d2_zo',
-              'tie', 'segment_left', 'segment_right']
+              'tie', 'segment_left', 'segment_right',
+              # the bogeys of the trains
+              'bogey/bogey_frame', 'bogey/bogey_wheel', 'bogey/bogey_drive', 'bogey/bogey_drive_wheel',
+              'bogey/bogey_drive_wheel_pin', 'bogey/bogey_drive_piston', 'bogey/bogey_drive_belt']
 
 
 def find(rel):

@@ -6,6 +6,7 @@ import dev.createpolymer.trains.TrackNbt;
 import dev.createpolymer.trains.graph.DimensionPalette;
 import dev.createpolymer.trains.graph.EdgePointType;
 import dev.createpolymer.trains.graph.TrackNode;
+import dev.createpolymer.trains.signal.SignalBlock.SignalType;
 import dev.createpolymer.util.Couple;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -20,9 +21,21 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 public class SignalBoundary extends TrackEdgePoint {
 
 	public Couple<UUID> groups;
+	public Couple<SignalType> types;
 
 	public SignalBoundary() {
 		groups = Couple.create(null, null);
+		types = Couple.create(SignalType.ENTRY_SIGNAL, SignalType.ENTRY_SIGNAL);
+	}
+
+	/** Whether redstone holds the signal red for trains entering from this side. */
+	public boolean isForcedRed(TrackNode side) {
+		return false;
+	}
+
+	/** Same, for the side of the primary (true) or the other group. */
+	public boolean isForcedRed(boolean primary) {
+		return false;
 	}
 
 	public UUID getGroup(TrackNode side) {

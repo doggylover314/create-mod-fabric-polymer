@@ -1,0 +1,345 @@
+{
+ "credit": "Converted from the OBJ model of Create for vanilla clients (create-polymer)",
+ "ambientocclusion": false,
+ "textures": {
+  "belt": "create:block/bogey/belt",
+  "bogey": "create:block/bogey/frame",
+  "bogey2": "create:block/bogey/frame2",
+  "piston": "create:block/bogey/piston",
+  "wheel": "create:block/bogey/wheel",
+  "axis": "create:block/axis",
+  "axis_top": "create:block/axis_top"
+ },
+ "elements": [
+  {
+   "from": [
+    17.0,
+    0.0,
+    0.0
+   ],
+   "to": [
+    21.0,
+    4.0,
+    0.0
+   ],
+   "rotation": {
+    "origin": [
+     19.0,
+     2.0,
+     0.0
+    ],
+    "x": 90.0,
+    "y": 0.0,
+    "z": 180.0
+   },
+   "faces": {
+    "south": {
+     "uv": [
+      6.0,
+      6.0,
+      8.0,
+      8.0
+     ],
+     "texture": "#piston"
+    }
+   }
+  },
+  {
+   "from": [
+    17.0,
+    -2.0,
+    2.0
+   ],
+   "to": [
+    21.0,
+    2.0,
+    2.0
+   ],
+   "rotation": {
+    "origin": [
+     19.0,
+     0.0,
+     2.0
+    ],
+    "x": 0.0,
+    "y": 0.0,
+    "z": 180.0
+   },
+   "faces": {
+    "south": {
+     "uv": [
+      6.0,
+      6.0,
+      8.0,
+      8.0
+     ],
+     "texture": "#piston"
+    }
+   }
+  },
+  {
+   "from": [
+    17.0,
+    -4.0,
+    0.0
+   ],
+   "to": [
+    21.0,
+    0.0,
+    0.0
+   ],
+   "rotation": {
+    "origin": [
+     19.0,
+     -2.0,
+     0.0
+    ],
+    "x": -90.0,
+    "y": 0.0,
+    "z": 180.0
+   },
+   "faces": {
+    "south": {
+     "uv": [
+      6.0,
+      6.0,
+      8.0,
+      8.0
+     ],
+     "texture": "#piston"
+    }
+   }
+  },
+  {
+   "from": [
+    19.0,
+    -2.0,
+    0.0
+   ],
+   "to": [
+    23.0,
+    2.0,
+    0.0
+   ],
+   "rotation": {
+    "origin": [
+     21.0,
+     0.0,
+     0.0
+    ],
+    "x": 0.0,
+    "y": 90.0,
+    "z": 0.0
+   },
+   "faces": {
+    "south": {
+     "uv": [
+      4.0,
+      6.0,
+      6.0,
+      8.0
+     ],
+     "texture": "#piston"
+    }
+   }
+  },
+  {
+   "from": [
+    17.0,
+    -2.0,
+    -2.0
+   ],
+   "to": [
+    21.0,
+    2.0,
+    -2.0
+   ],
+   "rotation": {
+    "origin": [
+     19.0,
+     0.0,
+     -2.0
+    ],
+    "x": -180.0,
+    "y": 0.0,
+    "z": -180.0
+   },
+   "faces": {
+    "south": {
+     "uv": [
+      6.0,
+      6.0,
+      8.0,
+      8.0
+     ],
+     "texture": "#piston"
+    }
+   }
+  },
+  {
+   "from": [
+    6.0,
+    -1.0,
+    1.0
+   ],
+   "to": [
+    10.0,
+    3.0,
+    1.0
+   ],
+   "rotation": {
+    "origin": [
+     -5.5,
+     0.5,
+     -0.5
+    ],
+    "x": 90.0,
+    "y": 0.0,
+    "z": -180.0
+   },
+   "faces": {
+    "south": {
+     "uv": [
+      8.0,
+      6.0,
+      6.0,
+      8.0
+     ],
+     "texture": "#piston"
+    }
+   }
+  },
+  {
+   "from": [
+    6.0,
+    6.0,
+    2.0
+   ],
+   "to": [
+    10.0,
+    10.0,
+    2.0
+   ],
+   "rotation": {
+    "origin": [
+     -5.5,
+     4.0,
+     0.0
+    ],
+    "x": 0.0,
+    "y": 0.0,
+    "z": -180.0
+   },
+   "faces": {
+    "south": {
+     "uv": [
+      8.0,
+      6.0,
+      6.0,
+      8.0
+     ],
+     "texture": "#piston"
+    }
+   }
+  },
+  {
+   "from": [
+    6.0,
+    5.0,
+    9.0
+   ],
+   "to": [
+    10.0,
+    9.0,
+    9.0
+   ],
+   "rotation": {
+    "origin": [
+     -5.5,
+     3.5,
+     3.5
+    ],
+    "x": -90.0,
+    "y": 0.0,
+    "z": -180.0
+   },
+   "faces": {
+    "south": {
+     "uv": [
+      8.0,
+      6.0,
+      6.0,
+      8.0
+     ],
+     "texture": "#piston"
+    }
+   }
+  },
+  {
+   "from": [
+    6.0,
+    -2.0,
+    8.0
+   ],
+   "to": [
+    10.0,
+    2.0,
+    8.0
+   ],
+   "rotation": {
+    "origin": [
+     -2.5,
+     -0.0,
+     -10.5
+    ],
+    "x": 0.0,
+    "y": -90.0,
+    "z": 0.0
+   },
+   "faces": {
+    "south": {
+     "uv": [
+      6.0,
+      6.0,
+      4.0,
+      8.0
+     ],
+     "texture": "#piston"
+    }
+   }
+  },
+  {
+   "from": [
+    6.0,
+    -2.0,
+    8.0
+   ],
+   "to": [
+    10.0,
+    2.0,
+    8.0
+   ],
+   "rotation": {
+    "origin": [
+     -5.5,
+     0.0,
+     3.0
+    ],
+    "x": -180.0,
+    "y": 0.0,
+    "z": 180.0
+   },
+   "faces": {
+    "south": {
+     "uv": [
+      8.0,
+      6.0,
+      6.0,
+      8.0
+     ],
+     "texture": "#piston"
+    }
+   }
+  }
+ ]
+}

@@ -1,12 +1,23 @@
 package dev.createpolymer.contraptions.actors.trainControls;
 
+import java.util.List;
+
+import org.jspecify.annotations.Nullable;
+
 import dev.createpolymer.contraptions.ContraptionWorld;
+import dev.createpolymer.contraptions.render.ContraptionDisplay;
 import dev.createpolymer.foundation.block.ProperWaterloggedBlock;
 import dev.createpolymer.item.IWrenchable;
 import dev.createpolymer.util.VoxelShaper;
+import dev.createpolymer.visual.BaseModel;
+import dev.createpolymer.visual.ModelItems;
+import dev.createpolymer.visual.Orientation;
+import dev.createpolymer.visual.Part;
 import dev.createpolymer.visual.PolymerModelBlock;
+import eu.pb4.polymer.virtualentity.api.ElementHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -16,6 +27,7 @@ import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
@@ -25,10 +37,12 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 /**
- * The base of Create's controls blocks (MIT, The Create Team). Only the contraption controls use it here: the train
- * controls and everything about steering trains are not ported.
+ * Create's controls block (MIT, The Create Team): the train controls, and the base of the contraption controls. On
+ * a train carriage the block is open and the player sitting by it drives the train with the movement keys (see
+ * {@link ControlsInteractionBehaviour} and {@link ControlsServerHandler}).
  */
-public abstract class ControlsBlock extends HorizontalDirectionalBlock implements IWrenchable, ProperWaterloggedBlock, PolymerModelBlock {
+public class ControlsBlock extends HorizontalDirectionalBlock
+	implements IWrenchable, ProperWaterloggedBlock, PolymerModelBlock, ContraptionDisplay {
 
 	public static final BooleanProperty OPEN = BooleanProperty.create("open");
 	public static final BooleanProperty VIRTUAL = BooleanProperty.create("virtual");
@@ -90,6 +104,46 @@ public abstract class ControlsBlock extends HorizontalDirectionalBlock implement
 	@Override
 	public BlockState particleState() {
 		return Blocks.ANDESITE.defaultBlockState();
+	}
+
+
+	@Override
+	public ElementHolder createModel(ServerLevel world, BlockPos pos, BlockState state) {
+		return new ControlsModel(state);
+	}
+
+	/**
+	 * On a contraption the controls are open, with the cover over them. Create also draws the two levers, which the
+	 * train moves while it is driven; they are not shown here.
+	 */
+	@Override
+	public List<Piece> getContraptionPieces(BlockState state) {
+		Direction facing = state.getValue(FACING);
+		return List.of(new Piece(ModelItems.block("controls/block_open"), Orientation.forHorizontal(facing)),
+			new Piece(ModelItems.block("controls/train/cover"), new org.joml.Quaternionf().rotationY((float) Math.PI)
+				.mul(Orientation.horizontalAngle(facing))));
+	}
+
+	/** The controls model of the state, as Create's blockstate file picks it. */
+	public static class ControlsModel extends BaseModel {
+		private final Part part;
+
+		public ControlsModel(BlockState state) {
+			super(state);
+			part = addPart(ModelItems.block("controls/block_closed"));
+			onStateChanged(state);
+		}
+
+		@Override
+		protected void onStateChanged(BlockState state) {
+			String model = state.getValue(VIRTUAL) ? "virtual" : state.getValue(OPEN) ? "open" : "closed";
+			part.setItem(ModelItems.block("controls/block_" + model));
+			part.orientation(Orientation.forHorizontal(state.getValue(FACING)))
+				.apply(0);
+		}
+
+		@Override
+		protected void update(ServerLevel level, BlockPos pos, @Nullable BlockEntity be, long time) {}
 	}
 
 }

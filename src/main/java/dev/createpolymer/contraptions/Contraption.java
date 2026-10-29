@@ -363,7 +363,11 @@ public abstract class Contraption {
 				frontier.add(attached);
 		}
 
-		// bogeys: sticky surfaces
+		// Bogeys tend to have sticky sides
+		if (state.getBlock() instanceof dev.createpolymer.trains.bogey.AbstractBogeyBlock<?> bogey)
+			for (Direction d : bogey.getStickySurfaces(world, pos, state))
+				if (!visited.contains(pos.relative(d)))
+					frontier.add(pos.relative(d));
 
 		// Bearings potentially create stabilized sub-contraptions
 		if (state.getBlock() instanceof dev.createpolymer.contraptions.bearing.MechanicalBearingBlock)
@@ -588,7 +592,10 @@ public abstract class Contraption {
 		BlockState blockstate = world.getBlockState(pos);
 		if (blockstate.is(RedstoneRegistry.REDSTONE_CONTACT))
 			blockstate = blockstate.setValue(RedstoneContactBlock.POWERED, true);
-		// controls open (train carriages only), sliding doors are hidden on contraptions: with those blocks
+		// sliding doors are hidden on contraptions: with those blocks
+		if (blockstate.getBlock() instanceof dev.createpolymer.contraptions.actors.trainControls.ControlsBlock
+			&& this instanceof dev.createpolymer.trains.entity.CarriageContraption)
+			blockstate = blockstate.setValue(dev.createpolymer.contraptions.actors.trainControls.ControlsBlock.OPEN, true);
 		if (blockstate.getBlock() instanceof ButtonBlock) {
 			blockstate = blockstate.setValue(ButtonBlock.POWERED, false);
 			world.scheduleTick(pos, blockstate.getBlock(), -1);

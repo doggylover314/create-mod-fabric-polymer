@@ -43,7 +43,7 @@ def parse_mtl(path):
 
 def parse_obj(path):
     """-> list of quads: dict(pos=[4x3], uv=[4x2], tex=str) in block units (0..1), uv v already flipped (v' = 1 - v)."""
-    v, vt, quads = [], [], []
+    v, vt, quads, tris = [], [], [], []
     mats = {}
     cur = None
     for line in open(path):
@@ -61,14 +61,105 @@ def parse_obj(path):
             cur = mats.get(parts[1], '0')
         elif k == 'f':
             idx = [p.split('/') for p in parts[1:]]
-            if len(idx) != 4:
-                raise ValueError('only quads are supported: ' + line)
-            quads.append({
+            if len(idx) not in (3, 4):
+                raise ValueError('only triangles and quads are supported: ' + line)
+            face = {
                 'pos': [v[int(i[0]) - 1] for i in idx],
                 'uv': [vt[int(i[1]) - 1] for i in idx],
                 'tex': cur or '0',
-            })
-    return quads
+            }
+            (tris if len(idx) == 3 else quads).append(face)
+    return quads + triangles_to_quads(tris)
+
+
+def _key(p):
+    return tuple(round(x, 5) for x in p)
+
+
+def _is_rect(P):
+    """all four corners are right angles"""
+    for i in range(4):
+        a, b = sub(P[(i + 1) % 4], P[i]), sub(P[(i + 3) % 4], P[i])
+        if abs(dot(norm(a), norm(b))) > 1e-3:
+            return False
+    return True
+
+
+def _is_trapezoid(P):
+    """P0P1 and P3P2 are parallel, or P1P2 and P0P3"""
+    for a, b in ((sub(P[1], P[0]), sub(P[2], P[3])), (sub(P[2], P[1]), sub(P[3], P[0]))):
+        if length(cross(norm(a), norm(b))) < 1e-3:
+            return True
+    return False
+
+
+def _is_convex(P, normal):
+    for i in range(4):
+        c = cross(sub(P[(i + 1) % 4], P[i]), sub(P[(i + 2) % 4], P[(i + 1) % 4]))
+        if dot(c, normal) < -1e-9:
+            return False
+    return True
+
+
+def triangles_to_quads(tris):
+    """Blender triangulates the quads of Create's bogey models. Triangles that share an edge, lie in one plane and
+    continue each other's texture are joined into the quad they came from (preferring rectangles, then trapezoids).
+    What is left over becomes a degenerate quad whose last two corners are the same point, which the conversion
+    cuts into strips like a trapezoid."""
+    out = []
+    used = [False] * len(tris)
+    edges = {}
+    for i, t in enumerate(tris):
+        for k in range(3):
+            edges.setdefault((_key(t['pos'][k]), _key(t['pos'][(k + 1) % 3])), []).append((i, k))
+
+    def candidates():
+        for i, t in enumerate(tris):
+            for k in range(3):
+                p, q = t['pos'][k], t['pos'][(k + 1) % 3]
+                for j, m in edges.get((_key(q), _key(p)), []):
+                    if j > i:
+                        yield i, k, j, m
+
+    def build(i, k, j, m):
+        t1, t2 = tris[i], tris[j]
+        if t1['tex'] != t2['tex']:
+            return None
+        n1 = cross(sub(t1['pos'][1], t1['pos'][0]), sub(t1['pos'][2], t1['pos'][0]))
+        n2 = cross(sub(t2['pos'][1], t2['pos'][0]), sub(t2['pos'][2], t2['pos'][0]))
+        if length(n1) < 1e-9 or length(n2) < 1e-9 or dot(norm(n1), norm(n2)) < 0.9999:
+            return None
+        # shared corners must have the same texture coordinates in both triangles
+        if length(sub(t1['uv'][k], t2['uv'][(m + 1) % 3])) > 1e-5 or length(sub(t1['uv'][(k + 1) % 3], t2['uv'][m])) > 1e-5:
+            return None
+        # quad r, p, s, q keeps the winding of both triangles
+        pos = [t1['pos'][(k + 2) % 3], t1['pos'][k], t2['pos'][(m + 2) % 3], t1['pos'][(k + 1) % 3]]
+        uv = [t1['uv'][(k + 2) % 3], t1['uv'][k], t2['uv'][(m + 2) % 3], t1['uv'][(k + 1) % 3]]
+        if not _is_convex(pos, norm(n1)):
+            return None
+        return {'pos': pos, 'uv': uv, 'tex': t1['tex']}
+
+    for accept in (_is_rect, _is_trapezoid):
+        for i, k, j, m in candidates():
+            if used[i] or used[j]:
+                continue
+            q = build(i, k, j, m)
+            if q is None or not accept(q['pos']):
+                continue
+            used[i] = used[j] = True
+            out.append(q)
+
+    for i, t in enumerate(tris):
+        if used[i]:
+            continue
+        # the longest edge is the base of the strips, the opposite corner the apex
+        lens = [length(sub(t['pos'][(k + 1) % 3], t['pos'][k])) for k in range(3)]
+        b = lens.index(max(lens))
+        a, c, apex = b, (b + 1) % 3, (b + 2) % 3
+        pos = [t['pos'][a], t['pos'][c], t['pos'][apex], t['pos'][apex]]
+        uv = [t['uv'][a], t['uv'][c], t['uv'][apex], t['uv'][apex]]
+        out.append({'pos': pos, 'uv': uv, 'tex': t['tex']})
+    return out
 
 
 def solve_2x2(m, b):

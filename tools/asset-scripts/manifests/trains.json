@@ -1,0 +1,62 @@
+{
+  "items": [
+    "railway_casing",
+    "track_station",
+    "controls"
+  ],
+  "blocks": [
+    "railway_casing",
+    "track_station",
+    "small_bogey",
+    "large_bogey",
+    "controls"
+  ],
+  "display_models": [
+    "block/railway_casing",
+    "block/shaft",
+    "block/track/bogey/top",
+    "block/track_station/block",
+    "block/track_station/flag_on",
+    "block/track_station/flag_off",
+    "block/track_station/flag_assemble",
+    "block/controls/block_closed",
+    "block/controls/block_open",
+    "block/controls/block_virtual",
+    "block/controls/train/cover"
+  ],
+  "own_models": [
+    "block/track/bogey/bogey_frame",
+    "block/track/bogey/bogey_wheel",
+    "block/track/bogey/bogey_drive",
+    "block/track/bogey/bogey_drive_wheel",
+    "block/track/bogey/bogey_drive_wheel_pin",
+    "block/track/bogey/bogey_drive_piston",
+    "block/track/bogey/bogey_drive_belt"
+  ],
+  "crafting": [
+    "kinetics/controls",
+    "kinetics/track_station"
+  ],
+  "tags": {
+    "c:plates/obsidian": [
+      "create:sturdy_sheet"
+    ]
+  },
+  "known_tags": [
+    "c:plates/obsidian"
+  ],
+  "lang_ids": [
+    "railway_casing",
+    "track_station",
+    "small_bogey",
+    "large_bogey",
+    "controls"
+  ],
+  "lang_prefixes": [
+    "create.station.",
+    "create.train.",
+    "create.train_assembly.",
+    "create.bogey.",
+    "create.contraption.controls."
+  ]
+}

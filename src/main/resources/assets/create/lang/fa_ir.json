@@ -55,5 +55,6 @@
  "block.create.spruce_window": "بلوک پنجره صنوبر",
  "block.create.spruce_window_pane": "پنجره چوب صنوبر",
  "block.create.warped_window": "بلوک پنجره پیچ خورده",
- "block.create.warped_window_pane": "پنجره چوب پیچ دار"
+ "block.create.warped_window_pane": "پنجره چوب پیچ دار",
+ "create.station.close": "بستن پنجره"
 }

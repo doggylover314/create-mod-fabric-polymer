@@ -13,6 +13,8 @@ import dev.createpolymer.foundation.block.ProperWaterloggedBlock;
 import dev.createpolymer.item.IWrenchable;
 import dev.createpolymer.redstone.RedstoneClientStates;
 import dev.createpolymer.registry.feature.TrackRegistry;
+import dev.createpolymer.registry.feature.TrainsRegistry;
+import dev.createpolymer.trains.station.StationBlockEntity;
 import dev.createpolymer.trains.TrackNbt;
 import dev.createpolymer.trains.graph.TrackNodeLocation;
 import dev.createpolymer.trains.graph.TrackNodeLocation.DiscoveredLocation;
@@ -29,6 +31,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
@@ -405,8 +408,16 @@ public class TrackBlock extends Block
 		InteractionHand hand, BlockHitResult hitResult) {
 		if (level.isClientSide())
 			return InteractionResult.SUCCESS;
-
-		// Station assembly areas get to react to a clicked track here (trains).
+		for (java.util.Map.Entry<BlockPos, net.minecraft.world.level.levelgen.structure.BoundingBox> entry : StationBlockEntity.assemblyAreas
+			.get(level)
+			.entrySet()) {
+			if (!entry.getValue()
+				.isInside(pos))
+				continue;
+			if (level.getBlockEntity(entry.getKey()) instanceof StationBlockEntity station)
+				if (station.trackClicked(player, hand, this, state, pos))
+					return InteractionResult.SUCCESS;
+		}
 
 		return InteractionResult.TRY_WITH_EMPTY_HAND;
 	}
@@ -585,8 +596,8 @@ public class TrackBlock extends Block
 
 	@Override
 	public BlockState getBogeyAnchor(BlockGetter world, BlockPos pos, BlockState state) {
-		// The bogey blocks belong to the trains; they replace this by the small bogey on the track's axis.
-		return Blocks.AIR.defaultBlockState();
+		return TrainsRegistry.SMALL_BOGEY.defaultBlockState()
+			.setValue(BlockStateProperties.HORIZONTAL_AXIS, state.getValue(SHAPE) == TrackShape.XO ? Axis.X : Axis.Z);
 	}
 
 	@Override
