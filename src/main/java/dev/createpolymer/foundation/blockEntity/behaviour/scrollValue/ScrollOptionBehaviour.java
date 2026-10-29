@@ -1,0 +1,37 @@
+package dev.createpolymer.foundation.blockEntity.behaviour.scrollValue;
+
+import com.google.common.collect.ImmutableList;
+
+import dev.createpolymer.foundation.blockEntity.SmartBlockEntity;
+import dev.createpolymer.foundation.blockEntity.behaviour.ValueBoxTransform;
+import dev.createpolymer.foundation.blockEntity.behaviour.ValueSettingsBoard;
+import dev.createpolymer.foundation.blockEntity.behaviour.ValueSettingsFormatter.ScrollOptionSettingsFormatter;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.BlockHitResult;
+
+public class ScrollOptionBehaviour<E extends Enum<E> & INamedIconOptions> extends ScrollValueBehaviour {
+
+	private E[] options;
+
+	public ScrollOptionBehaviour(Class<E> enum_, Component label, SmartBlockEntity be, ValueBoxTransform slot) {
+		super(label, be, slot);
+		options = enum_.getEnumConstants();
+		between(0, options.length - 1);
+	}
+
+	INamedIconOptions getIconForSelected() {
+		return get();
+	}
+
+	public E get() {
+		return options[value];
+	}
+
+	@Override
+	public ValueSettingsBoard createBoard(Player player, BlockHitResult hitResult) {
+		return new ValueSettingsBoard(label, max, 1, ImmutableList.of(Component.literal("Select")),
+			new ScrollOptionSettingsFormatter(options));
+	}
+
+}

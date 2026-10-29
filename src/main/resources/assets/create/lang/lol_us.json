@@ -22,6 +22,8 @@
  "block.create.speedometer": "Speed Mesuwer",
  "block.create.stressometer": "Stwess Mesuwer",
  "block.create.water_wheel": "Spinny water thingy",
+ "create.logistics.fluid_filter": "Wat watr",
  "item.create.andesite_alloy": "Stromk rock",
- "item.create.copper_sheet": "Coppr Shet"
+ "item.create.copper_sheet": "Coppr Shet",
+ "item.create.filter": "Lis Filtr"
 }

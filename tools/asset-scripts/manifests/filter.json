@@ -1,0 +1,15 @@
+{
+  "items": [
+    "filter"
+  ],
+  "lang_ids": [
+    "filter"
+  ],
+  "lang_prefixes": [
+    "create.logistics.filter",
+    "create.logistics.recipe_filter",
+    "create.logistics.fluid_filter",
+    "create.gui.filter.",
+    "create.gui.value_settings."
+  ]
+}

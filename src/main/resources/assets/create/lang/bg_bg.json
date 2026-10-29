@@ -22,5 +22,9 @@
  "block.create.speedometer": "Скоростомер",
  "block.create.stressometer": "Стресометър",
  "block.create.water_wheel": "Водно Колело",
- "create.gui.stressometer.overstressed": "Свръхстесиран"
+ "create.gui.filter.allow_list": "Бял Списък",
+ "create.gui.filter.deny_list": "Черен Списък",
+ "create.gui.stressometer.overstressed": "Свръхстесиран",
+ "create.gui.value_settings.hold_to_edit": "Кликнете и задръжте за редактиране",
+ "create.gui.value_settings.release_to_confirm": "Отпуснете %1$s за Потвърждаване"
 }
