@@ -1,0 +1,49 @@
+{
+  "items": [
+    "belt_connector",
+    "andesite_tunnel",
+    "brass_tunnel"
+  ],
+  "blocks": [
+    "belt",
+    "andesite_tunnel",
+    "brass_tunnel"
+  ],
+  "display_models": [
+    "block/belt_pulley",
+    "block/belt/start",
+    "block/belt/middle",
+    "block/belt/end",
+    "block/belt/start_bottom",
+    "block/belt/middle_bottom",
+    "block/belt/end_bottom",
+    "block/belt/diagonal_start",
+    "block/belt/diagonal_middle",
+    "block/belt/diagonal_end",
+    "block/belt_cover/andesite_belt_cover_x",
+    "block/belt_cover/andesite_belt_cover_z",
+    "block/belt_cover/brass_belt_cover_x",
+    "block/belt_cover/brass_belt_cover_z",
+    "block/belt_tunnel/flap"
+  ],
+  "blockstates": [
+    "belt",
+    "andesite_tunnel",
+    "brass_tunnel"
+  ],
+  "crafting": [
+    "kinetics/belt_connector",
+    "logistics/andesite_tunnel",
+    "logistics/brass_tunnel"
+  ],
+  "lang_ids": [
+    "belt",
+    "belt_connector",
+    "andesite_tunnel",
+    "brass_tunnel"
+  ],
+  "lang_prefixes": [
+    "create.logistics.when_multiple_outputs_available",
+    "create.tunnel.selection_mode."
+  ]
+}

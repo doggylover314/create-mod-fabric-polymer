@@ -1,0 +1,7 @@
+{
+ "parent": "create:block/belt/diagonal_end",
+ "textures": {
+  "0": "create:block/belt_scroll/belt_diagonal_p_r1_4",
+  "particle": "create:block/belt_scroll/belt_diagonal_p_r1_4"
+ }
+}

@@ -13,6 +13,7 @@
     "create:gearshift",
     "create:encased_chain_drive",
     "create:adjustable_chain_gearshift",
+    "create:belt",
     "create:water_wheel",
     "create:large_water_wheel",
     "create:encased_fan",

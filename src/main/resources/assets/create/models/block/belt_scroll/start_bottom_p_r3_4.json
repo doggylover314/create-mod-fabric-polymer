@@ -1,0 +1,6 @@
+{
+ "parent": "create:block/belt/start_bottom",
+ "textures": {
+  "1": "create:block/belt_scroll/belt_offset_p_r3_4"
+ }
+}
