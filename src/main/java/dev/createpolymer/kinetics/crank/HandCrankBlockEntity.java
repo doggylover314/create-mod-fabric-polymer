@@ -2,9 +2,11 @@ package dev.createpolymer.kinetics.crank;
 
 import dev.createpolymer.kinetics.base.GeneratingKineticBlockEntity;
 import dev.createpolymer.registry.ModBlockEntities;
+import dev.createpolymer.registry.ModBlocks;
 import dev.createpolymer.registry.ModSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -16,7 +18,11 @@ public class HandCrankBlockEntity extends GeneratingKineticBlockEntity {
 	public boolean backwards;
 
 	public HandCrankBlockEntity(BlockPos pos, BlockState state) {
-		super(ModBlockEntities.HAND_CRANK, pos, state);
+		this(ModBlockEntities.HAND_CRANK, pos, state);
+	}
+
+	public HandCrankBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+		super(type, pos, state);
 	}
 
 	public void turn(boolean back) {
@@ -63,7 +69,8 @@ public class HandCrankBlockEntity extends GeneratingKineticBlockEntity {
 		super.tick();
 
 		if (inUse > 0) {
-			if (level.getGameTime() % 10 == 0)
+			// Create's tickAudio: only the hand crank itself cranks, valve handles are silent
+			if (level.getGameTime() % 10 == 0 && getBlockState().is(ModBlocks.HAND_CRANK))
 				ModSounds.cranking(level, worldPosition, inUse / 2.5f, .65f + (10 - inUse) / 10f);
 			inUse--;
 			if (inUse == 0 && !level.isClientSide())

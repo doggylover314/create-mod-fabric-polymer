@@ -40,22 +40,31 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
  * Ported from Create's EncasedCogwheelBlock (MIT, The Create Team).
  * Wrenching an end face toggles the shaft on that side; sneak-wrenching removes the casing.
  */
-public class EncasedCogwheelBlock extends RotatedPillarKineticBlock implements ICogWheel, IWrenchable {
+public class EncasedCogwheelBlock extends RotatedPillarKineticBlock implements ICogWheel, IWrenchable, EncasedBlock {
 	public static final BooleanProperty TOP_SHAFT = BooleanProperty.create("top_shaft");
 	public static final BooleanProperty BOTTOM_SHAFT = BooleanProperty.create("bottom_shaft");
 
 	protected final boolean isLarge;
 	private final Supplier<Block> casing;
 	private final String blockstateFile;
+	private final @Nullable Supplier<BlockEntityType<? extends KineticBlockEntity>> blockEntityType;
 
 	public EncasedCogwheelBlock(Properties properties, boolean large, Supplier<Block> casing, String blockstateFile) {
+		this(properties, large, casing, blockstateFile, null);
+	}
+
+	/** {@code blockEntityType}: null for the shared encased cogwheel block entities. */
+	public EncasedCogwheelBlock(Properties properties, boolean large, Supplier<Block> casing, String blockstateFile,
+								@Nullable Supplier<BlockEntityType<? extends KineticBlockEntity>> blockEntityType) {
 		super(properties);
 		this.isLarge = large;
 		this.casing = casing;
 		this.blockstateFile = blockstateFile;
+		this.blockEntityType = blockEntityType;
 		registerDefaultState(defaultBlockState().setValue(TOP_SHAFT, false).setValue(BOTTOM_SHAFT, false));
 	}
 
+	@Override
 	public Block getCasing() {
 		return casing.get();
 	}
@@ -67,6 +76,8 @@ public class EncasedCogwheelBlock extends RotatedPillarKineticBlock implements I
 
 	@Override
 	public BlockEntityType<? extends KineticBlockEntity> getBlockEntityType() {
+		if (blockEntityType != null)
+			return blockEntityType.get();
 		return isLarge ? ModBlockEntities.ENCASED_LARGE_COGWHEEL : ModBlockEntities.ENCASED_COGWHEEL;
 	}
 
@@ -137,6 +148,7 @@ public class EncasedCogwheelBlock extends RotatedPillarKineticBlock implements I
 	}
 
 	/** State for encasing a cogwheel at {@code pos}: shafts go wherever a neighbour has one facing in. */
+	@Override
 	public BlockState encasedStateFor(BlockState cog, Level level, BlockPos pos) {
 		BlockState encasedState = defaultBlockState().setValue(AXIS, cog.getValue(AXIS));
 		for (Direction d : new Direction[] { Direction.get(AxisDirection.POSITIVE, cog.getValue(AXIS)), Direction.get(AxisDirection.NEGATIVE, cog.getValue(AXIS)) }) {

@@ -1,4 +1,5 @@
 {
+ "block.create.adjustable_chain_gearshift": "Caixa de canvi ajustable",
  "block.create.andesite_alloy_block": "Bloc d'aliatge d'andesita",
  "block.create.andesite_casing": "Cas d'andesita",
  "block.create.andesite_encased_cogwheel": "Engranatge encasat d'andesita",
@@ -7,9 +8,15 @@
  "block.create.basin": "Pica",
  "block.create.blaze_burner": "Cremador d'esperit de foc",
  "block.create.brass_block": "Bloc de llautó",
+ "block.create.brass_casing": "Bastidor de llautó",
+ "block.create.brass_encased_cogwheel": "Engranatge bastit de llautó",
+ "block.create.brass_encased_large_cogwheel": "Engranatge gran bastit de llautó",
  "block.create.cogwheel": "Engranatge",
  "block.create.creative_motor": "Motor creatiu",
+ "block.create.cuckoo_clock": "Rellotge de cucut",
  "block.create.large_cogwheel": "Engranatge gran",
  "block.create.large_water_wheel": "Roda hidràulica gran",
- "block.create.water_wheel": "Roda hidràulica"
+ "block.create.water_wheel": "Roda hidràulica",
+ "create.gui.sequenced_gearshift.instruction.turn_distance": "Pistó",
+ "create.gui.sequenced_gearshift.speed": "Velocitat, direcció"
 }

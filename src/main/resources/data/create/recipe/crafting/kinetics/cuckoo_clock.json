@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "S",
+    "C",
+    "A"
+  ],
+  "key": {
+    "A": "minecraft:clock",
+    "C": "create:andesite_casing",
+    "S": "#minecraft:planks"
+  },
+  "result": {
+    "id": "create:cuckoo_clock",
+    "count": 1
+  }
+}

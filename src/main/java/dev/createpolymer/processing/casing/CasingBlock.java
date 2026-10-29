@@ -13,7 +13,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
- * Andesite casing. A full cube, so it borrows one of the spare vanilla block
+ * Andesite, brass and copper casing. A full cube, so it borrows one of the spare vanilla block
  * states Polymer re-skins through the resource pack and renders as a real block.
  * (Create's connected textures are not ported; it uses the plain casing texture.)
  */
@@ -21,9 +21,14 @@ public class CasingBlock extends Block implements PolymerTexturedBlock {
 	private final BlockState clientState;
 
 	public CasingBlock(Properties properties) {
+		this(properties, "andesite_casing");
+	}
+
+	/** {@code model} is the name of Create's cube model under models/block, e.g. "brass_casing". */
+	public CasingBlock(Properties properties, String model) {
 		super(properties);
 		this.clientState = PolymerBlockResourceUtils.requestBlock(BlockModelType.FULL_BLOCK,
-			PolymerBlockModel.of(CreatePolymer.id("block/andesite_casing")));
+			PolymerBlockModel.of(CreatePolymer.id("block/" + model)));
 	}
 
 	@Override

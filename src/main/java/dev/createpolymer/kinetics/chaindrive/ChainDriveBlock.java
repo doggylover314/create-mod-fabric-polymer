@@ -4,7 +4,7 @@ import org.jspecify.annotations.Nullable;
 
 import dev.createpolymer.kinetics.base.KineticBlockEntity;
 import dev.createpolymer.kinetics.base.RotatedPillarKineticBlock;
-import dev.createpolymer.registry.ModBlockEntities;
+import dev.createpolymer.registry.feature.KineticsExtraRegistry;
 import dev.createpolymer.visual.BaseModel;
 import dev.createpolymer.visual.ModelItems;
 import dev.createpolymer.visual.Orientation;
@@ -49,7 +49,7 @@ public class ChainDriveBlock extends RotatedPillarKineticBlock {
 
 	@Override
 	public BlockEntityType<? extends KineticBlockEntity> getBlockEntityType() {
-		return ModBlockEntities.ENCASED_SHAFT;
+		return KineticsExtraRegistry.ENCASED_CHAIN_DRIVE_BE;
 	}
 
 	@Override
@@ -132,6 +132,16 @@ public class ChainDriveBlock extends RotatedPillarKineticBlock {
 		return state.getValue(AXIS);
 	}
 
+	public static float getRotationSpeedModifier(KineticBlockEntity from, KineticBlockEntity to) {
+		float fromMod = 1;
+		float toMod = 1;
+		if (from instanceof ChainGearshiftBlockEntity)
+			fromMod = ((ChainGearshiftBlockEntity) from).getModifier();
+		if (to instanceof ChainGearshiftBlockEntity)
+			toMod = ((ChainGearshiftBlockEntity) to).getModifier();
+		return fromMod / toMod;
+	}
+
 	public static boolean areBlocksConnected(BlockState state, BlockState other, Direction facing) {
 		Part part = state.getValue(PART);
 		Axis connectionAxis = getConnectionAxis(state);
@@ -166,17 +176,24 @@ public class ChainDriveBlock extends RotatedPillarKineticBlock {
 		return Blocks.STRIPPED_SPRUCE_WOOD.defaultBlockState();
 	}
 
+	/** Name of Create's blockstate file that picks the casing model. */
+	protected String blockstateFile() {
+		return "encased_chain_drive";
+	}
+
 	@Override
 	protected ElementHolder createModel(ServerLevel world, BlockPos pos, BlockState state) {
-		return new Model(state);
+		return new Model(state, blockstateFile());
 	}
 
 	public static class Model extends BaseModel {
+		private final String file;
 		private final dev.createpolymer.visual.Part casing;
 		private final dev.createpolymer.visual.Part shaft;
 
-		public Model(BlockState state) {
+		public Model(BlockState state, String file) {
 			super(state);
+			this.file = file;
 			casing = addPart(ModelItems.block("shaft"));
 			shaft = addPart(ModelItems.block("shaft"));
 			onStateChanged(state);
@@ -184,7 +201,7 @@ public class ChainDriveBlock extends RotatedPillarKineticBlock {
 
 		@Override
 		protected void onStateChanged(BlockState state) {
-			showVariant(casing, "encased_chain_drive", state);
+			showVariant(casing, file, state);
 			Axis axis = state.getValue(AXIS);
 			shaft.orientation(Orientation.forAxis(axis)).spinAxis(axis).apply(0);
 		}

@@ -21,6 +21,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -32,23 +33,37 @@ import net.minecraft.world.level.block.state.BlockState;
  * Ported from Create's EncasedShaftBlock / AbstractEncasedShaftBlock (MIT, The Create Team).
  * Made by using a casing on a shaft; sneak-wrenching takes the casing off again.
  */
-public class EncasedShaftBlock extends RotatedPillarKineticBlock implements IWrenchable {
+public class EncasedShaftBlock extends RotatedPillarKineticBlock implements IWrenchable, EncasedBlock {
 	private final Supplier<Block> casing;
 	private final String blockstateFile;
+	private final @Nullable Supplier<BlockEntityType<? extends KineticBlockEntity>> blockEntityType;
 
 	public EncasedShaftBlock(Properties properties, Supplier<Block> casing, String blockstateFile) {
+		this(properties, casing, blockstateFile, null);
+	}
+
+	/** {@code blockEntityType}: null for the shared encased shaft block entity. */
+	public EncasedShaftBlock(Properties properties, Supplier<Block> casing, String blockstateFile,
+							 @Nullable Supplier<BlockEntityType<? extends KineticBlockEntity>> blockEntityType) {
 		super(properties);
 		this.casing = casing;
 		this.blockstateFile = blockstateFile;
+		this.blockEntityType = blockEntityType;
 	}
 
+	@Override
 	public Block getCasing() {
 		return casing.get();
 	}
 
 	@Override
+	public BlockState encasedStateFor(BlockState shaft, Level level, BlockPos pos) {
+		return defaultBlockState().setValue(AXIS, shaft.getValue(AXIS));
+	}
+
+	@Override
 	public BlockEntityType<? extends KineticBlockEntity> getBlockEntityType() {
-		return ModBlockEntities.ENCASED_SHAFT;
+		return blockEntityType != null ? blockEntityType.get() : ModBlockEntities.ENCASED_SHAFT;
 	}
 
 	@Override

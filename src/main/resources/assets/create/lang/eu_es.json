@@ -1,6 +1,8 @@
 {
  "block.create.andesite_encased_shaft": "Andesitaz Estalitako Ardatza",
  "block.create.blaze_burner": "Sutzar Sutegia",
+ "block.create.brass_encased_shaft": "Letoiz Estalitako Ardatza",
  "block.create.lit_blaze_burner": "Sutzar Sutegi Piztua",
+ "create.gui.sequenced_gearshift.instruction.turn_distance.descriptive": "Biratu pistoia/polea/garabia mugitzeko",
  "item.create.empty_blaze_burner": "Sutzar Sutegi hutsa"
 }

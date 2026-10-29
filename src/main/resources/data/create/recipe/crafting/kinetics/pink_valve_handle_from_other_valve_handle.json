@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "#c:dyes/pink",
+    "#create:valve_handles"
+  ],
+  "result": {
+    "id": "create:pink_valve_handle",
+    "count": 1
+  }
+}
