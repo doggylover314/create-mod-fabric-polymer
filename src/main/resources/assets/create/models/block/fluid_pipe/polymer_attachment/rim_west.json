@@ -1,0 +1,143 @@
+{
+ "credit": "Merged from the pipe models of Create for vanilla clients (create-polymer)",
+ "textures": {
+  "0": "create:block/pipes",
+  "particle": "create:block/pipes"
+ },
+ "elements": [
+  {
+   "name": "rim_west",
+   "from": [
+    0,
+    4,
+    4
+   ],
+   "to": [
+    4,
+    12,
+    12
+   ],
+   "rotation": {
+    "angle": 0,
+    "axis": "y",
+    "origin": [
+     16,
+     0,
+     -16
+    ]
+   },
+   "faces": {
+    "north": {
+     "uv": [
+      4,
+      0,
+      8,
+      2
+     ],
+     "rotation": 90,
+     "texture": "#0"
+    },
+    "south": {
+     "uv": [
+      4,
+      2,
+      8,
+      0
+     ],
+     "rotation": 90,
+     "texture": "#0"
+    },
+    "up": {
+     "uv": [
+      4,
+      2,
+      8,
+      0
+     ],
+     "rotation": 90,
+     "texture": "#0"
+    },
+    "down": {
+     "uv": [
+      4,
+      0,
+      8,
+      2
+     ],
+     "rotation": 270,
+     "texture": "#0"
+    }
+   }
+  },
+  {
+   "from": [
+    0,
+    3,
+    3
+   ],
+   "to": [
+    2,
+    13,
+    13
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      10.5,
+      11,
+      9.5,
+      16
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      11,
+      11,
+      16,
+      16
+     ],
+     "texture": "#0"
+    },
+    "south": {
+     "uv": [
+      9.5,
+      16,
+      10.5,
+      11
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      11,
+      11,
+      16,
+      16
+     ],
+     "texture": "#0",
+     "cullface": "west"
+    },
+    "up": {
+     "uv": [
+      10.5,
+      11,
+      9.5,
+      16
+     ],
+     "rotation": 180,
+     "texture": "#0"
+    },
+    "down": {
+     "uv": [
+      9.5,
+      16,
+      10.5,
+      11
+     ],
+     "texture": "#0"
+    }
+   }
+  }
+ ]
+}

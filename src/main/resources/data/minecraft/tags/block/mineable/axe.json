@@ -28,6 +28,7 @@
     "create:weighted_ejector",
     "create:speedometer",
     "create:stressometer",
+    "create:encased_fluid_pipe",
     "create:mechanical_drill",
     "create:mechanical_saw",
     "create:deployer",

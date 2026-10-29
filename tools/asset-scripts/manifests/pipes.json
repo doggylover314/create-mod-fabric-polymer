@@ -1,0 +1,57 @@
+{
+  "items": [
+    "fluid_pipe",
+    "mechanical_pump",
+    "smart_fluid_pipe",
+    "fluid_valve",
+    "hose_pulley"
+  ],
+  "blocks": [
+    "fluid_pipe",
+    "encased_fluid_pipe",
+    "glass_fluid_pipe",
+    "mechanical_pump",
+    "smart_fluid_pipe",
+    "fluid_valve",
+    "hose_pulley"
+  ],
+  "display_models": [
+    "block/fluid_pipe/window",
+    "block/encased_fluid_pipe/block_flat",
+    "block/encased_fluid_pipe/block_open",
+    "block/mechanical_pump/cog",
+    "block/fluid_valve/pointer",
+    "block/hose_pulley/hose_coil",
+    "block/hose_pulley/rope",
+    "block/hose_pulley/pulley_magnet",
+    "block/hose_pulley/rope_half_magnet",
+    "block/shaft"
+  ],
+  "blockstates": [
+    "mechanical_pump",
+    "smart_fluid_pipe",
+    "fluid_valve",
+    "hose_pulley",
+    "glass_fluid_pipe"
+  ],
+  "crafting": [
+    "kinetics/fluid_pipe",
+    "kinetics/fluid_pipe_vertical",
+    "kinetics/mechanical_pump",
+    "kinetics/smart_fluid_pipe",
+    "kinetics/fluid_valve",
+    "kinetics/hose_pulley"
+  ],
+  "lang_ids": [
+    "fluid_pipe",
+    "encased_fluid_pipe",
+    "glass_fluid_pipe",
+    "mechanical_pump",
+    "smart_fluid_pipe",
+    "fluid_valve",
+    "hose_pulley"
+  ],
+  "lang_keys": [
+    "create.logistics.fluid_filter"
+  ]
+}

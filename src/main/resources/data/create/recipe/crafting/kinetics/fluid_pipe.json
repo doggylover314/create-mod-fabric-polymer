@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SCS"
+  ],
+  "key": {
+    "C": "#c:ingots/copper",
+    "S": "#c:plates/copper"
+  },
+  "result": {
+    "id": "create:fluid_pipe",
+    "count": 4
+  }
+}

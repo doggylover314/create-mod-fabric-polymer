@@ -1,33 +1,7 @@
 {
   "values": [
-    {
-      "id": "create:blaze_burner",
-      "required": false
-    },
-    {
-      "id": "create:lit_blaze_burner",
-      "required": false
-    },
-    {
-      "id": "create:sail_frame",
-      "required": false
-    },
-    {
-      "id": "create:andesite_bars",
-      "required": false
-    },
-    {
-      "id": "create:brass_bars",
-      "required": false
-    },
-    {
-      "id": "create:copper_bars",
-      "required": false
-    },
-    {
-      "id": "create:copycat_base",
-      "required": false
-    },
+    "create:blaze_burner",
+    "create:lit_blaze_burner",
     "minecraft:iron_bars",
     "minecraft:mangrove_roots",
     "minecraft:copper_grate",

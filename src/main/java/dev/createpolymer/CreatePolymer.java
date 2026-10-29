@@ -28,6 +28,7 @@ import dev.createpolymer.registry.feature.KineticsExtraRegistry;
 import dev.createpolymer.registry.feature.FanRegistry;
 import dev.createpolymer.registry.feature.SawRegistry;
 import dev.createpolymer.registry.feature.EjectorRegistry;
+import dev.createpolymer.registry.feature.PipesRegistry;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import eu.pb4.polymer.resourcepack.extras.api.ResourcePackExtras;
 import net.fabricmc.api.EnvType;
@@ -66,6 +67,7 @@ public class CreatePolymer implements ModInitializer {
 		BeltRegistry.init();
 		CrafterRegistry.init();
 		EjectorRegistry.init();
+		PipesRegistry.init();
 
 		// Resource pack: Create's models/textures/lang from this jar, served by polymer-autohost.
 		enableAutoHostByDefault();
