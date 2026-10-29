@@ -21,6 +21,8 @@ public final class VaultRegistry {
 		BlockBehaviour.Properties.ofFullCopy(Blocks.GOLD_BLOCK)
 			.mapColor(MapColor.TERRACOTTA_BLUE)
 			.sound(SoundType.NETHERITE_BLOCK)
+			// the model is drawn by display entities: an opaque block would put them in darkness
+			.noOcclusion()
 			.explosionResistance(1200));
 
 	public static final BlockEntityType<ItemVaultBlockEntity> ITEM_VAULT_BLOCK_ENTITY = ModBlockEntities.register("item_vault",

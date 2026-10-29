@@ -408,7 +408,8 @@ public class ContraptionVisual extends ElementHolder {
 			p.element.setTranslation(translation);
 			p.element.setLeftRotation(left);
 			p.element.setScale(new Vector3f(1, 1, 1));
-			p.element.setRightRotation(new Quaternionf());
+			// Item displays are turned half way round by the client; undo it, as Part does
+			p.element.setRightRotation(p.kind == Kind.CENTERED ? new Quaternionf().rotationY((float) Math.PI) : new Quaternionf());
 			if (p.element.isTransformationDirty()) {
 				p.element.setInterpolationDuration(interpolation);
 				p.element.startInterpolation();

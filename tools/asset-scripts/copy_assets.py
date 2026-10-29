@@ -57,6 +57,20 @@ def copy_model(model_path):
         r = ref_to_rel(parent, 'models')
         if r:
             copy_model(r[len('models/'):])
+    if model_path.startswith('item/'):
+        # a model may use one atlas only: block textures used next to item textures move to the item atlas
+        tex = d.get('textures', {})
+        if any(v.startswith('create:item/') for v in tex.values()) and any(v.startswith('create:block/') for k, v in tex.items() if k != 'particle'):
+            for k, v in list(tex.items()):
+                if v.startswith('create:block/') and k != 'particle':
+                    tex[k] = 'create:item/' + v[len('create:block/'):].replace('/', '_')
+                    src_tex = find('textures/' + v.split(':', 1)[1] + '.png')
+                    copied_textures.add('textures/' + tex[k].split(':', 1)[1])
+                    if src_tex:
+                        dst_tex = os.path.join(OUT, 'textures', tex[k].split(':', 1)[1] + '.png')
+                        os.makedirs(os.path.dirname(dst_tex), exist_ok=True)
+                        shutil.copyfile(src_tex, dst_tex)
+            json.dump(d, open(os.path.join(OUT, f'models/{model_path}.json'), 'w'), indent=1)
     for v in d.get('textures', {}).values():
         if v.startswith('#'):
             continue

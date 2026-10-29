@@ -212,7 +212,7 @@ public class TrackModel extends BaseModel {
 
 		Vector3f center = pose.transformPosition(new Vector3f(half));
 		element.setOffset(new Vec3(center.x - .5, center.y - .5, center.z - .5));
-		element.setTransformation(new Matrix4f().set3x3(pose));
+		element.setTransformation(new Matrix4f().set3x3(pose).rotateY((float) Math.PI)); // client half turn, see Part
 		curveElements.add(addElement(element));
 	}
 

@@ -86,6 +86,46 @@ def clamp_uvs(elements):
                     uv[b] += shift
 
 
+def fix_bounds(elements):
+    """26.3 clients refuse elements reaching outside -16..32. The wheel has strips whose rotation origin lies far from
+    their pre-rotation position: move such an element and its rotation origin together so that the rotated result
+    stays the same (p' = R(p + t - (O + d)) + O + d with t = d - R^-1 d)."""
+    lo, hi = -16.0, 32.0
+    cands = [-24, -16, -8, 0, 8, 16, 24]
+    for e in elements:
+        pts = e['from'] + e['to']
+        if all(lo <= v <= hi for v in pts):
+            continue
+        r = e['rotation']
+        cols = obj_to_json.rot_zyx(r['x'], r['y'], r['z'])
+        m = [[cols[c][i] for c in range(3)] for i in range(3)]  # rows
+
+        def apply(vec, mat):
+            return [sum(mat[i][j] * vec[j] for j in range(3)) for i in range(3)]
+
+        inv = [[m[j][i] for j in range(3)] for i in range(3)]
+        best = None
+        for dx in cands:
+            for dy in cands:
+                for dz in cands:
+                    d = [dx, dy, dz]
+                    rd = apply(d, inv)
+                    t = [d[i] - rd[i] for i in range(3)]
+                    f = [e['from'][i] + t[i] for i in range(3)]
+                    to = [e['to'][i] + t[i] for i in range(3)]
+                    if all(lo <= v <= hi for v in f + to):
+                        cost = sum(abs(x) for x in d)
+                        if best is None or cost < best[0]:
+                            best = (cost, d, t)
+        if best is None:
+            raise SystemExit('cannot move element into bounds: %s' % e)
+        _, d, t = best
+        o = r['origin']
+        e['from'] = [round(e['from'][i] + t[i], 4) for i in range(3)]
+        e['to'] = [round(e['to'][i] + t[i], 4) for i in range(3)]
+        r['origin'] = [round(o[i] + d[i], 4) for i in range(3)]
+
+
 def convert(name):
     d = json.load(open(find(BASE + '/' + name + '.json')))
     if d.get('loader') != 'neoforge:obj':
@@ -99,6 +139,7 @@ def convert(name):
         for el, _ in obj_to_json.quad_to_elements(q):
             elements.append(el)
     clamp_uvs(elements)
+    fix_bounds(elements)
     out = {'credit': 'Converted from the OBJ model of Create for vanilla clients (create-polymer)',
            'parent': 'block/block', 'ambientocclusion': False, 'textures': textures, 'elements': elements}
     if 'display' in d:

@@ -75,10 +75,21 @@ public class Part {
 
 	/** Sets a full transform (block-centred coordinates), bypassing translation/spin/orientation. */
 	public void setMatrix(Matrix4f matrix, int interpolation) {
-		element.setTransformation(matrix);
+		element.setTransformation(modelFlip(new Matrix4f(matrix)));
 		element.setInterpolationDuration(interpolation);
 		element.startInterpolation();
 		dirty = false;
+	}
+
+	/**
+	 * The client renders every item display with an extra half turn about the vertical axis (applied to the model
+	 * before the display's transformation). Models of Create blocks are authored without it, so it is undone here;
+	 * real items (fixed, ground, ... contexts) are left alone because their orientation is chosen for the flipped view.
+	 */
+	private Matrix4f modelFlip(Matrix4f m) {
+		if (element.getItemDisplayContext() == ItemDisplayContext.NONE)
+			m.rotateY((float) Math.PI);
+		return m;
 	}
 
 	/** Pushes the current transform to the element if anything changed. */
@@ -92,7 +103,7 @@ public class Part {
 			.rotate(spin)
 			.rotate(orientation)
 			.scale(scale);
-		element.setTransformation(m);
+		element.setTransformation(modelFlip(m));
 		element.setInterpolationDuration(interpolation);
 		element.startInterpolation();
 	}

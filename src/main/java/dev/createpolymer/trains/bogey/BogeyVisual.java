@@ -47,7 +47,8 @@ public abstract class BogeyVisual {
 	/** Pose-space matrix of a part to the transformation of its display. */
 	protected static void place(ItemDisplayElement element, Matrix4f base, Matrix4f pose, int interpolation) {
 		Matrix4f m = new Matrix4f(base).mul(pose)
-			.translate(.5f, .5f, .5f);
+			.translate(.5f, .5f, .5f)
+			.rotateY((float) Math.PI); // undo the client's half turn of item displays, see Part
 		element.setTransformation(m);
 		if (element.isTransformationDirty()) {
 			element.setInterpolationDuration(interpolation);
