@@ -57,7 +57,8 @@ public final class ModBlockEntities {
 	public static final BlockEntityType<WaterWheelBlockEntity> LARGE_WATER_WHEEL = register("large_water_wheel",
 		(pos, state) -> new WaterWheelBlockEntity(ModBlockEntities.LARGE_WATER_WHEEL, pos, state, 2), ModBlocks.LARGE_WATER_WHEEL);
 
-	public static final BlockEntityType<DepotBlockEntity> DEPOT = register("depot", DepotBlockEntity::new, ModBlocks.DEPOT);
+	public static final BlockEntityType<DepotBlockEntity> DEPOT = register("depot",
+		(pos, state) -> new DepotBlockEntity(ModBlockEntities.DEPOT, pos, state), ModBlocks.DEPOT);
 
 	public static <T extends BlockEntity> BlockEntityType<T> register(String name, BlockEntityType.BlockEntitySupplier<T> factory, Block... blocks) {
 		BlockEntityType<T> type = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, CreatePolymer.id(name),
@@ -68,5 +69,6 @@ public final class ModBlockEntities {
 	}
 
 	public static void init() {
+		DepotBlockEntity.registerCapabilities();
 	}
 }

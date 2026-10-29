@@ -18,8 +18,9 @@ import net.minecraft.world.item.ItemStack;
  * <p>
  * Modifiable handlers apply changes immediately and roll back to a snapshot of every slot if the transaction aborts.
  * Other handlers (whose insert/extract can have side effects we cannot undo, e.g. putting an item on a belt) only
- * simulate during the transaction and replay the operation when the outermost transaction commits. To keep those
- * simulations honest, each such slot accepts at most one operation per transaction.
+ * simulate during the transaction and replay the operation when the outermost transaction commits. An aborted
+ * (nested) transaction drops its pending operation. Because a simulation cannot see a pending operation, each such
+ * slot holds at most one at a time.
  */
 public class ItemHandlerStorage extends SnapshotParticipant<ItemStack[]> implements SlottedStorage<ItemVariant> {
 	private final IItemHandler handler;
@@ -88,21 +89,39 @@ public class ItemHandlerStorage extends SnapshotParticipant<ItemStack[]> impleme
 				modifiable.setStackInSlot(i, snapshot[i]);
 	}
 
-	private class Slot implements SingleSlotStorage<ItemVariant> {
+	/** A deferred operation on a non-modifiable handler, replayed when the outermost transaction commits. */
+	private record Pending(ItemStack insert, int extract) {
+		static final Pending NONE = new Pending(ItemStack.EMPTY, 0);
+	}
+
+	private class Slot extends SnapshotParticipant<Pending> implements SingleSlotStorage<ItemVariant> {
 		private final int index;
-		private TransactionContext pendingIn;
+		private Pending pending = Pending.NONE;
 
 		Slot(int index) {
 			this.index = index;
 		}
 
-		private boolean claimDeferred(TransactionContext transaction) {
-			TransactionContext outer = transaction.getOpenTransaction(0);
-			if (pendingIn == outer)
-				return false;
-			pendingIn = outer;
-			outer.addOuterCloseCallback(r -> pendingIn = null);
-			return true;
+		@Override
+		protected Pending createSnapshot() {
+			return pending;
+		}
+
+		@Override
+		protected void readSnapshot(Pending snapshot) {
+			pending = snapshot;
+		}
+
+		@Override
+		protected void onFinalCommit() {
+			Pending op = pending;
+			pending = Pending.NONE;
+			if (index >= handler.getSlots())
+				return;
+			if (!op.insert().isEmpty())
+				handler.insertItem(index, op.insert(), false);
+			if (op.extract() > 0)
+				handler.extractItem(index, op.extract(), false);
 		}
 
 		@Override
@@ -112,18 +131,18 @@ public class ItemHandlerStorage extends SnapshotParticipant<ItemStack[]> impleme
 				return 0;
 			ItemStack stack = resource.toStack((int) Math.min(maxAmount, resource.toStack().getMaxStackSize()));
 			if (modifiable != null) {
-				updateSnapshots(transaction);
+				ItemHandlerStorage.this.updateSnapshots(transaction);
 				ItemStack remainder = handler.insertItem(index, stack, false);
 				return stack.getCount() - remainder.getCount();
 			}
-			int amount = stack.getCount() - handler.insertItem(index, stack, true).getCount();
-			if (amount <= 0 || !claimDeferred(transaction))
+			// Simulation cannot see an earlier pending operation, so allow one per slot at a time.
+			if (pending != Pending.NONE)
 				return 0;
-			ItemStack toInsert = stack.copyWithCount(amount);
-			transaction.getOpenTransaction(0).addOuterCloseCallback(result -> {
-				if (result.wasCommitted())
-					handler.insertItem(index, toInsert, false);
-			});
+			int amount = stack.getCount() - handler.insertItem(index, stack, true).getCount();
+			if (amount <= 0)
+				return 0;
+			updateSnapshots(transaction);
+			pending = new Pending(stack.copyWithCount(amount), 0);
 			return amount;
 		}
 
@@ -134,16 +153,16 @@ public class ItemHandlerStorage extends SnapshotParticipant<ItemStack[]> impleme
 				return 0;
 			int max = (int) Math.min(maxAmount, Integer.MAX_VALUE);
 			if (modifiable != null) {
-				updateSnapshots(transaction);
+				ItemHandlerStorage.this.updateSnapshots(transaction);
 				return handler.extractItem(index, max, false).getCount();
 			}
-			int amount = handler.extractItem(index, max, true).getCount();
-			if (amount <= 0 || !claimDeferred(transaction))
+			if (pending != Pending.NONE)
 				return 0;
-			transaction.getOpenTransaction(0).addOuterCloseCallback(result -> {
-				if (result.wasCommitted())
-					handler.extractItem(index, amount, false);
-			});
+			int amount = handler.extractItem(index, max, true).getCount();
+			if (amount <= 0)
+				return 0;
+			updateSnapshots(transaction);
+			pending = new Pending(ItemStack.EMPTY, amount);
 			return amount;
 		}
 

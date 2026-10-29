@@ -8,7 +8,7 @@ import com.google.common.base.Predicates;
 import dev.createpolymer.foundation.blockEntity.SmartBlockEntity;
 import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import dev.createpolymer.foundation.blockEntity.behaviour.filtering.FilteringBehaviour;
-import dev.createpolymer.foundation.blockEntity.behaviour.inventory.InvExtraction.ExtractionCountMode;
+import dev.createpolymer.foundation.item.ItemHelper.ExtractionCountMode;
 import dev.createpolymer.util.BlockFace;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

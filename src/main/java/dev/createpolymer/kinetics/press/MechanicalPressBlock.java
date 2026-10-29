@@ -117,7 +117,7 @@ public class MechanicalPressBlock extends HorizontalKineticBlock {
 				return;
 			Axis axis = state.getValue(HORIZONTAL_FACING).getAxis();
 			shaft.spin(time, press.getSpeed(), Orientation.cogOffset(false, axis, pos.getX(), pos.getY(), pos.getZ()));
-			float offset = press.getRenderedHeadOffset(0) * press.mode.headOffset;
+			float offset = press.getPressingBehaviour().getRenderedHeadOffset(0) * press.getPressingBehaviour().mode.headOffset;
 			head.translation(0, -offset, 0).apply(1);
 		}
 	}

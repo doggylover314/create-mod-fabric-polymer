@@ -13,7 +13,7 @@ import dev.createpolymer.foundation.blockEntity.behaviour.ValueSettingsBoard;
 import dev.createpolymer.foundation.blockEntity.behaviour.ValueSettingsInputHandler;
 import dev.createpolymer.foundation.blockEntity.behaviour.filtering.FilteringBehaviour;
 import dev.createpolymer.foundation.blockEntity.behaviour.filtering.SidedFilteringBehaviour;
-import dev.createpolymer.foundation.blockEntity.behaviour.inventory.InvExtraction.ExtractionCountMode;
+import dev.createpolymer.foundation.item.ItemHelper.ExtractionCountMode;
 import dev.createpolymer.foundation.blockEntity.behaviour.inventory.InvManipulationBehaviour;
 import dev.createpolymer.foundation.blockEntity.behaviour.scrollValue.ScrollValueBehaviour;
 import dev.createpolymer.foundation.gui.FilterGui;

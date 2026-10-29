@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
+import dev.createpolymer.foundation.blockEntity.behaviour.simple.DeferralBehaviour;
 import dev.createpolymer.kinetics.base.KineticBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -16,31 +18,35 @@ import net.minecraft.world.level.block.state.BlockState;
 /** Ported from Create's BasinOperatingBlockEntity (MIT, The Create Team). */
 public abstract class BasinOperatingBlockEntity extends KineticBlockEntity {
 
-	private boolean basinUpdateScheduled = true;
+	public DeferralBehaviour basinChecker;
 	protected Recipe<?> currentRecipe;
 
 	public BasinOperatingBlockEntity(BlockEntityType<?> typeIn, BlockPos pos, BlockState state) {
 		super(typeIn, pos, state);
 	}
 
-	/** Create's DeferralBehaviour: run the basin check on the next tick. */
+	@Override
+	public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
+		super.addBehaviours(behaviours);
+		basinChecker = new DeferralBehaviour(this, this::updateBasin);
+		behaviours.add(basinChecker);
+	}
+
+	@Override
+	public void initialize() {
+		super.initialize();
+		basinChecker.scheduleUpdate();
+	}
+
+	/** Run the basin check on the next tick. */
 	public void scheduleBasinUpdate() {
-		basinUpdateScheduled = true;
+		basinChecker.scheduleUpdate();
 	}
 
 	@Override
 	public void onSpeedChanged(float prevSpeed) {
 		super.onSpeedChanged(prevSpeed);
-		scheduleBasinUpdate();
-	}
-
-	@Override
-	public void tick() {
-		super.tick();
-		if (basinUpdateScheduled && level != null && !level.isClientSide()) {
-			basinUpdateScheduled = false;
-			updateBasin();
-		}
+		basinChecker.scheduleUpdate();
 	}
 
 	protected boolean updateBasin() {

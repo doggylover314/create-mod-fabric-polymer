@@ -9,6 +9,7 @@ import dev.createpolymer.kinetics.chaindrive.ChainDriveBlock;
 import dev.createpolymer.kinetics.gauge.GaugeBlockEntity;
 import dev.createpolymer.kinetics.motor.CreativeMotorBlockEntity;
 import dev.createpolymer.kinetics.press.MechanicalPressBlock;
+import dev.createpolymer.foundation.item.handler.IItemHandler;
 import dev.createpolymer.logistics.depot.DepotBlockEntity;
 import dev.createpolymer.registry.ModBlocks;
 import dev.createpolymer.registry.ModItems;
@@ -142,12 +143,19 @@ public class TransmissionGameTests {
 			helper.getBlockEntity(depotPos, DepotBlockEntity.class).setHeldItem(new ItemStack(Items.GOLD_INGOT, 2));
 		});
 		helper.succeedWhen(() -> {
+			// like in Create, the first result of a pressed stack stays on the depot and the rest goes to its output buffer
 			DepotBlockEntity depot = helper.getBlockEntity(depotPos, DepotBlockEntity.class);
+			IItemHandler contents = depot.depotBehaviour.itemHandler;
 			int sheets = 0;
-			for (ItemStack s : depot.outputs.stacks())
+			int ingots = 0;
+			for (int slot = 0; slot < contents.getSlots(); slot++) {
+				ItemStack s = contents.getStackInSlot(slot);
 				if (s.is(ModItems.GOLDEN_SHEET))
 					sheets += s.getCount();
-			helper.assertTrue(sheets == 2 && depot.getHeldItem().isEmpty(), "sheets " + sheets + ", held " + depot.getHeldItem());
+				if (s.is(Items.GOLD_INGOT))
+					ingots += s.getCount();
+			}
+			helper.assertTrue(sheets == 2 && ingots == 0, "sheets " + sheets + ", ingots " + ingots);
 		});
 	}
 

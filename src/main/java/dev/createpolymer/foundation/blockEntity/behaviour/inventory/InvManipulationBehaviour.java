@@ -9,7 +9,8 @@ import com.google.common.base.Predicates;
 import dev.createpolymer.foundation.blockEntity.SmartBlockEntity;
 import dev.createpolymer.foundation.blockEntity.behaviour.BehaviourType;
 import dev.createpolymer.foundation.blockEntity.behaviour.filtering.FilteringBehaviour;
-import dev.createpolymer.foundation.blockEntity.behaviour.inventory.InvExtraction.ExtractionCountMode;
+import dev.createpolymer.foundation.item.ItemHelper;
+import dev.createpolymer.foundation.item.ItemHelper.ExtractionCountMode;
 import dev.createpolymer.foundation.item.handler.IItemHandler;
 import dev.createpolymer.foundation.item.handler.ItemHandlerHelper;
 import dev.createpolymer.foundation.item.handler.ItemHandlerLookup;
@@ -70,7 +71,7 @@ public class InvManipulationBehaviour extends CapManipulationBehaviourBase<IItem
 			return ItemStack.EMPTY;
 
 		Predicate<ItemStack> test = getFilterTest(filter);
-		return InvExtraction.extract(inventory, test, mode, amount, shouldSimulate);
+		return ItemHelper.extract(inventory, test, mode, amount, shouldSimulate);
 	}
 
 	public ItemStack insert(ItemStack stack) {

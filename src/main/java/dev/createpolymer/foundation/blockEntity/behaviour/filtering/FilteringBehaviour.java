@@ -13,7 +13,7 @@ import dev.createpolymer.foundation.blockEntity.behaviour.ValueBoxTransform;
 import dev.createpolymer.foundation.blockEntity.behaviour.ValueSettingsBehaviour;
 import dev.createpolymer.foundation.blockEntity.behaviour.ValueSettingsBoard;
 import dev.createpolymer.foundation.blockEntity.behaviour.ValueSettingsFormatter;
-import dev.createpolymer.foundation.blockEntity.behaviour.inventory.InvExtraction;
+import dev.createpolymer.foundation.item.ItemHelper;
 import dev.createpolymer.foundation.item.handler.InvWrapper;
 import dev.createpolymer.logistics.filter.FilterItem;
 import dev.createpolymer.logistics.filter.FilterItemStack;
@@ -271,7 +271,7 @@ public class FilteringBehaviour extends BlockEntityBehaviour implements ValueSet
 			return;
 
 		if (getFilter(side).getItem() instanceof FilterItem) {
-			if (!player.isCreative() || InvExtraction
+			if (!player.isCreative() || ItemHelper
 				.extract(new InvWrapper(player.getInventory()),
 					stack -> ItemStack.isSameItemSameComponents(stack, getFilter(side)), true)
 				.isEmpty())
