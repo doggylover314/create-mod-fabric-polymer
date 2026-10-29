@@ -1,0 +1,40 @@
+{
+  "chiff": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "create:chiff"
+      }
+    ]
+  },
+  "whistle": {
+    "sounds": [
+      {
+        "type": "file",
+        "attenuation_distance": 64,
+        "name": "create:whistle"
+      }
+    ],
+    "subtitle": "create.subtitle.whistle"
+  },
+  "whistle_high": {
+    "sounds": [
+      {
+        "type": "file",
+        "attenuation_distance": 64,
+        "name": "create:whistle_high"
+      }
+    ],
+    "subtitle": "create.subtitle.whistle_high"
+  },
+  "whistle_low": {
+    "sounds": [
+      {
+        "type": "file",
+        "attenuation_distance": 64,
+        "name": "create:whistle_low"
+      }
+    ],
+    "subtitle": "create.subtitle.whistle_low"
+  }
+}

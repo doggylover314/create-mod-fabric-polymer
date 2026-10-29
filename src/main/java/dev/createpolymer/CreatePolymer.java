@@ -32,6 +32,7 @@ import dev.createpolymer.registry.feature.SawRegistry;
 import dev.createpolymer.registry.feature.EjectorRegistry;
 import dev.createpolymer.registry.feature.MiscRegistry;
 import dev.createpolymer.registry.feature.PipesRegistry;
+import dev.createpolymer.registry.feature.SteamRegistry;
 import dev.createpolymer.registry.feature.TanksRegistry;
 import dev.createpolymer.registry.feature.DecorationRegistry;
 import dev.createpolymer.registry.feature.RedstoneRegistry;
@@ -82,6 +83,7 @@ public class CreatePolymer implements ModInitializer {
 		ArmRegistry.init();
 		FunnelRegistry.init();
 		EquipmentRegistry.init();
+		SteamRegistry.init();
 
 		// Resource pack: Create's models/textures/lang from this jar, served by polymer-autohost.
 		enableAutoHostByDefault();

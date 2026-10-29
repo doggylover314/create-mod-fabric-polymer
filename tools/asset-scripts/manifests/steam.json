@@ -1,0 +1,54 @@
+{
+  "items": [
+    "steam_engine",
+    "steam_whistle"
+  ],
+  "blocks": [
+    "steam_engine",
+    "steam_whistle",
+    "powered_shaft"
+  ],
+  "display_models": [
+    "block/steam_engine/piston",
+    "block/steam_engine/linkage",
+    "block/steam_engine/shaft_connector",
+    "block/powered_shaft",
+    "block/steam_whistle/small_mouth",
+    "block/steam_whistle/extension/small_single",
+    "block/steam_whistle/extension/small_double",
+    "block/steam_whistle/extension/small_top_rim",
+    "block/steam_whistle/medium_mouth",
+    "block/steam_whistle/extension/medium_single",
+    "block/steam_whistle/extension/medium_double",
+    "block/steam_whistle/extension/medium_top_rim",
+    "block/steam_whistle/large_mouth",
+    "block/steam_whistle/extension/large_single",
+    "block/steam_whistle/extension/large_double",
+    "block/steam_whistle/extension/large_top_rim"
+  ],
+  "blockstates": [
+    "steam_engine",
+    "steam_whistle"
+  ],
+  "crafting": [
+    "kinetics/steam_engine",
+    "kinetics/steam_whistle"
+  ],
+  "known_tags": [
+    "c:plates/gold",
+    "c:storage_blocks/copper",
+    "c:ingots/copper"
+  ],
+  "lang_ids": [
+    "steam_engine",
+    "steam_whistle",
+    "steam_whistle_extension",
+    "powered_shaft"
+  ],
+  "lang_prefixes": [
+    "create.subtitle.whistle",
+    "create.contraptions.windmill.rotation_direction",
+    "create.generic.clockwise",
+    "create.generic.counter_clockwise"
+  ]
+}

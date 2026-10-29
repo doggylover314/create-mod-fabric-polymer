@@ -66,7 +66,12 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 public class RedstoneGameTests {
 
 	private static ServerPlayer player(GameTestHelper helper) {
-		return FakePlayer.get(helper.getLevel());
+		// The level's fake player is shared with other tests running in parallel: reset what they may have changed
+		ServerPlayer player = FakePlayer.get(helper.getLevel());
+		player.setShiftKeyDown(false);
+		player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+		player.setItemInHand(InteractionHand.OFF_HAND, ItemStack.EMPTY);
+		return player;
 	}
 
 	private static BlockHitResult hit(GameTestHelper helper, BlockPos relative, Direction face) {
