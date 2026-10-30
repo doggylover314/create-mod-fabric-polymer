@@ -1,6 +1,6 @@
 # Asset/data generation scripts
 
-Regenerate everything from the original Create checkout (default `/home/user/create-original`, or pass another path):
+Regenerate everything from a checkout of Create (pass its path, set `CREATE_DIR`, or put it next to this repo as `../Create`):
 
 ```bash
 tools/asset-scripts/run_all.sh [CREATE_DIR]

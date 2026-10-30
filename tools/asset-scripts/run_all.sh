@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 # Regenerate the Create-derived recipes, data and assets in this repo.
-# Usage: run_all.sh [CREATE_DIR]   (default: /home/user/create-original)
+# Usage: run_all.sh [CREATE_DIR]   (default: $CREATE_DIR, else a Create checkout next to this repo)
 # Which items/blocks/models/recipes get ported is read from manifests/*.json.
 set -euo pipefail
 
 SCRIPTS="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PORT="$(cd "$SCRIPTS/../.." && pwd)"
-CREATE="${1:-/home/user/create-original}"
+CREATE="${1:-${CREATE_DIR:-$PORT/../Create}}"
+[ -d "$CREATE/src/main/resources" ] || { echo "Create checkout not found at $CREATE (pass its path as the first argument)" >&2; exit 1; }
 ASSETS="$PORT/src/main/resources/assets/create"
 
 rm -rf "$ASSETS/models" "$ASSETS/textures" "$ASSETS/items" "$ASSETS/lang"
