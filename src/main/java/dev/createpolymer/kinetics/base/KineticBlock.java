@@ -3,7 +3,7 @@ package dev.createpolymer.kinetics.base;
 import dev.createpolymer.foundation.blockEntity.SmartBlockEntity;
 import org.jspecify.annotations.Nullable;
 
-import eu.pb4.polymer.core.api.block.PolymerBlock;
+import eu.pb4.polymer.blocks.api.PolymerTexturedBlock;
 import eu.pb4.polymer.virtualentity.api.BlockWithElementHolder;
 import eu.pb4.polymer.virtualentity.api.ElementHolder;
 import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
@@ -27,7 +27,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
  * glue: players see an invisible barrier with the right break particles, and
  * the visible model is a set of display entities built by {@link #createModel}.
  */
-public abstract class KineticBlock extends Block implements IRotate, EntityBlock, PolymerBlock, BlockWithElementHolder {
+public abstract class KineticBlock extends Block implements IRotate, EntityBlock, PolymerTexturedBlock, BlockWithElementHolder {
 
 	public KineticBlock(Properties properties) {
 		super(properties);

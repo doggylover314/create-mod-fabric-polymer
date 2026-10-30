@@ -71,6 +71,22 @@ def copy_model(model_path):
                         os.makedirs(os.path.dirname(dst_tex), exist_ok=True)
                         shutil.copyfile(src_tex, dst_tex)
             json.dump(d, open(os.path.join(OUT, f'models/{model_path}.json'), 'w'), indent=1)
+    if model_path.startswith('block/'):
+        # only textures of the block and item folders are on the atlas models are baked from: entity textures move
+        tex = d.get('textures', {})
+        moved = False
+        for k, v in list(tex.items()):
+            if v.startswith('create:entity/'):
+                tex[k] = 'create:block/entity_' + v[len('create:entity/'):].replace('/', '_')
+                src_tex = find('textures/' + v.split(':', 1)[1] + '.png')
+                copied_textures.add('textures/' + tex[k].split(':', 1)[1])
+                if src_tex:
+                    dst_tex = os.path.join(OUT, 'textures', tex[k].split(':', 1)[1] + '.png')
+                    os.makedirs(os.path.dirname(dst_tex), exist_ok=True)
+                    shutil.copyfile(src_tex, dst_tex)
+                moved = True
+        if moved:
+            json.dump(d, open(os.path.join(OUT, f'models/{model_path}.json'), 'w'), indent=1)
     for v in d.get('textures', {}).values():
         if v.startswith('#'):
             continue

@@ -21,7 +21,7 @@ import dev.createpolymer.visual.ModelItems;
 import dev.createpolymer.visual.Part;
 import eu.pb4.polymer.blocks.api.BlockModelType;
 import eu.pb4.polymer.blocks.api.PolymerBlockResourceUtils;
-import eu.pb4.polymer.core.api.block.PolymerBlock;
+import eu.pb4.polymer.blocks.api.PolymerTexturedBlock;
 import eu.pb4.polymer.virtualentity.api.BlockWithElementHolder;
 import eu.pb4.polymer.virtualentity.api.ElementHolder;
 import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
@@ -65,7 +65,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  * closed door, nothing while the door is open or still moving.
  */
 public class SlidingDoorBlock extends DoorBlock
-	implements IWrenchable, IBE<SlidingDoorBlockEntity>, PolymerBlock, BlockWithElementHolder, ContraptionDisplay {
+	implements IWrenchable, IBE<SlidingDoorBlockEntity>, PolymerTexturedBlock, BlockWithElementHolder, ContraptionDisplay {
 	public static final Supplier<BlockSetType> TRAIN_SET_TYPE =
 		() -> new BlockSetType("create:train", true, true, true,
 			BlockSetType.PressurePlateSensitivity.EVERYTHING, SoundType.NETHERITE_BLOCK, SoundEvents.IRON_DOOR_CLOSE,

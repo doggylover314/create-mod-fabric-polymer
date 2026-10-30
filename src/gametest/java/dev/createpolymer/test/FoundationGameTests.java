@@ -96,4 +96,28 @@ public class FoundationGameTests {
 		helper.assertTrue(out.variant.equals(FluidVariant.of(Fluids.WATER)), "Wrong fluid");
 		helper.succeed();
 	}
+
+	/**
+	 * Polymer swaps the invisible client states that blocks request with requestEmpty (plates, slabs, doors) for the
+	 * visible vanilla block they stand in for, unless the block is a PolymerTexturedBlock. A block that forgets the
+	 * marker shows an iron trapdoor or an oak slab under its model.
+	 */
+	@GameTest
+	public void blocksWithRequestedClientStatesAreMarkedAsTextured(GameTestHelper helper) {
+		java.util.List<String> offenders = new java.util.ArrayList<>();
+		for (net.minecraft.world.level.block.Block block : net.minecraft.core.registries.BuiltInRegistries.BLOCK) {
+			if (!(block instanceof eu.pb4.polymer.core.api.block.PolymerBlock polymer)
+				|| block instanceof eu.pb4.polymer.blocks.api.PolymerTexturedBlock)
+				continue;
+			for (net.minecraft.world.level.block.state.BlockState state : block.getStateDefinition().getPossibleStates()) {
+				if (eu.pb4.polymer.blocks.impl.BlockExtBlockMapper.INSTANCE.stateMap
+					.containsKey(polymer.getPolymerBlockState(state, null))) {
+					offenders.add(net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(block).toString());
+					break;
+				}
+			}
+		}
+		helper.assertTrue(offenders.isEmpty(), "blocks that are not PolymerTexturedBlock but use requested states: " + offenders);
+		helper.succeed();
+	}
 }
