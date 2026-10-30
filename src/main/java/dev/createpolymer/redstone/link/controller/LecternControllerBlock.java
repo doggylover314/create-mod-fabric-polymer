@@ -1,11 +1,15 @@
 package dev.createpolymer.redstone.link.controller;
 
+import java.util.ArrayList;
+
 import org.joml.Matrix4f;
 import org.jspecify.annotations.Nullable;
 
+import dev.createpolymer.api.schematic.requirement.SpecialBlockItemRequirement;
 import dev.createpolymer.equipment.ToolsSounds;
 import dev.createpolymer.foundation.block.IBE;
 import dev.createpolymer.registry.feature.ToolsRegistry;
+import dev.createpolymer.schematics.requirement.ItemRequirement;
 import dev.createpolymer.util.AngleHelper;
 import dev.createpolymer.visual.BaseModel;
 import dev.createpolymer.visual.ModelItems;
@@ -35,7 +39,7 @@ import net.minecraft.world.phys.BlockHitResult;
  * entities. Right-click uses the controller (its buttons are the movement keys, see {@link LinkedControllerHandler}),
  * and right-click again lets go; sneak-right-click gives the controller back.
  */
-public class LecternControllerBlock extends LecternBlock implements IBE<LecternControllerBlockEntity>, PolymerModelBlock {
+public class LecternControllerBlock extends LecternBlock implements IBE<LecternControllerBlockEntity>, SpecialBlockItemRequirement, PolymerModelBlock {
 
 	public LecternControllerBlock(Properties properties) {
 		super(properties);
@@ -106,6 +110,14 @@ public class LecternControllerBlock extends LecternBlock implements IBE<LecternC
 	@Override
 	protected ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData) {
 		return new ItemStack(Blocks.LECTERN);
+	}
+
+	@Override
+	public ItemRequirement getRequiredItems(BlockState state, @Nullable BlockEntity be) {
+		ArrayList<ItemStack> requiredItems = new ArrayList<>();
+		requiredItems.add(new ItemStack(Blocks.LECTERN));
+		requiredItems.add(new ItemStack(ToolsRegistry.LINKED_CONTROLLER));
+		return new ItemRequirement(ItemRequirement.ItemUseType.CONSUME, requiredItems);
 	}
 
 	// ---- Polymer ----

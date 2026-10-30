@@ -27,6 +27,7 @@ import dev.createpolymer.redstone.link.controller.LinkedControllerItem;
 import dev.createpolymer.registry.ModBlockEntities;
 import dev.createpolymer.registry.ModBlocks;
 import dev.createpolymer.registry.ModItems;
+import dev.createpolymer.schematics.cannon.MaterialChecklist;
 import eu.pb4.polymer.core.api.entity.PolymerEntityUtils;
 import eu.pb4.polymer.core.api.other.PolymerComponent;
 import net.minecraft.core.Registry;
@@ -137,5 +138,9 @@ public final class ToolsRegistry {
 		RedstoneClientStates.init();
 		ClipboardValueSettingsHandler.init();
 		LinkedControllerHandler.init();
+
+		// Create's schematicannon also prints its checklist onto a clipboard
+		SchematicsRegistry.registerChecklistPaper(stack -> stack.is(CLIPBOARD_ITEM));
+		MaterialChecklist.clipboardWriter = MaterialChecklist::createWrittenClipboard;
 	}
 }

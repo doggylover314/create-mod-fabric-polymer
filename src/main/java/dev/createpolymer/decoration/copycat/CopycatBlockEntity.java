@@ -4,16 +4,21 @@ import java.util.List;
 import java.util.Optional;
 
 import dev.createpolymer.api.contraption.transformable.TransformableBlockEntity;
+import dev.createpolymer.api.schematic.nbt.PartialSafeNBT;
+import dev.createpolymer.api.schematic.requirement.SpecialBlockEntityItemRequirement;
 import dev.createpolymer.contraptions.StructureTransform;
 import dev.createpolymer.foundation.blockEntity.SmartBlockEntity;
 import dev.createpolymer.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import dev.createpolymer.redstone.RoseQuartzLampBlock;
 import dev.createpolymer.registry.feature.CopycatRegistry;
+import dev.createpolymer.schematics.requirement.ItemRequirement;
+import dev.createpolymer.schematics.requirement.ItemRequirement.ItemUseType;
 import dev.createpolymer.util.Iterate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Clearable;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -25,7 +30,8 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
-public class CopycatBlockEntity extends SmartBlockEntity implements TransformableBlockEntity, Clearable {
+public class CopycatBlockEntity extends SmartBlockEntity
+	implements SpecialBlockEntityItemRequirement, TransformableBlockEntity, PartialSafeNBT, Clearable {
 
 	private BlockState material = CopycatRegistry.COPYCAT_BASE.defaultBlockState();
 	private ItemStack consumedItem = ItemStack.EMPTY;
@@ -131,6 +137,13 @@ public class CopycatBlockEntity extends SmartBlockEntity implements Transformabl
 	}
 
 	@Override
+	public ItemRequirement getRequiredItems(BlockState state) {
+		if (consumedItem.isEmpty())
+			return ItemRequirement.NONE;
+		return new ItemRequirement(ItemUseType.CONSUME, consumedItem);
+	}
+
+	@Override
 	public void transform(BlockEntity be, StructureTransform transform) {
 		material = transform.apply(material);
 		notifyUpdate();
@@ -165,9 +178,22 @@ public class CopycatBlockEntity extends SmartBlockEntity implements Transformabl
 	}
 
 	@Override
+	public void writeSafe(ValueOutput view) {
+		super.writeSafe(view);
+
+		ItemStack stackWithoutComponents = new ItemStack(consumedItem.typeHolder(), consumedItem.getCount(), DataComponentPatch.EMPTY);
+
+		write(view, stackWithoutComponents, material);
+	}
+
+	@Override
 	protected void write(ValueOutput view) {
 		super.write(view);
-		view.store("Item", ItemStack.OPTIONAL_CODEC, consumedItem);
+		write(view, consumedItem, material);
+	}
+
+	protected void write(ValueOutput view, ItemStack stack, BlockState material) {
+		view.store("Item", ItemStack.OPTIONAL_CODEC, stack);
 		view.store("Material", BlockState.CODEC, material);
 	}
 

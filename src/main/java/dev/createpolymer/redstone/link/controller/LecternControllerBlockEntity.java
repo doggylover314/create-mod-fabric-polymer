@@ -40,6 +40,12 @@ public class LecternControllerBlockEntity extends SmartBlockEntity {
 	}
 
 	@Override
+	public void writeSafe(ValueOutput output) {
+		super.writeSafe(output);
+		output.store("ControllerData", ItemContainerContents.CODEC, controllerData);
+	}
+
+	@Override
 	protected void write(ValueOutput output) {
 		super.write(output);
 		output.store("ControllerData", ItemContainerContents.CODEC, controllerData);

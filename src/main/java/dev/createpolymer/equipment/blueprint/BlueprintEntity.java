@@ -11,12 +11,15 @@ import org.jspecify.annotations.Nullable;
 
 import com.mojang.serialization.Codec;
 
+import dev.createpolymer.api.schematic.requirement.SpecialEntityItemRequirement;
 import dev.createpolymer.foundation.item.handler.IItemHandlerModifiable;
 import dev.createpolymer.foundation.item.handler.InvWrapper;
 import dev.createpolymer.foundation.item.handler.ItemStackHandler;
 import dev.createpolymer.logistics.filter.FilterItemStack;
 import dev.createpolymer.registry.ModItems;
 import dev.createpolymer.registry.feature.ToolsRegistry;
+import dev.createpolymer.schematics.requirement.ItemRequirement;
+import dev.createpolymer.schematics.requirement.ItemRequirement.ItemUseType;
 import dev.createpolymer.util.Couple;
 import dev.createpolymer.util.VecHelper;
 import eu.pb4.polymer.core.api.entity.PolymerEntity;
@@ -70,7 +73,7 @@ import net.minecraft.world.phys.Vec3;
  * about the entity: {@link BlueprintModel} draws the panel and the recipes' icons with display entities and catches
  * clicks with interaction entities, which hand them to this entity.
  */
-public class BlueprintEntity extends BlockAttachedEntity implements PolymerEntity {
+public class BlueprintEntity extends BlockAttachedEntity implements PolymerEntity, SpecialEntityItemRequirement {
 
 	private static final Codec<Map<String, List<ItemStack>>> RECIPES_CODEC =
 		Codec.unboundedMap(Codec.STRING, ItemStack.OPTIONAL_CODEC.listOf());
@@ -341,6 +344,11 @@ public class BlueprintEntity extends BlockAttachedEntity implements PolymerEntit
 	@Override
 	public @Nullable ItemStack getPickResult() {
 		return new ItemStack(ToolsRegistry.CRAFTING_BLUEPRINT);
+	}
+
+	@Override
+	public ItemRequirement getRequiredItems() {
+		return new ItemRequirement(ItemUseType.CONSUME, ToolsRegistry.CRAFTING_BLUEPRINT);
 	}
 
 	public void playPlacementSound() {

@@ -9,6 +9,10 @@ import java.util.function.Function;
 
 import com.google.common.collect.Sets;
 
+import dev.createpolymer.equipment.clipboard.ClipboardContent;
+import dev.createpolymer.equipment.clipboard.ClipboardEntry;
+import dev.createpolymer.equipment.clipboard.ClipboardOverrides.ClipboardType;
+import dev.createpolymer.registry.feature.ToolsRegistry;
 import dev.createpolymer.schematics.requirement.ItemRequirement;
 import dev.createpolymer.schematics.requirement.ItemRequirement.ItemUseType;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
@@ -31,9 +35,12 @@ public class MaterialChecklist {
 
 	public static final int MAX_ENTRIES_PER_PAGE = 5;
 
+	public static final int MAX_ENTRIES_PER_CLIPBOARD_PAGE = 7;
+
 	/**
-	 * Create also prints the checklist onto a clipboard; the clipboard is not part of this feature, so whoever ports it
-	 * sets this to write one (see {@link dev.createpolymer.registry.feature.SchematicsRegistry#isChecklistPaper}).
+	 * Writes the checklist onto a clipboard (see {@link #createWrittenClipboard()}); set in
+	 * {@link dev.createpolymer.registry.feature.ToolsRegistry#init()}, which also makes clipboards a paper of the
+	 * schematicannon ({@link dev.createpolymer.registry.feature.SchematicsRegistry#isChecklistPaper}).
 	 */
 	public static Function<MaterialChecklist, ItemStack> clipboardWriter = null;
 
@@ -148,6 +155,66 @@ public class MaterialChecklist {
 		book.set(DataComponents.CUSTOM_NAME, textComponent);
 
 		return book;
+	}
+
+	public ItemStack createWrittenClipboard() {
+		int itemsWritten = 0;
+
+		List<List<ClipboardEntry>> pages = new ArrayList<>();
+		List<ClipboardEntry> currentPage = new ArrayList<>();
+
+		if (blocksNotLoaded) {
+			currentPage.add(new ClipboardEntry(false, Component.translatable("create.materialChecklist.blocksNotLoaded")
+				.withStyle(ChatFormatting.RED)));
+		}
+
+		List<Item> keys = sortedKeys();
+
+		List<Item> completed = new ArrayList<>();
+		for (Item item : keys) {
+			int amount = getRequiredAmount(item);
+			if (gathered.containsKey(item))
+				amount -= gathered.getInt(item);
+
+			if (amount <= 0) {
+				completed.add(item);
+				continue;
+			}
+
+			if (itemsWritten == MAX_ENTRIES_PER_CLIPBOARD_PAGE) {
+				itemsWritten = 0;
+				currentPage.add(new ClipboardEntry(false, Component.literal(">>>")
+					.withStyle(ChatFormatting.DARK_GRAY)));
+				pages.add(currentPage);
+				currentPage = new ArrayList<>();
+			}
+
+			itemsWritten++;
+			currentPage.add(new ClipboardEntry(false, entry(new ItemStack(item), amount, true, false))
+				.displayItem(new ItemStack(item), amount));
+		}
+
+		for (Item item : completed) {
+			if (itemsWritten == MAX_ENTRIES_PER_CLIPBOARD_PAGE) {
+				itemsWritten = 0;
+				currentPage.add(new ClipboardEntry(true, Component.literal(">>>")
+					.withStyle(ChatFormatting.DARK_GREEN)));
+				pages.add(currentPage);
+				currentPage = new ArrayList<>();
+			}
+
+			itemsWritten++;
+			currentPage.add(new ClipboardEntry(true, entry(new ItemStack(item), getRequiredAmount(item), false, false))
+				.displayItem(new ItemStack(item), 0));
+		}
+
+		pages.add(currentPage);
+
+		ItemStack clipboard = new ItemStack(ToolsRegistry.CLIPBOARD_ITEM);
+		clipboard.set(ToolsRegistry.CLIPBOARD_CONTENT, new ClipboardContent(ClipboardType.WRITTEN, pages, true));
+		clipboard.set(DataComponents.CUSTOM_NAME, Component.translatable("create.materialChecklist")
+			.setStyle(Style.EMPTY.withItalic(false)));
+		return clipboard;
 	}
 
 	/** The checklist for the paper the printer was given: a clipboard when one can be written, else a book */

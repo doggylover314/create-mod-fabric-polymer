@@ -40,6 +40,11 @@ public class TableClothFilteringBehaviour extends FilteringBehaviour {
 	}
 
 	@Override
+	public boolean isSafeNBT() {
+		return false;
+	}
+
+	@Override
 	public MutableComponent getLabel() {
 		return translate("table_cloth.price_per_order");
 	}

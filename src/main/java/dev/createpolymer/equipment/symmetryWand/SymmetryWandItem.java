@@ -10,7 +10,7 @@ import dev.createpolymer.equipment.symmetryWand.mirror.CrossPlaneMirror;
 import dev.createpolymer.equipment.symmetryWand.mirror.EmptyMirror;
 import dev.createpolymer.equipment.symmetryWand.mirror.PlaneMirror;
 import dev.createpolymer.equipment.symmetryWand.mirror.SymmetryMirror;
-import dev.createpolymer.equipment.zapper.ZapperBlockHelper;
+import dev.createpolymer.foundation.block.BlockHelper;
 import dev.createpolymer.registry.feature.MinecartRegistry;
 import dev.createpolymer.registry.feature.WandsRegistry;
 import dev.createpolymer.util.Iterate;
@@ -208,12 +208,12 @@ public class SymmetryWandItem extends SimplePolymerItem {
 
 				if (blockState.is(MinecartRegistry.CART_ASSEMBLER)) {
 					BlockState railBlock = CartAssemblerBlock.getRailBlock(blockState);
-					if (ZapperBlockHelper.findAndRemoveInInventory(railBlock, player, 1) == 0)
+					if (BlockHelper.findAndRemoveInInventory(railBlock, player, 1) == 0)
 						continue;
-					if (ZapperBlockHelper.findAndRemoveInInventory(blockState, player, 1) == 0)
+					if (BlockHelper.findAndRemoveInInventory(blockState, player, 1) == 0)
 						blockState = railBlock;
 				} else {
-					if (ZapperBlockHelper.findAndRemoveInInventory(blockState, player, 1) == 0)
+					if (BlockHelper.findAndRemoveInInventory(blockState, player, 1) == 0)
 						continue;
 				}
 

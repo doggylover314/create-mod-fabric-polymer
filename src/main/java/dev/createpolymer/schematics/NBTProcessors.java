@@ -1,6 +1,7 @@
 package dev.createpolymer.schematics;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -8,8 +9,12 @@ import java.util.function.UnaryOperator;
 
 import org.jetbrains.annotations.Nullable;
 
+import dev.createpolymer.equipment.clipboard.ClipboardContent;
+import dev.createpolymer.equipment.clipboard.ClipboardEntry;
 import dev.createpolymer.redstone.displayLink.DisplayText;
+import dev.createpolymer.registry.feature.ToolsRegistry;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -33,16 +38,27 @@ import net.minecraft.world.level.block.state.BlockState;
  */
 public final class NBTProcessors {
 
-	private static final Map<BlockEntityType<?>, UnaryOperator<CompoundTag>> processors = new HashMap<>();
-	private static final Map<BlockEntityType<?>, UnaryOperator<CompoundTag>> survivalProcessors = new HashMap<>();
+	/** A processor that needs the registries, to decode what is stored in the data (item stacks, components) */
+	@FunctionalInterface
+	public interface RegistryProcessor {
+		@Nullable
+		CompoundTag process(CompoundTag data, HolderLookup.Provider registries);
+	}
+
+	private static final Map<BlockEntityType<?>, RegistryProcessor> processors = new HashMap<>();
+	private static final Map<BlockEntityType<?>, RegistryProcessor> survivalProcessors = new HashMap<>();
 
 	public static synchronized void addProcessor(BlockEntityType<?> type, UnaryOperator<CompoundTag> processor) {
+		processors.put(type, (data, registries) -> processor.apply(data));
+	}
+
+	public static synchronized void addProcessor(BlockEntityType<?> type, RegistryProcessor processor) {
 		processors.put(type, processor);
 	}
 
 	public static synchronized void addSurvivalProcessor(BlockEntityType<?> type,
 		UnaryOperator<CompoundTag> processor) {
-		survivalProcessors.put(type, processor);
+		survivalProcessors.put(type, (data, registries) -> processor.apply(data));
 	}
 
 	// Triggered by block tag, not BE type
@@ -101,10 +117,10 @@ public final class NBTProcessors {
 		BlockEntityType<?> type = blockEntity.getType();
 		if (survival && survivalProcessors.containsKey(type))
 			compound = survivalProcessors.get(type)
-				.apply(compound);
+				.process(compound, registries);
 		if (compound != null && processors.containsKey(type))
 			return processors.get(type)
-				.apply(compound);
+				.process(compound, registries);
 		if (blockEntity instanceof SpawnerBlockEntity)
 			return compound;
 		if (state.is(BlockTags.ALL_SIGNS))
@@ -113,6 +129,33 @@ public final class NBTProcessors {
 			.onlyOpCanSetNbt())
 			return null;
 		return compound;
+	}
+
+	/** Create's CreateNBTProcessors.clipboardProcessor: a clipboard with a click event in an entry is not copied */
+	@Nullable
+	public static CompoundTag clipboardProcessor(CompoundTag data, HolderLookup.Provider registries) {
+		RegistryOps<Tag> ops = RegistryOps.create(NbtOps.INSTANCE, registries);
+		Tag componentsTag = data.get("components");
+		if (componentsTag == null)
+			return data;
+		DataComponentMap components = DataComponentMap.CODEC.parse(ops, componentsTag)
+			.result()
+			.orElse(null);
+		if (components == null)
+			return data;
+
+		ClipboardContent content = components.get(ToolsRegistry.CLIPBOARD_CONTENT);
+		if (content == null)
+			return data;
+
+		for (List<ClipboardEntry> entries : content.pages()) {
+			for (ClipboardEntry entry : entries) {
+				if (textComponentHasClickEvent(entry.text))
+					return null;
+			}
+		}
+
+		return data;
 	}
 
 	/** Create's CreateNBTProcessors.register, for the block entities that exist here. */
@@ -141,5 +184,7 @@ public final class NBTProcessors {
 
 			return data;
 		});
+
+		addProcessor(ToolsRegistry.CLIPBOARD_BLOCK_ENTITY, NBTProcessors::clipboardProcessor);
 	}
 }

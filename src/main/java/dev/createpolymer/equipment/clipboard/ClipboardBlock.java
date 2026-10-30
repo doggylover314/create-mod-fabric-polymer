@@ -6,11 +6,15 @@ import org.jspecify.annotations.Nullable;
 
 import com.google.common.collect.ImmutableList;
 
+import dev.createpolymer.api.schematic.requirement.SpecialBlockItemRequirement;
 import dev.createpolymer.foundation.block.IBE;
 import dev.createpolymer.foundation.block.ProperWaterloggedBlock;
 import dev.createpolymer.item.IWrenchable;
 import dev.createpolymer.redstone.RedstoneClientStates;
 import dev.createpolymer.registry.feature.ToolsRegistry;
+import dev.createpolymer.schematics.requirement.ItemRequirement;
+import dev.createpolymer.schematics.requirement.ItemRequirement.ItemUseType;
+import dev.createpolymer.schematics.requirement.ItemRequirement.PartialStrictNbtStackRequirement;
 import dev.createpolymer.util.ShapeUtil;
 import dev.createpolymer.util.VoxelShaper;
 import dev.createpolymer.visual.BaseModel;
@@ -54,7 +58,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class ClipboardBlock extends FaceAttachedHorizontalDirectionalBlock
-	implements IBE<ClipboardBlockEntity>, IWrenchable, ProperWaterloggedBlock, PolymerModelBlock {
+	implements IBE<ClipboardBlockEntity>, IWrenchable, ProperWaterloggedBlock, SpecialBlockItemRequirement, PolymerModelBlock {
 
 	public static final BooleanProperty WRITTEN = BooleanProperty.create("written");
 
@@ -204,6 +208,16 @@ public class ClipboardBlock extends FaceAttachedHorizontalDirectionalBlock
 	@Override
 	public BlockEntityType<? extends ClipboardBlockEntity> getBlockEntityType() {
 		return ToolsRegistry.CLIPBOARD_BLOCK_ENTITY;
+	}
+
+	@Override
+	public ItemRequirement getRequiredItems(BlockState state, @Nullable BlockEntity blockEntity) {
+		ItemStack clipboardStack = new ItemStack(this);
+		if (blockEntity instanceof ClipboardBlockEntity clipboard) {
+			clipboardStack.applyComponents(clipboard.components());
+		}
+		return new ItemRequirement(List.of(new PartialStrictNbtStackRequirement(clipboardStack, ItemUseType.CONSUME,
+			List.of(ToolsRegistry.CLIPBOARD_CONTENT))));
 	}
 
 	// ---- Polymer ----

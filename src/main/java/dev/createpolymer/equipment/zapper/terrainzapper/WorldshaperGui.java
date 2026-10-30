@@ -1,6 +1,6 @@
 package dev.createpolymer.equipment.zapper.terrainzapper;
 
-import dev.createpolymer.equipment.zapper.ZapperBlockHelper;
+import dev.createpolymer.foundation.block.BlockHelper;
 import dev.createpolymer.equipment.zapper.ZapperGui;
 import dev.createpolymer.registry.feature.WandsRegistry;
 import net.minecraft.core.BlockPos;
@@ -92,10 +92,10 @@ public class WorldshaperGui extends ZapperGui {
 				}));
 
 		if (zapper.has(WandsRegistry.SHAPER_BLOCK_USED)
-			&& !ZapperBlockHelper.getRequiredItem(zapper.get(WandsRegistry.SHAPER_BLOCK_USED))
+			&& !BlockHelper.getRequiredItem(zapper.get(WandsRegistry.SHAPER_BLOCK_USED))
 				.isEmpty()) {
 			BlockState used = zapper.get(WandsRegistry.SHAPER_BLOCK_USED);
-			setSlot(8, new GuiElementBuilder(ZapperBlockHelper.getRequiredItem(used)
+			setSlot(8, new GuiElementBuilder(BlockHelper.getRequiredItem(used)
 				.getItem())
 				.setName(Component.translatable("create.terrainzapper.usingBlock", used.getBlock()
 					.getName()))

@@ -3,6 +3,7 @@ package dev.createpolymer.equipment.zapper;
 import java.util.Objects;
 
 import dev.createpolymer.equipment.EquipmentSounds;
+import dev.createpolymer.foundation.block.BlockHelper;
 import dev.createpolymer.registry.feature.WandsRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -56,10 +57,10 @@ public class ZapperInteractionHandler {
 		player.level().destroyBlockProgress(player.getId(), pos, -1);
 		BlockState newState = player.level().getBlockState(pos);
 
-		if (ZapperBlockHelper.getRequiredItem(newState)
+		if (BlockHelper.getRequiredItem(newState)
 			.isEmpty())
 			return false;
-		if (newState.hasBlockEntity() && !ZapperBlockHelper.isSafeNbt(newState))
+		if (newState.hasBlockEntity() && !BlockHelper.isSafeNbt(newState))
 			return false;
 		if (newState.hasProperty(BlockStateProperties.DOUBLE_BLOCK_HALF))
 			return false;

@@ -114,8 +114,12 @@ public class ToolsGameTests {
 		helper.assertTrue(condition, Component.literal(message));
 	}
 
-	/** The players of the running tests, taken out of the server again by {@link #done}. */
-	private static final List<ServerPlayer> JOINED = new ArrayList<>();
+	/**
+	 * The players of each running test, taken out of the server again by {@link #done}. The tests run side by side, so
+	 * a test may only remove its own players: removing another test's player ends its controller session mid-test.
+	 */
+	private static final java.util.Map<GameTestHelper, List<ServerPlayer>> JOINED =
+		new java.util.concurrent.ConcurrentHashMap<>();
 
 	/**
 	 * A survival player with a connection (an embedded channel), like the one the chain conveyor tests use:
@@ -135,18 +139,19 @@ public class ToolsGameTests {
 		// the structures are far from the spawn, and links only reach so far
 		BlockPos at = helper.absolutePos(new BlockPos(1, 1, 1));
 		player.setPos(at.getX() + .5, at.getY(), at.getZ() + .5);
-		JOINED.add(player);
+		JOINED.computeIfAbsent(helper, h -> new ArrayList<>())
+			.add(player);
 		return player;
 	}
 
 	@SuppressWarnings("removal")
 	private static void done(GameTestHelper helper) {
-		for (ServerPlayer player : JOINED) {
+		for (ServerPlayer player : JOINED.getOrDefault(helper, List.of())) {
 			LinkedControllerHandler.stop(player);
 			player.connection.disconnect(Component.literal("test over"));
 			helper.getLevel().getServer().getPlayerList().remove(player);
 		}
-		JOINED.clear();
+		JOINED.remove(helper);
 		helper.succeed();
 	}
 

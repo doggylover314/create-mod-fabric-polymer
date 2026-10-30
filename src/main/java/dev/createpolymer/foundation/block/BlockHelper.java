@@ -15,7 +15,11 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.attribute.EnvironmentAttributes;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseRailBlock;
@@ -24,8 +28,12 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.TagValueOutput;
+import java.util.List;
 import java.util.Set;
 import org.jetbrains.annotations.Nullable;
 import dev.createpolymer.CreatePolymer;
@@ -50,6 +58,25 @@ public final class BlockHelper {
 		return !state.is(BlockTags.LEAVES)
 			&& Block.isFaceFull(state.getCollisionShape(blockGetter, pos), dir);
 	}
+
+	private static final List<IntegerProperty> COUNT_STATES = List.of(
+		BlockStateProperties.EGGS,
+		BlockStateProperties.PICKLES,
+		BlockStateProperties.CANDLES
+	);
+
+	private static final List<Block> VINELIKE_BLOCKS = List.of(
+		Blocks.VINE, Blocks.GLOW_LICHEN
+	);
+
+	private static final List<BooleanProperty> VINELIKE_STATES = List.of(
+		BlockStateProperties.UP,
+		BlockStateProperties.NORTH,
+		BlockStateProperties.EAST,
+		BlockStateProperties.SOUTH,
+		BlockStateProperties.WEST,
+		BlockStateProperties.DOWN
+	);
 
 	public static BlockState setZeroAge(BlockState blockState) {
 		if (blockState.hasProperty(BlockStateProperties.AGE_1))
@@ -88,7 +115,8 @@ public final class BlockHelper {
 		"rotation_speed_controller", "andesite_funnel", "andesite_belt_funnel", "brass_funnel", "brass_belt_funnel",
 		"redstone_link", "analog_lever", "placard", "pulse_repeater", "pulse_extender", "pulse_timer", "clipboard");
 
-	private static boolean isSafeNbtBlock(BlockState state) {
+	/** Create's AllBlockTags.SAFE_NBT.matches(state) */
+	public static boolean isSafeNbt(BlockState state) {
 		Identifier key = BuiltInRegistries.BLOCK.getKey(state.getBlock());
 		return key.getNamespace()
 			.equals(CreatePolymer.MOD_ID) && SAFE_NBT.contains(key.getPath()) || state.is(BlockTags.BANNERS)
@@ -101,7 +129,7 @@ public final class BlockHelper {
 			return null;
 		CompoundTag data = null;
 		SafeNbtWriterRegistry.SafeNbtWriter writer = SafeNbtWriterRegistry.REGISTRY.get(blockEntity.getType());
-		if (isSafeNbtBlock(blockState)) {
+		if (isSafeNbt(blockState)) {
 			data = blockEntity.saveWithFullMetadata(level.registryAccess());
 		} else if (writer != null) {
 			try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(blockEntity.problemPath(),
@@ -214,5 +242,80 @@ public final class BlockHelper {
 			| Block.UPDATE_SKIP_ON_PLACE);
 		world.neighborChanged(target, world.getBlockState(target.below())
 			.getBlock(), null);
+	}
+
+	public static ItemStack getRequiredItem(BlockState state) {
+		ItemStack itemStack = new ItemStack(state.getBlock());
+		Item item = itemStack.getItem();
+		if (item == Items.FARMLAND || item == Items.DIRT_PATH)
+			itemStack = new ItemStack(Items.DIRT);
+		return itemStack;
+	}
+
+	/**
+	 * Takes the items that placing {@code block} costs from the player's inventory, the selected slot first, and
+	 * returns how many blocks' worth were found.
+	 */
+	public static int findAndRemoveInInventory(BlockState block, Player player, int amount) {
+		int amountFound = 0;
+		Item required = getRequiredItem(block).getItem();
+
+		boolean needsTwo = block.hasProperty(BlockStateProperties.SLAB_TYPE)
+			&& block.getValue(BlockStateProperties.SLAB_TYPE) == SlabType.DOUBLE;
+
+		if (needsTwo)
+			amount *= 2;
+
+		for (IntegerProperty property : COUNT_STATES)
+			if (block.hasProperty(property))
+				amount *= block.getValue(property);
+
+		if (VINELIKE_BLOCKS.contains(block.getBlock())) {
+			int vineCount = 0;
+
+			for (BooleanProperty vineState : VINELIKE_STATES) {
+				if (block.hasProperty(vineState) && block.getValue(vineState)) {
+					vineCount++;
+				}
+			}
+
+			amount += vineCount - 1;
+		}
+
+		Inventory inventory = player.getInventory();
+
+		{
+			// Try held Item first
+			ItemStack itemstack = inventory.getItem(inventory.getSelectedSlot());
+			int count = itemstack.getCount();
+			if (itemstack.getItem() == required && count > 0) {
+				int taken = Math.min(count, amount - amountFound);
+				itemstack.shrink(taken);
+				amountFound += taken;
+			}
+		}
+
+		// Search inventory
+		for (int i = 0; i < inventory.getContainerSize(); ++i) {
+			if (amountFound == amount)
+				break;
+
+			ItemStack itemstack = inventory.getItem(i);
+			int count = itemstack.getCount();
+			if (itemstack.getItem() == required && count > 0) {
+				int taken = Math.min(count, amount - amountFound);
+				itemstack.shrink(taken);
+				amountFound += taken;
+			}
+		}
+
+		if (needsTwo) {
+			// Give back 1 if uneven amount was removed
+			if (amountFound % 2 != 0)
+				inventory.add(new ItemStack(required));
+			amountFound /= 2;
+		}
+
+		return amountFound;
 	}
 }

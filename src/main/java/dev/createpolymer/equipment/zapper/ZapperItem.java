@@ -5,7 +5,9 @@ import java.util.function.Consumer;
 import org.jspecify.annotations.Nullable;
 
 import dev.createpolymer.equipment.EquipmentSounds;
+import dev.createpolymer.foundation.block.BlockHelper;
 import dev.createpolymer.registry.feature.WandsRegistry;
+import dev.createpolymer.schematics.NBTProcessors;
 import eu.pb4.polymer.core.api.item.SimplePolymerItem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -109,9 +111,9 @@ public abstract class ZapperItem extends SimplePolymerItem {
 		BlockState stateToUse = Blocks.AIR.defaultBlockState();
 		if (item.has(WandsRegistry.SHAPER_BLOCK_USED))
 			stateToUse = item.get(WandsRegistry.SHAPER_BLOCK_USED);
-		stateToUse = ZapperBlockHelper.setZeroAge(stateToUse);
+		stateToUse = BlockHelper.setZeroAge(stateToUse);
 		CompoundTag data = null;
-		if (ZapperBlockHelper.isSafeNbt(stateToUse) && item.has(WandsRegistry.SHAPER_BLOCK_DATA)) {
+		if (BlockHelper.isSafeNbt(stateToUse) && item.has(WandsRegistry.SHAPER_BLOCK_DATA)) {
 			data = item.get(WandsRegistry.SHAPER_BLOCK_DATA);
 		}
 
@@ -174,10 +176,10 @@ public abstract class ZapperItem extends SimplePolymerItem {
 	}
 
 	public static void setBlockEntityData(Level world, BlockPos pos, BlockState state, CompoundTag data, Player player) {
-		if (data != null && ZapperBlockHelper.isSafeNbt(state)) {
+		if (data != null && BlockHelper.isSafeNbt(state)) {
 			BlockEntity blockEntity = world.getBlockEntity(pos);
 			if (blockEntity != null) {
-				data = ZapperBlockHelper.processBlockEntityData(data.copy());
+				data = NBTProcessors.process(state, blockEntity, data.copy(), !player.isCreative(), world.registryAccess());
 				if (data == null)
 					return;
 				data.putInt("x", pos.getX());
